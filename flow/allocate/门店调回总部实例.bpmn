@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_182bzp3" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.4.2" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+  <bpmn:process id="shopAllocationToHQInstance" name="门店调回总部流程" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="ckSerialNo" label="出库单号" type="string" />
+          <camunda:formField id="rkSerialNo" label="入库单号" type="string" />
+          <camunda:formField id="shortcodes" label="门店简码" type="string" />
+          <camunda:formField id="parentBusinessKey" label="父业务单号" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1rlbnap</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1rlbnap" sourceRef="StartEvent_1" targetRef="Activity_0738wk4" />
+    <bpmn:sequenceFlow id="Flow_1864ikg" sourceRef="Activity_0738wk4" targetRef="Activity_1hjwr9t" />
+    <bpmn:endEvent id="Event_1dgwl33">
+      <bpmn:incoming>Flow_00bzm1u</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_00bzm1u" sourceRef="Activity_1hjwr9t" targetRef="Event_1dgwl33" />
+    <bpmn:callActivity id="Activity_1hjwr9t" name="总部入库" calledElement="zbReceivingFlow">
+      <bpmn:extensionElements>
+        <camunda:in businessKey="#{rkSerialNo}" />
+        <camunda:in local="true" variables="all" />
+        <camunda:in sourceExpression="${parentBusinessKey}" target="parentBusinessKey" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1864ikg</bpmn:incoming>
+      <bpmn:outgoing>Flow_00bzm1u</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:callActivity id="Activity_0738wk4" name="门店发货" calledElement="shopDeliveryFlow">
+      <bpmn:extensionElements>
+        <camunda:in businessKey="#{ckSerialNo}" />
+        <camunda:in local="true" variables="all" />
+        <camunda:in sourceExpression="#{shortcodes}" target="shortcodes" />
+        <camunda:in sourceExpression="${parentBusinessKey}" target="parentBusinessKey" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1rlbnap</bpmn:incoming>
+      <bpmn:outgoing>Flow_1864ikg</bpmn:outgoing>
+    </bpmn:callActivity>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="shopAllocationToHQInstance">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1dgwl33_di" bpmnElement="Event_1dgwl33">
+        <dc:Bounds x="592" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1pu2yxf_di" bpmnElement="Activity_1hjwr9t">
+        <dc:Bounds x="430" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0v6shjy_di" bpmnElement="Activity_0738wk4">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1rlbnap_di" bpmnElement="Flow_1rlbnap">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1864ikg_di" bpmnElement="Flow_1864ikg">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="430" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_00bzm1u_di" bpmnElement="Flow_00bzm1u">
+        <di:waypoint x="530" y="117" />
+        <di:waypoint x="592" y="117" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

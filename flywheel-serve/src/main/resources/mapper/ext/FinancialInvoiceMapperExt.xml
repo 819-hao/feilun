@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.financial.mapper.FinancialInvoiceMapper">
+
+    <select id="queryPage" resultType="com.seeease.flywheel.financial.result.FinancialInvoicePageResult">
+        SELECT
+        fi.id,
+        fi.created_by createdBy,
+        fi.order_type orderType,
+        fi.customer_name customerName,
+        fi.invoice_amount invoiceAmount,
+        fi.invoice_origin invoiceOrigin
+        FROM
+        financial_invoice fi
+        <where>
+            fi.deleted = 0
+            <if test="request.state != null">
+                and fi.state = #{request.state}
+            </if>
+            <if test="request.searchCriteria != null and request.searchCriteria != ''">
+                and (fi.created_by = #{request.searchCriteria}
+                OR fi.customer_name = #{request.searchCriteria})
+            </if>
+        </where>
+        order by fi.id desc
+    </select>
+    <select id="queryByCondition"
+            resultType="com.seeease.flywheel.financial.result.FinancialInvoiceQueryByConditionResult">
+        select
+        fi.*
+        FROM
+        financial_invoice fi
+        <if test="request.stockSn != null and request.stockSn != ''">
+            INNER JOIN financial_invoice_stock fis on fis.financial_invoice_id = fi.id and
+            fis.stock_id in (select id from stock where sn = #{request.stockSn} and temp is null)
+        </if>
+        <where>
+            fi.deleted = 0
+            <if test="request.serialNo != null ">
+                and fi.serial_no = #{request.serialNo}
+            </if>
+
+            <if test="request.state != null ">
+                and fi.state = #{request.state}
+            </if>
+
+            <if test="request.docBatchIds != null and request.docBatchIds.size() >0">
+                <foreach collection="request.docBatchIds" item="id" open="and fi.id in (" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+
+            <if test="request.createdStartTime != null and request.createdStartTime !=''
+             and request.createdEndTime != null and request.createdEndTime != ''">
+                and fi.created_time BETWEEN #{request.createdStartTime} AND #{request.createdEndTime}
+            </if>
+
+            <if test="request.invoiceStartTime != null and request.invoiceStartTime != ''
+            and request.invoiceEndTime != null and request.invoiceEndTime != ''">
+                and fi.invoice_time BETWEEN #{request.invoiceStartTime} AND #{request.invoiceEndTime}
+            </if>
+
+            <if test="request.shopId != null">
+                and fi.shop_id = #{request.shopId}
+            </if>
+
+            <if test="request.createdBy != null and request.createdBy != ''">
+                and fi.created_by = #{request.createdBy}
+            </if>
+
+            <if test="request.invoiceUser != null and request.invoiceUser != ''">
+                and fi.invoice_user = #{request.invoiceUser}
+            </if>
+            <if test="request.orderType != null">
+                and fi.order_type = #{request.orderType}
+            </if>
+            <if test="request.invoiceSubject != null">
+                and fi.invoice_subject = #{request.invoiceSubject}
+            </if>
+            <if test="request.invoiceTitle != null and request.invoiceTitle != ''">
+                and fi.invoice_title = #{request.invoiceTitle}
+            </if>
+            <if test="request.customerName != null and request.customerName != ''">
+                and fi.customer_name = #{request.customerName}
+            </if>
+        </where>
+        GROUP BY fi.id
+        ORDER BY
+        fi.id DESC
+    </select>
+    <select id="queryInvoiceNumberBySerialNo" resultType="java.lang.String">
+        select invoice_number from financial_invoice where serial_no = #{serialNo}
+    </select>
+</mapper>

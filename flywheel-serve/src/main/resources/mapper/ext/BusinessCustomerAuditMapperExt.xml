@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.helper.mapper.AppBusinessCustomerAuditMapper">
+    <select id="pageOf" resultType="com.seeease.flywheel.helper.result.BusinessCustomerPageResult">
+        select
+        abca.id,
+        abca.firm_name,
+        abca.contact_name,
+        abca.contact_phone,
+        abca.contact_area,
+        abca.contact_address,
+        abca.`status`,
+        abca.area_ids areaIdsJson,
+        abca.updated_time,
+        abca.prop,
+        abca.updated_by,
+        abca.created_by,
+        u.name approverName
+        from app_business_customer_audit abca
+        left join user u on abca.approver = u.id
+        <where>
+            <if test="req.contactName != '' and req.contactName != null">
+                and abca.contact_name like concat("%",#{req.contactName},"%")
+            </if>
+            <if test="req.status != null">
+                and abca.status = #{req.status}
+            </if>
+            <if test="req.id != null">
+                and abca.id = #{req.id}
+            </if>
+            <if test="admin == false and req.status == 1">
+                and (abca.approver = #{userid} or abca.approver is null or abca.created_id = #{userid})
+            </if>
+        </where>
+    </select>
+</mapper>

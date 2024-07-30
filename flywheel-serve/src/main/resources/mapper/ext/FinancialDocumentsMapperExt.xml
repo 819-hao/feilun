@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.financial.mapper.FinancialDocumentsMapper">
+    <resultMap type="com.seeease.flywheel.financial.result.FinancialPageAllResult" id="FinancialPageAllResult">
+        <result property="id" column="id"/>
+        <result property="serialNumber" column="serial_number"/>
+        <result property="assocSerialNumber" column="assoc_serial_number"/>
+        <result property="thirdNumber" column="third_number"/>
+        <result property="orderType" column="order_type"/>
+        <result property="orderOrigin" column="order_origin"/>
+        <result property="saleMode" column="sale_mode"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="orderNumber" column="order_number"/>
+        <result property="orderMoney" column="order_money"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="outStoreTime" column="out_store_time"/>
+        <result property="belongId" column="belong_id"/>
+        <result property="divideInto" column="divide_into"/>
+        <result property="clcId" column="clc_id"/>
+        <result property="customerName" column="customer_name"/>
+        <result property="customerType" column="customer_type"/>
+    </resultMap>
+    <select id="selectByFinancialQueryAllRequest" resultMap="FinancialPageAllResult">
+        select t1.*,
+        t3.customer_name,
+        t3.type customer_type
+        from financial_documents t1
+        left join customer t3 on t1.customer_id = t3.id
+        <where>
+            t1.deleted = 0
+            <if test="request.belongId != null">
+                and t1.belong_id = #{request.belongId}
+            </if>
+            <if test="request.saleMode != null">
+                and t1.sale_mode = #{request.saleMode}
+            </if>
+            <if test="request.belongSubject != null and request.belongSubject.size() >0">
+                <foreach collection="request.belongSubject" item="id" open="and t1.belong_id in (" separator=","
+                         close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="request.beginCreateTime != null and request.beginCreateTime != '' and request.endCreateTime != null and request.endCreateTime != ''">
+                and t1.create_time between #{request.beginCreateTime} and #{request.endCreateTime}
+            </if>
+            <if test="request.divideInto != null">
+                and t1.divide_into = #{request.divideInto}
+            </if>
+            <if test="request.orderType != null">
+                and t1.order_type = #{request.orderType}
+            </if>
+            <if test="request.assocSerialNumber != null">
+                and t1.assoc_serial_number = #{request.assocSerialNumber}
+            </if>
+            <if test="request.clcId != null">
+                and t1.clc_id = #{request.clcId}
+            </if>
+            <if test="request.oldToNew != null">
+                and t1.old_to_new = #{request.oldToNew}
+            </if>
+            <if test="request.serialNumber !=null and request.serialNumber != ''">
+                and t1.serial_number like concat(#{request.serialNumber}, '%')
+            </if>
+            <if test="request.orderOrigin != null">
+                and t1.order_origin = #{request.orderOrigin}
+            </if>
+
+            <if test="request.ext != null">
+                and exists(select t2.financial_documents_id
+                from financial_documents_detail t2
+                where t2.financial_documents_id = t1.id
+                <if test="request.ext.beginSaleTime != null and request.ext.beginSaleTime != '' and request.ext.endSaleTime != null and request.ext.endSaleTime != ''">
+                    and t2.sale_time between #{request.ext.beginSaleTime} and #{request.ext.endSaleTime}
+                </if>
+                <if test="request.ext.stockSn != null and request.ext.stockSn != ''">
+                    and t2.stock_sn = #{request.ext.stockSn}
+                </if>
+                <if test="request.ext.modelName != null and request.ext.modelName != ''">
+                    and t2.model_name = #{request.ext.modelName}
+                </if>
+                <if test="request.ext.wno != null and request.ext.wno != ''">
+                    and t2.wno = #{request.ext.wno}
+                </if>
+                )
+            </if>
+
+            <if test="request.customerName != null and request.customerName != ''">
+                and t3.customer_name like concat("%",#{request.customerName},"%")
+            </if>
+            <if test="request.customerType != null">
+                and t3.type = #{request.customerType}
+            </if>
+        </where>
+        group by t1.id
+        order by t1.create_time DESC, t1.id DESC
+    </select>
+    <select id="selectExcelByFinancialDocumentsQueryDto"
+            resultType="com.seeease.flywheel.financial.result.FinancialExportResult">
+        select t1.serial_number serialNumber,
+        t1.sale_mode saleMode,
+        t1.assoc_serial_number assocSerialNumber,
+        t1.third_number thirdNumber,
+        t1.order_type orderType,
+        t1.order_origin orderOrigin,
+        t1.customer_id customerId,
+        t1.order_number orderNumber,
+        t1.order_money orderMoney,
+        t1.out_store_time outStoreTime,
+        t1.divide_into divideInto,
+        t1.clc_id clcId,
+        t1.create_time createTime,
+        t1.create_by createBy,
+        t1.belong_id belongId,
+        t2.location_id locationId,
+        t2.stock_sn stockSn,
+        t2.stock_id stockId,
+        t2.purchase_price purchasePrice,
+        t2.clinch_price clinchPrice,
+        t2.return_price returnPrice,
+        t2.brand_name brandName,
+        t2.series_name seriesName,
+        t2.model_name modelName,
+        t2.fix_price fixPrice,
+        t2.tob_price tobPrice,
+        t2.toc_price tocPrice,
+        t2.tag_price tagPrice,
+        t2.price_pub pricePub,
+        t2.stock_src stockSrc,
+        t2.consign_sale_price consignSalePrice,
+        t2.js_clinch_price jsClinchPrice,
+        t2.margin_price marginPrice,
+        t2.ratio ratio,
+        t2.store_purchase_price storePurchasePrice,
+        t2.outlet_store outletStore,
+        t2.sales_position salesPosition,
+        IF(t2.goods_belong is null,t2.belong_id,t2.goods_belong) goodsBelong,
+        t2.goods_position goodsPosition,
+        t2.source_subject_id sourceSubjectId,
+        t2.demand_id demandId,
+        t2.service_fee serviceFee,
+        t2.sale_time soldTime,
+        t2.buy_back_price buyBackPrice,
+        t2.buy_back_service_fee buyBackServiceFee,
+        t2.promotion_consignment_price promotionConsignmentPrice,
+        t2.wno,
+        t2.financial_performance financialPerformance,
+        t2.brand_marketing_expenses brandMarketingExpenses,
+        t3.customer_name customerName,
+        t3.type customerType
+        from financial_documents t1
+        left join financial_documents_detail t2 on t1.id = t2.financial_documents_id
+        left join customer t3 on t1.customer_id = t3.id
+        <where>
+            t1.deleted = 0
+            <if test="request.belongId != null">
+                and t1.belong_id = #{request.belongId}
+            </if>
+            <if test="request.saleMode != null">
+                and t1.sale_mode = #{request.saleMode}
+            </if>
+            <if test="request.assocSerialNumber != null">
+                and t1.assoc_serial_number = #{request.assocSerialNumber}
+            </if>
+            <if test="request.oldToNew != null">
+                and t1.old_to_new = #{request.oldToNew}
+            </if>
+            <if test="request.belongSubject != null and request.belongSubject.size() >0">
+                <foreach collection="request.belongSubject" item="id" open="and t1.belong_id in (" separator=","
+                         close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="request.docBatchIds != null and request.docBatchIds.size() >0">
+                <foreach collection="request.docBatchIds" item="id" open="and t1.id in (" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="request.beginCreateTime != null and request.beginCreateTime != '' and request.endCreateTime != null and request.endCreateTime != ''">
+                and t1.create_time between #{request.beginCreateTime} and #{request.endCreateTime}
+            </if>
+            <if test="request.divideInto != null">
+                and t1.divide_into = #{request.divideInto}
+            </if>
+            <if test="request.orderType != null">
+                and t1.order_type = #{request.orderType}
+            </if>
+            <if test="request.serialNumber !=null and request.serialNumber != ''">
+                and t1.serial_number like concat(#{request.serialNumber}, '%')
+            </if>
+            <if test="request.orderOrigin != null">
+                and t1.order_origin = #{request.orderOrigin}
+            </if>
+
+            <if test="request.ext != null">
+                <if test="request.ext.beginSaleTime != null and request.ext.beginSaleTime != '' and request.ext.endSaleTime != null and request.ext.endSaleTime != ''">
+                    and t2.sale_time between #{request.ext.beginSaleTime} and #{request.ext.endSaleTime}
+                </if>
+                <if test="request.ext.stockSn != null and request.ext.stockSn != ''">
+                    and t2.stock_sn = #{request.ext.stockSn}
+                </if>
+                <if test="request.ext.modelName != null and request.ext.modelName != ''">
+                    and t2.modelName = #{request.ext.modelName}
+                </if>
+                <if test="request.ext.wno != null and request.ext.wno != ''">
+                    and t2.wno = #{request.ext.wno}
+                </if>
+            </if>
+
+            <if test="request.customerName != null and request.customerName != ''">
+                and t3.customer_name like concat("%",#{request.customerName},"%")
+            </if>
+            <if test="request.customerType != null">
+                and t3.type = #{request.customerType}
+            </if>
+        </where>
+        order by t1.create_time DESC, t1.id DESC
+    </select>
+</mapper>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.financial.mapper.AccountReceStateRelMapper">
+    <select id="getDetailPage" resultType="com.seeease.flywheel.financial.result.AccountReceiptConfirmDetailResult">
+        select f.id                                                                  as financialStatementId,
+               IF(f.serial_no != null, f.serial_no, a.financial_statement_serial_no) as serialNo,
+               f.collection_time                                                     as collectionTime,
+               f.payer                                                               as payer,
+               f.wait_audit_price                                                    as waitAuditPrice,
+               f.funds_received                                                      as fundsReceived
+        from account_rece_state_rel a
+                 left join financial_statement f on a.financial_statement_id = f.id
+        where a.account_receipt_confirm_id = #{request.id}
+        order by f.id desc
+    </select>
+</mapper>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.financial.mapper.FinancialInvoiceReverseMapper">
+
+    <select id="queryByCondition"
+            resultType="com.seeease.flywheel.financial.result.FinancialInvoiceReverseQueryByConditionResult">
+        select
+        *
+        FROM
+        financial_invoice_reverse
+        <where>
+            deleted = 0
+            <if test="request.serialNo != null ">
+                and fi_serial_no = #{request.serialNo}
+            </if>
+
+            <if test="request.state != null ">
+                and `state` = #{request.state}
+            </if>
+
+            <if test="request.docBatchIds != null and request.docBatchIds.size() >0">
+                <foreach collection="request.docBatchIds" item="id" open="and id in (" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+
+            <if test="request.createdStartTime != null and request.createdStartTime !=''
+             and request.createdEndTime != null and request.createdEndTime != ''">
+                and created_time BETWEEN #{request.createdStartTime} AND #{request.createdEndTime}
+            </if>
+
+            <if test="request.shopId != null">
+                and shop_id = #{request.shopId}
+            </if>
+
+            <if test="request.createdBy != null and request.createdBy != ''">
+                and created_by = #{request.createdBy}
+            </if>
+
+            <if test="request.invoiceSubject != null">
+                and invoice_subject = #{request.invoiceSubject}
+            </if>
+
+        </where>
+        ORDER BY id DESC
+    </select>
+</mapper>

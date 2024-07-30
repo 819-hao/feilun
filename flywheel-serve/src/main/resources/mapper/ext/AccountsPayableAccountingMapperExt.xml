@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.financial.mapper.AccountsPayableAccountingMapper">
+    <update id="updateStatusByAfpSerialNo">
+        update accounts_payable_accounting
+        set status = #{toStatus}
+        where afp_serial_no = #{serialNo}
+          and status = #{currStatus}
+    </update>
+    <update id="updateStatusByArcSerialNo">
+        update accounts_payable_accounting
+        set status = #{toStatus}
+        where arc_serial_no = #{serialNo}
+    </update>
+
+
+    <select id="getPage"
+            resultType="com.seeease.flywheel.financial.result.AccountsPayableAccountingPageResult">
+        select *
+        from accounts_payable_accounting
+        <where>
+            deleted = 0
+            <if test="request.createdStartTime != null and request.createdEndTime != null">
+                and created_time BETWEEN #{request.createdStartTime} AND #{request.createdEndTime}
+            </if>
+            <if test="request.auditStartTime != null and request.auditEndTime != null">
+                and audit_time BETWEEN #{request.auditStartTime} AND #{request.auditEndTime}
+            </if>
+            <if test="request.type != null">
+                and type = #{request.type}
+            </if>
+            <if test="request.originType != null">
+                and origin_type = #{request.originType}
+            </if>
+            <if test="request.typeList != null">
+                <foreach collection="request.typeList" item="id" open="and type in ("
+                         separator=","
+                         close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="request.classification != null">
+                and classification= #{request.classification}
+            </if>
+            <if test="request.salesMethod != null">
+                and sales_method= #{request.salesMethod}
+            </if>
+            <if test="request.status != null">
+                and status= #{request.status}
+            </if>
+            <if test="request.customerType != null">
+                and customer_type= #{request.customerType}
+            </if>
+            <if test="request.stockSn != null">
+                and stock_sn= #{request.stockSn}
+            </if>
+            <if test="request.model != null">
+                and model= #{request.model}
+            </if>
+            <if test="request.shopId != null">
+                and shop_id= #{request.shopId}
+            </if>
+            <if test="request.demanderStoreId != null">
+                and demander_store_id= #{request.demanderStoreId}
+            </if>
+            <if test="request.applicant != null">
+                and applicant= #{request.applicant}
+            </if>
+            <if test="request.originSerialNo != null">
+                and origin_serial_no= #{request.originSerialNo}
+            </if>
+            <if test="request.afpSerialNo != null">
+                and afp_serial_no= #{request.afpSerialNo}
+            </if>
+            <if test="request.arcSerialNo != null">
+                and arc_serial_no= #{request.arcSerialNo}
+            </if>
+            <if test="request.docBatchIds != null and request.docBatchIds.size() >0">
+                <foreach collection="request.docBatchIds" item="id" open="and id in (" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="request.purchaseIds != null and request.purchaseIds.size() >0">
+                <foreach collection="request.purchaseIds" item="id" open="and purchase_id in (" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="request.searchCustomerCriteria !=null and request.searchCustomerCriteria != ''">
+                and (customer_id in (
+                <foreach collection="request.customerIds" item="id" separator=",">
+                    #{id}
+                </foreach>
+                )
+                or customer_contact_id in (
+                <foreach collection="request.contactsIds" item="id" separator=",">
+                    #{id}
+                </foreach>
+                ) )
+            </if>
+        </where>
+        order by id desc
+    </select>
+</mapper>

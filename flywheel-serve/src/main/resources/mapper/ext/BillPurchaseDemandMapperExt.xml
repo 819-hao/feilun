@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.purchase.mapper.BillPurchaseDemandMapper">
+    <select id="page" resultType="com.seeease.flywheel.purchase.result.PurchaseDemandPageResult"
+            parameterType="com.seeease.flywheel.purchase.request.PurchaseDemandPageRequest">
+        SELECT
+        pd.id,
+        pd.fineness,
+        t.tag_name shopName,
+        pd.updated_time,
+        pd.updated_by,
+        pd.`status`,
+        cc.id  customerContactId,
+        cc.customer_id  customerId,
+        cc.phone contactPhone,
+        cc.`name` contactName,
+        cc.address contactAddress,
+        pd.sell_price,
+        pd.serial,
+        pd.deposit,
+        pd.attachment,
+        b.`name` brandName,
+        s.`name` seriesName,
+        gw.model
+        FROM bill_purchase_demand pd
+        LEFT JOIN goods_watch gw on gw.id = pd.goods_watch_id
+        LEFT JOIN series s on s.id = gw.series_id
+        LEFT JOIN brand b on b.id = gw.brand_id
+        LEFT JOIN store_management sm on sm.id = pd.shop_id
+        LEFT JOIN  tag t on t.id = sm.tag_id
+        LEFT JOIN customer_contacts cc on cc.id = pd.contact_id
+        <where>
+            <if test="req.startTime != null and req.endTime != null">
+                and pd.created_time between #{req.startTime} and #{req.endTime}
+            </if>
+            <if test="req.createdBy != null and req.createdBy != ''">
+                and pd.created_by like concat("%",#{req.createdBy},"%")
+            </if>
+            <if test="req.brandName != null and req.brandName != ''">
+                and b.`name` like concat("%",#{req.brandName},"%")
+            </if>
+            <if test="req.contactName != null and req.contactName != ''">
+                and pd.contact_name like concat("%",#{req.contactName},"%")
+            </if>
+            <if test="req.model != null and req.model != ''">
+                and gw.model like concat("%",#{req.model},"%")
+            </if>
+            <if test="req.contactPhone != null and req.contactPhone != ''">
+                and pd.contact_phone like concat("%",#{req.contactPhone},"%")
+            </if>
+            <if test="req.status != null and req.status != ''">
+                and pd.`status` like concat("%",#{req.status},"%")
+            </if>
+        </where>
+        order by pd.updated_time desc
+    </select>
+</mapper>

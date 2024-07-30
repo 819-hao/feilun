@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.sale.mapper.BillSaleReturnOrderMapper">
+    <select id="listByRequest" resultType="com.seeease.flywheel.serve.sale.entity.BillSaleReturnOrder">
+        SELECT bsro.* from bill_sale_return_order bsro
+        <if test="request.stockSn != null and request.stockSn!=''">
+            INNER JOIN bill_sale_return_order_line bsrol on bsrol.sale_return_id = bsro.id
+            INNER join stock s on s.id = bsrol.stock_id and s.sn = #{request.stockSn}
+        </if>
+        <if test="request.saleMode != null and request.saleChannel == null">
+            INNER JOIN bill_sale_order bso on bso.id = bsro.sale_id and bso.sale_mode = #{request.saleMode}
+        </if>
+        <if test="request.saleMode == null and request.saleChannel != null">
+            INNER JOIN bill_sale_order bso on bso.id = bsro.sale_id and bso.sale_channel = #{request.saleChannel}
+        </if>
+        <if test="request.saleMode != null and request.saleChannel != null">
+            INNER JOIN bill_sale_order bso on bso.id = bsro.sale_id and bso.sale_channel = #{request.saleChannel} and
+            bso.sale_mode = #{request.saleMode}
+        </if>
+        <where>
+            bsro.deleted = 0
+            <if test="request.finishStartTime != null and request.finishStartTime != ''
+                        and request.finishEndTime != null and request.finishEndTime != ''">
+                AND bsro.finish_time BETWEEN #{request.finishStartTime} AND #{request.finishEndTime}
+            </if>
+            <if test="request.createdStartTime != null and request.createdStartTime != ''
+                        and request.createdEndTime != null and request.createdEndTime != ''">
+                AND bsro.created_time BETWEEN #{request.createdStartTime} AND #{request.createdEndTime}
+            </if>
+            <if test="request.serialNo !=null and request.serialNo !=''">
+                and bsro.serial_no like CONCAT(#{request.serialNo},'%')
+            </if>
+            <if test="request.parentSerialNo !=null and request.parentSerialNo !=''">
+                and bsro.parent_serial_no like CONCAT(#{request.parentSerialNo},'%')
+            </if>
+            <if test="request.saleReturnType !=null">
+                and bsro.sale_return_type =#{request.saleReturnType}
+            </if>
+            <if test="request.saleReturnState !=null">
+                and bsro.sale_return_state =#{request.saleReturnState}
+            </if>
+
+            <if test="request.shopIds !=null and request.shopIds.size() > 0">
+                <foreach collection="request.shopIds" item="id" open="and bsro.shop_id in (" separator=","
+                         close=")">
+                    #{id}
+                </foreach>
+            </if>
+
+            <if test="request.createdBy !=null and request.createdBy !=''">
+                and bsro.created_by like CONCAT(#{request.createdBy},'%')
+            </if>
+            <if test="request.saleReturnType == 1 and request.customerIdList !=null">
+                <foreach collection="request.customerIdList" item="cid" open="and bsro.customer_id in (" separator=","
+                         close=")">
+                    #{cid}
+                </foreach>
+            </if>
+            <if test="request.saleReturnType == 2 and request.customerContactsIdList !=null">
+                <foreach collection="request.customerContactsIdList" item="cid" open="and bsro.customer_contact_id in ("
+                         separator=","
+                         close=")">
+                    #{cid}
+                </foreach>
+            </if>
+        </where>
+        ORDER BY bsro.id desc
+    </select>
+    <select id="selectStateById" resultType="java.lang.Integer">
+        select sale_return_state
+        from bill_sale_return_order
+        where id = #{id}
+    </select>
+    <select id="selectDouYinOrderBySerialNo" resultType="java.lang.Integer">
+        select dor.dou_yin_shop_id
+        from bill_sale_return_order bsro
+                 inner join douyin_order_refund dor on dor.refund_order_id = bsro.biz_order_code
+        where bsro.parent_serial_no = #{serialNo} LIMIT 1
+    </select>
+</mapper>

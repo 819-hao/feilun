@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.financial.mapper.AccountStockRelationMapper">
+
+    <select id="selectByAfpIds" resultType="com.seeease.flywheel.serve.financial.entity.AccountStockRelation">
+        select * from account_stock_relation
+        where
+        <foreach collection="afpIds" item="id" open="afp_id in (" separator="," close=")">
+            #{id}
+        </foreach>
+        group by afp_id
+    </select>
+</mapper>

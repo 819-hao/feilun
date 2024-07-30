@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.web.infrastructure.mapper.DouYinShopMappingMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.web.entity.DouYinShopMapping">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="douYinShopId" column="dou_yin_shop_id" jdbcType="INTEGER"/>
+        <result property="shopId" column="shop_id" jdbcType="INTEGER"/>
+        <result property="authorId" column="author_id" jdbcType="INTEGER"/>
+        <result property="orderOwner" column="order_owner" jdbcType="VARCHAR"/>
+        <result property="manualCreation" column="manual_creation" jdbcType="INTEGER"/>
+        <result property="needDecrypt" column="need_decrypt" jdbcType="INTEGER"/>
+        <result property="robot" column="robot" jdbcType="VARCHAR"/>
+        <result property="revision" column="revision" jdbcType="INTEGER"/>
+        <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+        <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+        <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+        <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+        <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap id="VOResultMap" type="com.seeease.flywheel.web.entity.DouYinShopMappingVO">
+        <result property="shopId" column="shop_id" jdbcType="INTEGER"/>
+        <result property="orderOwner" column="order_owner" jdbcType="VARCHAR"/>
+        <result property="robot" column="robot" jdbcType="VARCHAR"/>
+        <result property="shopName" column="tag_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+    <sql id="Base_Column_List">
+        id,manual_creation,need_decrypt
+        ,dou_yin_shop_id,shop_id,author_id,
+        order_owner,robot,revision,created_id,
+        created_by,created_time,updated_id,
+        updated_by,updated_time,deleted
+    </sql>
+
+    <select id="getByOrder" resultMap="VOResultMap">
+        SELECT m.shop_id ,m.robot,m.order_owner,t.tag_name
+        FROM douyin_order o
+        INNER JOIN douyin_shop_mapping m on m.shop_id = o.shop_id and o.dou_yin_shop_id=m.dou_yin_shop_id
+        LEFT  JOIN store_management sm on sm.id = m.shop_id
+        LEFT  JOIN tag t on t.id = sm.tag_id
+        WHERE o.order_id=#{orderId}
+        LIMIT 1
+    </select>
+
+    <select id="countDecryptNumberByToDays" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM douyin_order
+        WHERE dou_yin_shop_id = #{douYinShopId}
+          AND decrypt_post_tel IS NOT NULL
+          AND to_days(created_time) = to_days(now())
+    </select>
+</mapper>

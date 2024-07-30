@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.purchase.mapper.BillPurchaseTaskMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.purchase.entity.BillPurchaseTask">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="taskState" column="task_state" jdbcType="INTEGER"/>
+            <result property="goodsId" column="goods_id" jdbcType="INTEGER"/>
+            <result property="finess" column="finess" jdbcType="VARCHAR"/>
+<!--            <result property="attachmentList" column="attachment_list" jdbcType="VARCHAR"/>-->
+        <result property="attachmentList" column="attachment_list" jdbcType="VARCHAR"
+                typeHandler="com.seeease.seeeaseframework.mybatis.type.JsonTypeHandler"/>
+            <result property="warrantyDate" column="warranty_date" jdbcType="VARCHAR"/>
+            <result property="isCard" column="is_card" jdbcType="INTEGER"/>
+            <result property="purchaseId" column="purchase_id" jdbcType="INTEGER"/>
+            <result property="purchaseJoinId" column="purchase_join_id" jdbcType="INTEGER"/>
+            <result property="storeId" column="store_id" jdbcType="INTEGER"/>
+            <result property="deliveryTimeStart" column="delivery_time_start" jdbcType="VARCHAR"/>
+            <result property="deliveryTimeEnd" column="delivery_time_end" jdbcType="VARCHAR"/>
+            <result property="taskNumber" column="task_number" jdbcType="INTEGER"/>
+            <result property="clinchPrice" column="clinch_price" jdbcType="DECIMAL"/>
+            <result property="clinchRateStart" column="clinch_rate_start" jdbcType="DECIMAL"/>
+            <result property="clinchRateEnd" column="clinch_rate_end" jdbcType="DECIMAL"/>
+            <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+            <result property="applyFinancialPaymentId" column="apply_financial_payment_id" jdbcType="INTEGER"/>
+            <result property="revision" column="revision" jdbcType="INTEGER"/>
+            <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+            <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+            <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+            <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+            <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,serial_no,task_state,
+        goods_id,finess,attachment_list,
+        warranty_date,is_card,purchase_join_id,
+        store_id,delivery_time_start,delivery_time_end,
+        task_number,clinch_price,clinch_rate_start,
+        clinch_rate_end,remarks,apply_financial_payment_id,purchase_id, revision,
+        created_id,created_by,created_time,
+        updated_id,updated_by,updated_time,
+        deleted
+    </sql>
+</mapper>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1ahc2ic" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.4.2" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+  <bpmn:process id="toCSaleOnLine" name="线上销售流程" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="owner" label="负责人" type="string" />
+          <camunda:formField id="saleConfirm" label="销售是否需要确认" type="long" />
+          <camunda:formField id="locationId" label="发货位置" type="long" />
+          <camunda:formField id="shortcodes" label="发货门店简码" type="string" />
+          <camunda:formField id="workSerialNoList" label="出库单号" type="string" />
+          <camunda:formField id="createShortcodes" label="下单门店简码" type="string" defaultValue="null" />
+        </camunda:formData>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="Groovy">String shop = execution.getVariable("createShortcodes")
+   
+execution.setVariable("authGroups", shop+"saleconfirmed")</camunda:script>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_03mweii</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_1o61r2b">
+      <bpmn:incoming>Flow_1546ujl</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1546ujl" sourceRef="Activity_052ews6" targetRef="Event_1o61r2b" />
+    <bpmn:callActivity id="Activity_052ews6" name="销售发货" calledElement="toCSaleInstance">
+      <bpmn:extensionElements>
+        <camunda:in businessKey="#{workSerialNo}" />
+        <camunda:in local="true" variables="all" />
+        <camunda:in sourceExpression="#{locationId}" target="locationId" />
+        <camunda:in sourceExpression="#{shortcodes}" target="shortcodes" />
+        <camunda:in sourceExpression="#{execution.processBusinessKey}" target="parentBusinessKey" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1w3img7</bpmn:incoming>
+      <bpmn:incoming>Flow_0rj2kc9</bpmn:incoming>
+      <bpmn:outgoing>Flow_1546ujl</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="workSerialNoList" camunda:elementVariable="workSerialNo" />
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_1w3img7" sourceRef="saleConfirm" targetRef="Activity_052ews6" />
+    <bpmn:userTask id="saleConfirm" name="销售确认" camunda:candidateGroups="${authGroups}">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="workSerialNoList" label="出库单号" type="string" />
+          <camunda:formField id="locationId" label="发货位置" type="long" />
+          <camunda:formField id="shortcodes" label="发货门店简码" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1xamdvh</bpmn:incoming>
+      <bpmn:outgoing>Flow_1w3img7</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_09tpumx" default="Flow_0rj2kc9">
+      <bpmn:incoming>Flow_03mweii</bpmn:incoming>
+      <bpmn:outgoing>Flow_1xamdvh</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0rj2kc9</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_03mweii" sourceRef="StartEvent_1" targetRef="Gateway_09tpumx" />
+    <bpmn:sequenceFlow id="Flow_1xamdvh" sourceRef="Gateway_09tpumx" targetRef="saleConfirm">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${saleConfirm==1}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0rj2kc9" sourceRef="Gateway_09tpumx" targetRef="Activity_052ews6" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="toCSaleOnLine">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="152" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1o61r2b_di" bpmnElement="Event_1o61r2b">
+        <dc:Bounds x="732" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0wtlz04_di" bpmnElement="Activity_052ews6">
+        <dc:Bounds x="560" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0y905m7_di" bpmnElement="saleConfirm">
+        <dc:Bounds x="370" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_09tpumx_di" bpmnElement="Gateway_09tpumx" isMarkerVisible="true">
+        <dc:Bounds x="245" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1546ujl_di" bpmnElement="Flow_1546ujl">
+        <di:waypoint x="660" y="117" />
+        <di:waypoint x="732" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1w3img7_di" bpmnElement="Flow_1w3img7">
+        <di:waypoint x="470" y="120" />
+        <di:waypoint x="560" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03mweii_di" bpmnElement="Flow_03mweii">
+        <di:waypoint x="188" y="120" />
+        <di:waypoint x="245" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xamdvh_di" bpmnElement="Flow_1xamdvh">
+        <di:waypoint x="295" y="120" />
+        <di:waypoint x="370" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rj2kc9_di" bpmnElement="Flow_0rj2kc9">
+        <di:waypoint x="270" y="95" />
+        <di:waypoint x="270" y="40" />
+        <di:waypoint x="610" y="40" />
+        <di:waypoint x="610" y="70" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.goods.mapper.BrandMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.goods.entity.Brand">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="businessType" column="business_type" jdbcType="INTEGER"/>
+        <result property="processGroupId" column="process_group_id" jdbcType="INTEGER"/>
+        <result property="attribute" column="attribute" jdbcType="INTEGER"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="logo" column="logo" jdbcType="VARCHAR"/>
+        <result property="brandPrincipal" column="brand_principal" jdbcType="VARCHAR"/>
+        <result property="brandPrincipalQwUserid" column="brand_principal_qw_userid" jdbcType="VARCHAR"/>
+        <result property="brandPrincipalUserId" column="brand_principal_user_id" jdbcType="BIGINT"/>
+        <result property="remindCountBy90" column="remind_count_by_90" jdbcType="TINYINT"/>
+        <result property="remindSwitchBy90" column="remind_switch_by_90" jdbcType="TINYINT"/>
+        <result property="remindCountBy180" column="remind_count_by_180" jdbcType="TINYINT"/>
+        <result property="remindSwitchBy180" column="remind_switch_by_180" jdbcType="TINYINT"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="delFlag" column="del_flag" jdbcType="TINYINT"/>
+        <result property="revision" column="revision" jdbcType="INTEGER"/>
+        <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+        <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+        <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+        <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+        <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,name,business_type,process_group_id,
+        attribute,content,logo,
+        brand_principal,brand_principal_qw_userid,brand_principal_user_id,
+        remind_count_by_90,remind_switch_by_90,remind_count_by_180,
+        remind_switch_by_180,create_time,update_time,
+        update_by,create_by,del_flag,revision,created_id,created_by,
+        created_time,updated_id,updated_by,
+        updated_time,deleted
+    </sql>
+</mapper>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.purchase.mapper.BillPurchasePlanMapper">
+
+    <select id="listByRequest" resultType="com.seeease.flywheel.purchase.result.PurchasePlanListResult">
+        SELECT * from bill_purchase_plan
+        <where>
+            deleted = 0
+            <if test="request.startTime != null and request.startTime != '' and request.endTime != null and request.endTime != ''">
+                AND DATE_FORMAT(created_time,'%Y-%m-%d %H:%i:%s') BETWEEN #{request.startTime} AND #{request.endTime}
+            </if>
+            <if test="request.serialNo !=null and request.serialNo !=''">
+                and serial_no like CONCAT(#{request.serialNo},'%')
+            </if>
+            <if test="request.demanderStoreId !=null">
+                and demander_store_id =#{request.demanderStoreId}
+            </if>
+            <if test="request.planStartTime != null and request.planStartTime != '' and request.planEndTime != null and request.planEndTime != ''">
+                AND (#{request.planStartTime} BETWEEN plan_start_time AND plan_end_time
+                or
+                #{request.planEndTime} BETWEEN plan_start_time AND plan_end_time )
+            </if>
+            <if test="request.createdBy !=null and request.createdBy !=''">
+                and created_by like CONCAT(#{request.createdBy},'%')
+            </if>
+            <if test="request.businessType !=null">
+                and business_type = #{request.businessType})
+            </if>
+        </where>
+        ORDER BY id desc
+    </select>
+    <select id="export" resultType="com.seeease.flywheel.purchase.result.PurchasePlanExportResult">
+        SELECT bpp.*, bppl.*
+        from bill_purchase_plan_line bppl
+        INNER JOIN bill_purchase_plan bpp on bppl.plan_id = bpp.id
+        <where>
+            bpp.deleted = 0
+            <if test="request.startTime != null and request.startTime != '' and request.endTime != null and request.endTime != ''">
+                AND DATE_FORMAT(bpp.created_time,'%Y-%m-%d %H:%i:%s') BETWEEN #{request.startTime} AND
+                #{request.endTime}
+            </if>
+            <if test="request.planStartTime != null and request.planStartTime != '' and request.planEndTime != null and request.planEndTime != ''">
+                AND (#{request.planStartTime} BETWEEN bpp.plan_start_time AND bpp.plan_end_time
+                or
+                #{request.planEndTime} BETWEEN bpp.plan_start_time AND bpp.plan_end_time )
+            </if>
+            <if test="request.serialNo !=null and request.serialNo !=''">
+                and bpp.serial_no like CONCAT(#{request.serialNo},'%')
+            </if>
+            <if test="request.demanderStoreId !=null">
+                and bpp.demander_store_id =#{request.demanderStoreId}
+            </if>
+            <if test="request.createdBy !=null and request.createdBy !=''">
+                and bpp.created_by like CONCAT(#{request.createdBy},'%')
+            </if>
+            <if test="request.docBatchIds != null and request.docBatchIds.size() >0">
+                <foreach collection="request.docBatchIds" item="id" open="and bpp.id in (" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </select>
+</mapper>

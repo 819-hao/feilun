@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1p0uah2" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.5.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+  <bpmn:process id="purchaseTask" name="采购需求" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="发起需求">
+      <bpmn:outgoing>Flow_12hnv1l</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="Gateway_10zuzgh" default="Flow_1mo21vn">
+      <bpmn:incoming>Flow_1ni47f0</bpmn:incoming>
+      <bpmn:outgoing>Flow_1mo21vn</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0dbwmd0</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_12hnv1l" sourceRef="StartEvent_1" targetRef="purchaseCheck" />
+    <bpmn:sequenceFlow id="Flow_1ni47f0" sourceRef="purchaseCheck" targetRef="Gateway_10zuzgh" />
+    <bpmn:endEvent id="Event_03v1gpu">
+      <bpmn:incoming>Flow_1mo21vn</bpmn:incoming>
+      <bpmn:incoming>Flow_1xt31hr</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1mo21vn" name="NO" sourceRef="Gateway_10zuzgh" targetRef="Event_03v1gpu" />
+    <bpmn:sequenceFlow id="Flow_1xt31hr" sourceRef="demandPurchaseCreate" targetRef="Event_03v1gpu" />
+    <bpmn:sequenceFlow id="Flow_0dbwmd0" name="YES" sourceRef="Gateway_10zuzgh" targetRef="financialPayment">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${verify==1}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_090tebr" sourceRef="financialPayment" targetRef="demandPurchaseCreate" />
+    <bpmn:userTask id="demandPurchaseCreate" name="采购建单" camunda:candidateUsers="${purchaseJoin}">
+      <bpmn:incoming>Flow_090tebr</bpmn:incoming>
+      <bpmn:outgoing>Flow_1xt31hr</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="purchaseCheck" name="采购审核" camunda:candidateUsers="${purchaseJoin}">
+      <bpmn:incoming>Flow_12hnv1l</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ni47f0</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:receiveTask id="financialPayment" name="财务打款">
+      <bpmn:incoming>Flow_0dbwmd0</bpmn:incoming>
+      <bpmn:outgoing>Flow_090tebr</bpmn:outgoing>
+    </bpmn:receiveTask>
+  </bpmn:process>
+  <bpmn:message id="Message_27r8cm3" name="Message_27r8cm3" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="purchaseTask">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="159" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="177" y="202" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_10zuzgh_di" bpmnElement="Gateway_10zuzgh" isMarkerVisible="true">
+        <dc:Bounds x="405" y="152" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_03v1gpu_di" bpmnElement="Event_03v1gpu">
+        <dc:Bounds x="952" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0nu6d40_di" bpmnElement="demandPurchaseCreate">
+        <dc:Bounds x="740" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1q2akz6_di" bpmnElement="purchaseCheck">
+        <dc:Bounds x="260" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_042uomx_di" bpmnElement="financialPayment">
+        <dc:Bounds x="530" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_12hnv1l_di" bpmnElement="Flow_12hnv1l">
+        <di:waypoint x="215" y="177" />
+        <di:waypoint x="260" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ni47f0_di" bpmnElement="Flow_1ni47f0">
+        <di:waypoint x="360" y="177" />
+        <di:waypoint x="405" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1mo21vn_di" bpmnElement="Flow_1mo21vn">
+        <di:waypoint x="430" y="152" />
+        <di:waypoint x="430" y="90" />
+        <di:waypoint x="970" y="90" />
+        <di:waypoint x="970" y="159" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="692" y="72" width="17" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xt31hr_di" bpmnElement="Flow_1xt31hr">
+        <di:waypoint x="840" y="177" />
+        <di:waypoint x="952" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0dbwmd0_di" bpmnElement="Flow_0dbwmd0">
+        <di:waypoint x="455" y="177" />
+        <di:waypoint x="530" y="177" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="482" y="159" width="23" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_090tebr_di" bpmnElement="Flow_090tebr">
+        <di:waypoint x="630" y="177" />
+        <di:waypoint x="740" y="177" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

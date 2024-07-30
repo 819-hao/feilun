@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.allocate.mapper.BillAllocateMapper">
+
+    <select id="listByRequest" parameterType="com.seeease.flywheel.allocate.request.AllocateListRequest"
+            resultMap="BaseResultMap">
+        SELECT ba.* from bill_allocate ba
+        <if test="request.stockIds != null">
+            INNER JOIN bill_allocate_line bal on bal.allocate_id = ba.id
+            AND bal.stock_id in (
+            <foreach collection="request.stockIds" item="stockId" separator=",">
+                #{stockId}
+            </foreach>
+            )
+        </if>
+        <where>
+            ba.deleted = 0
+            <if test="request.shopId !=1">
+                AND (ba.belonging_store_id = #{request.shopId} OR ba.to_id=#{request.shopId})
+            </if>
+            <if test="request.startTime != null and request.startTime != '' and request.endTime != null and request.endTime != ''">
+                AND DATE_FORMAT(ba.created_time,'%Y-%m-%d %H:%i:%s') BETWEEN #{request.startTime} AND #{request.endTime}
+            </if>
+
+            <if test="request.serialNo !=null and request.serialNo !=''">
+                and  ba.serial_no like CONCAT(#{request.serialNo},'%')
+            </if>
+            <if test="request.allocateType !=null">
+                and  ba.allocate_type =#{request.allocateType}
+            </if>
+
+            <if test="request.allocateSource !=null">
+                and  ba.allocate_source =#{request.allocateSource}
+            </if>
+
+            <if test="request.allocateState !=null">
+                and  ba.allocate_state =#{request.allocateState}
+            </if>
+
+            <if test="request.fromId !=null">
+                and  ba.from_id =#{request.fromId}
+            </if>
+
+            <if test="request.toId !=null">
+                and  ba.to_id =#{request.toId}
+            </if>
+
+            <if test="request.createdBy !=null and request.createdBy !=''">
+                and  ba.created_by like CONCAT(#{request.createdBy},'%')
+            </if>
+        </where>
+        ORDER BY  ba.id desc
+    </select>
+    <select id="exportListByRequest" resultType="com.seeease.flywheel.serve.allocate.entity.BillAllocate">
+        SELECT ba.* from bill_allocate ba
+        <if test="request.stockIds != null">
+            INNER JOIN bill_allocate_line bal on bal.allocate_id = ba.id
+            AND bal.stock_id in (
+            <foreach collection="request.stockIds" item="stockId" separator=",">
+                #{stockId}
+            </foreach>
+            )
+        </if>
+        <where>
+            ba.deleted = 0
+            <if test="request.shopId !=1">
+                AND (ba.belonging_store_id = #{request.shopId} OR ba.to_id=#{request.shopId})
+            </if>
+            <if test="request.startTime != null and request.startTime != '' and request.endTime != null and request.endTime != ''">
+                AND DATE_FORMAT(ba.created_time,'%Y-%m-%d %H:%i:%s') BETWEEN #{request.startTime} AND #{request.endTime}
+            </if>
+
+            <if test="request.serialNo !=null and request.serialNo !=''">
+                and  ba.serial_no like CONCAT(#{request.serialNo},'%')
+            </if>
+            <if test="request.allocateType !=null">
+                and  ba.allocate_type =#{request.allocateType}
+            </if>
+
+            <if test="request.allocateSource !=null">
+                and  ba.allocate_source =#{request.allocateSource}
+            </if>
+
+            <if test="request.docBatchIds != null and request.docBatchIds.size() >0">
+                <foreach collection="request.docBatchIds" item="id" open="and ba.id in (" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="request.allocateState !=null">
+                and  ba.allocate_state =#{request.allocateState}
+            </if>
+
+            <if test="request.fromId !=null">
+                and  ba.from_id =#{request.fromId}
+            </if>
+
+            <if test="request.toId !=null">
+                and  ba.to_id =#{request.toId}
+            </if>
+
+            <if test="request.createdBy !=null and request.createdBy !=''">
+                and  ba.created_by like CONCAT(#{request.createdBy},'%')
+            </if>
+        </where>
+        ORDER BY  ba.id desc
+    </select>
+    <select id="selectByStockIds" resultType="com.seeease.flywheel.serve.allocate.entity.BillAllocatePO">
+        SELECT
+        ba.serial_no serialNo,
+        ba.to_id toId,
+        bal.stock_id stockId
+        FROM
+        stock_guarantee_card_manage sgcm
+        INNER JOIN bill_allocate_line bal ON sgcm.stock_id = bal.stock_id
+        INNER JOIN bill_allocate ba ON ba.id = bal.allocate_id
+        WHERE
+        ba.allocate_type = 1
+        AND bal.stock_id in
+        <foreach collection="stockIdList" item="stockId" separator="," open=" (" close=")">
+            #{stockId}
+        </foreach>
+        GROUP BY bal.stock_id
+    </select>
+
+
+    <update id="completeBrandTaskStatus">
+        UPDATE brand_transfer
+        SET transfer_serial = #{serialNo},task_status = 3
+        WHERE stock_id IN
+        <foreach collection="stockIdList" item="stockId" separator="," open=" (" close=")">
+            #{stockId}
+        </foreach>
+    </update>
+</mapper>

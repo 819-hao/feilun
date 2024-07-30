@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.sale.mapper.BillSaleReturnOrderLineMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.sale.entity.BillSaleReturnOrderLine">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="saleReturnId" column="sale_return_id" jdbcType="INTEGER"/>
+        <result property="saleLineId" column="sale_line_id" jdbcType="INTEGER"/>
+        <result property="saleSerialNo" column="sale_serial_no" jdbcType="VARCHAR"/>
+        <result property="subOrderCode" column="sub_order_code" jdbcType="VARCHAR"/>
+        <result property="stockId" column="stock_id" jdbcType="INTEGER"/>
+        <result property="goodsId" column="goods_id" jdbcType="INTEGER"/>
+        <result property="rightOfManagement" column="right_of_management" jdbcType="INTEGER"/>
+        <result property="whetherOperate" column="whether_operate" jdbcType="INTEGER"/>
+        <result property="returnPrice" column="return_price" jdbcType="DECIMAL"/>
+        <result property="saleReturnLineState" column="sale_return_line_state" jdbcType="INTEGER"/>
+        <result property="saleLineState" column="sale_line_state" jdbcType="INTEGER"/>
+        <result property="revision" column="revision" jdbcType="INTEGER"/>
+        <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+        <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+        <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+        <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+        <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,sale_line_state,whether_operate,right_of_management
+        ,sale_return_id,sale_line_id,sale_serial_no,
+        sub_order_code,stock_id,return_price,goods_id,
+        sale_return_line_state,revision,created_id,
+        created_by,created_time,updated_id,
+        updated_by,updated_time,deleted
+    </sql>
+</mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.goods.mapper.ExtAttachmentStockMapper">
+
+    <select id="listStock" resultType="com.seeease.flywheel.goods.result.AttachmentStockInfo">
+        SELECT
+        s.store_id,
+        s.goods_id,
+        s.purchase_price,
+        eas.id IS NULL AS single,
+        eas.size,
+        eas.colour,
+        eas.material,
+        eas.gw_model,
+        COUNT( 1 ) AS inventory
+        FROM
+        stock s
+        INNER JOIN goods_watch gw ON gw.id = s.goods_id
+        LEFT JOIN ext_attachment_stock eas ON eas.stock_id = s.id
+        WHERE
+        s.stock_status = 100
+        <foreach collection="request.brandIdList" item="bId" open=" AND gw.brand_id in (" separator="," close=")">
+            #{bId}
+        </foreach>
+        <if test="request.storeId != null">
+            AND s.store_id = #{request.storeId}
+        </if>
+        <if test="request.model != null and request.model != ''">
+            AND gw.model LIKE CONCAT ('%',#{request.model},'%')
+        </if>
+        <if test="request.size != null and request.size != ''">
+            AND eas.size LIKE #{request.size}
+        </if>
+        <if test="request.colour != null and request.colour != ''">
+            AND eas.colour LIKE CONCAT ('%',#{request.colour},'%')
+        </if>
+        <if test="request.material != null and request.material != ''">
+            AND eas.material LIKE CONCAT ('%',#{request.material},'%')
+        </if>
+        <if test="request.gwModel != null and request.gwModel != ''">
+            AND eas.gw_model LIKE CONCAT ('%',#{request.gwModel},'%')
+        </if>
+        GROUP BY
+        s.store_id,
+        s.goods_id,
+        eas.size,
+        eas.colour,
+        eas.material,
+        eas.gw_model
+    </select>
+</mapper>

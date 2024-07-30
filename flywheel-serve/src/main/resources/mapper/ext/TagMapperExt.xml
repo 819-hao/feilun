@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.maindata.mapper.TagMapper">
+
+    <select id="selectByStoreManagementId" resultMap="BaseResultMap">
+        SELECT t.*
+        from tag t
+                 INNER JOIN store_management sm on sm.tag_id = t.id
+        WHERE sm.id = #{storeManagementId}
+    </select>
+    <select id="selectListByStoreManagement" resultType="com.seeease.flywheel.serve.maindata.entity.TagPo">
+        SELECT sm.id storeId, t.tag_name tagName
+        from tag t
+                 INNER JOIN store_management sm on sm.tag_id = t.id
+    </select>
+
+    <select id="selectByShopId" resultMap="BaseResultMap">
+        SELECT t.*
+        from tag t
+            LEFT JOIN store_management sm on sm.tag_id = t.id and sm.del_flag = 1
+            LEFT JOIN store_shop ss on ss.id = sm.id and ss.delted = 0
+        WHERE ss.shop_id = #{shopId}
+        limit 1
+    </select>
+    <select id="selectUserIds" resultType="java.lang.Integer">
+        SELECT
+        u.`id`
+        FROM
+        `store_management` sm
+        LEFT JOIN `tag` t ON sm.`tag_id` = t.id
+        LEFT JOIN `user_tag` ut ON ut.`tag_id` = t.id
+        LEFT JOIN `user` u ON ut.`user_id` = u.id
+        LEFT JOIN `user_role` ur ON ur.`user_id` = u.id
+        LEFT JOIN `role` r ON ur.`role_id` = r.id
+        <where>
+            <if test="roleName!= null">
+                and r.role_name = #{roleName}
+            </if>
+            <if test="storeManagementId!= null">
+                and sm.id = #{storeManagementId}
+            </if>
+        </where>
+
+
+    </select>
+
+</mapper>

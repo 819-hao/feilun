@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.goods.mapper.BuyBackPolicyActivityMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.goods.entity.BuyBackPolicyActivity">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="stockId" column="stock_id" jdbcType="INTEGER"/>
+            <result property="stockSn" column="stock_sn" jdbcType="VARCHAR"/>
+            <result property="effectiveStartTime" column="effective_start_time" jdbcType="TIMESTAMP"/>
+            <result property="effectiveEndTime" column="effective_end_time" jdbcType="TIMESTAMP"/>
+            <result property="activityType" column="activity_type" jdbcType="INTEGER"/>
+            <result property="bbpId" column="bbp_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,stock_id,stock_sn,
+        effective_start_time,effective_end_time,activity_type,
+        bbp_id
+    </sql>
+</mapper>

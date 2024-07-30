@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.web.infrastructure.mapper.ApiLogMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.web.entity.ApiLog">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="nowTime" column="now_time" jdbcType="BIGINT"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+            <result property="storeId" column="store_id" jdbcType="INTEGER"/>
+            <result property="storeName" column="store_name" jdbcType="VARCHAR"/>
+            <result property="requestMethod" column="request_method" jdbcType="VARCHAR"/>
+            <result property="classMethod" column="class_method" jdbcType="VARCHAR"/>
+            <result property="remoteAddr" column="remote_addr" jdbcType="VARCHAR"/>
+            <result property="remoteUri" column="remote_uri" jdbcType="VARCHAR"/>
+            <result property="loginUser" column="login_user" jdbcType="VARCHAR"/>
+            <result property="revision" column="revision" jdbcType="INTEGER"/>
+            <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+            <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+            <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+            <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+            <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,now_time,user_id,
+        user_name,store_id,store_name,
+        request_method,class_method,remote_addr,
+        remote_uri,login_user,revision,
+        created_id,created_by,created_time,
+        updated_id,updated_by,updated_time,
+        deleted
+    </sql>
+</mapper>

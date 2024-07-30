@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.qt.mapper.BillQualityTestingMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.qt.entity.BillQualityTesting">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="stockId" column="stock_id" jdbcType="INTEGER"/>
+        <result property="workId" column="work_id" jdbcType="INTEGER"/>
+        <result property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+        <result property="storeWorkSerialNo" column="store_work_serial_no" jdbcType="VARCHAR"/>
+        <result property="originSerialNo" column="origin_serial_no" jdbcType="VARCHAR"/>
+        <result property="fixId" column="fix_id" jdbcType="INTEGER"/>
+        <result property="qtState" column="qt_state" jdbcType="INTEGER"/>
+        <result property="qtConclusion" column="qt_conclusion" jdbcType="INTEGER"/>
+        <result property="qtSource" column="qt_source" jdbcType="TINYINT"/>
+        <result property="returnReasonId" column="return_reason_id" jdbcType="VARCHAR"/>
+        <result property="returnReason" column="return_reason" jdbcType="VARCHAR"/>
+        <result property="returnImgs" column="return_imgs" jdbcType="VARCHAR"/>
+        <result property="refuseFix" column="refuse_fix" jdbcType="TINYINT"/>
+        <result property="fixFlag" column="fix_flag" jdbcType="TINYINT"/>
+        <result property="deliver" column="deliver" jdbcType="TINYINT"/>
+        <result property="deliverTo" column="deliver_to" jdbcType="TINYINT"/>
+        <result property="fixMoney" column="fix_money" jdbcType="DECIMAL"/>
+        <result property="fixDay" column="fix_day" jdbcType="INTEGER"/>
+        <result property="isNewStrap" column="is_new_strap" jdbcType="INTEGER"/>
+        <result property="fixAdvise" column="fix_advise" jdbcType="VARCHAR"/>
+        <result property="vibrationFrequencyQuality" column="vibration_frequency_quality" jdbcType="VARCHAR"/>
+        <result property="instantaneousWorse" column="instantaneous_worse" jdbcType="VARCHAR"/>
+        <result property="swing" column="swing" jdbcType="VARCHAR"/>
+        <result property="exceptionReasonId" column="exception_reason_id" jdbcType="INTEGER"/>
+        <result property="exceptionReason" column="exception_reason" jdbcType="VARCHAR"/>
+        <result property="finess" column="finess" jdbcType="VARCHAR"/>
+        <result property="week" column="week" jdbcType="VARCHAR"/>
+        <result property="strapMaterial" column="strap_material" jdbcType="VARCHAR"/>
+        <result property="watchSection" column="watch_section" jdbcType="VARCHAR"/>
+        <result property="customerId" column="customer_id" jdbcType="INTEGER"/>
+        <result property="customerContactId" column="customer_contact_id" jdbcType="INTEGER"/>
+        <result property="taskArriveTime" column="task_arrive_time" jdbcType="TIMESTAMP"/>
+        <result property="content" column="content" jdbcType="VARCHAR"
+                typeHandler="com.seeease.flywheel.serve.qt.convert.FixProjectMapperTypeHandler"/>
+        <result property="revision" column="revision" jdbcType="INTEGER"/>
+        <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+        <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+        <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+        <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+        <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,stock_id,work_id,
+        serial_no,store_work_serial_no,origin_serial_no,
+        fix_id,qt_state,qt_conclusion,
+        qt_source,return_reason_id,return_reason,
+        return_imgs,refuse_fix,fix_flag,deliver, deliver_to
+        fix_money,fix_day,content,fix_advise,vibration_frequency_quality,
+        instantaneous_worse,swing,exception_reason_id,
+        exception_reason,finess,week,
+        strap_material,watch_section,customer_id,
+        customer_contact_id,is_new_strap,task_arrive_time,revision,
+        created_id,created_by,created_time,
+        updated_id,updated_by,updated_time,
+        deleted
+    </sql>
+</mapper>

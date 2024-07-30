@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.web.infrastructure.mapper.DouYinCallbackNotifyMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.web.entity.DouYinCallbackNotify">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="douYinShopId" column="dou_yin_shop_id" jdbcType="INTEGER"/>
+        <result property="douYinOrderId" column="dou_yin_order_id" jdbcType="VARCHAR"/>
+        <result property="msgId" column="msg_id" jdbcType="VARCHAR"/>
+        <result property="tag" column="tag" jdbcType="VARCHAR"/>
+        <result property="data" column="data" jdbcType="VARCHAR"/>
+        <result property="state" column="state" jdbcType="INTEGER"/>
+        <result property="errorReason" column="error_reason" jdbcType="VARCHAR"/>
+        <result property="revision" column="revision" jdbcType="INTEGER"/>
+        <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+        <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+        <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+        <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+        <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,dou_yin_shop_id,dou_yin_order_id,msg_id,tag,
+        data,state,error_reason,revision,
+        created_id,created_by,created_time,
+        updated_id,updated_by,updated_time,
+        deleted
+    </sql>
+
+    <select id="getBrandNotify" resultType="com.seeease.flywheel.web.entity.BrandNotify">
+        SELECT b.name,count(1) AS number
+        FROM
+        stock s
+        INNER JOIN goods_watch g ON g.id = s.goods_id
+        INNER JOIN brand b ON b.id = g.brand_id
+        WHERE
+        brand_id IN (38,50,53)
+        AND s.id IN
+        <foreach collection="stockIdList" item="stockId" open="(" close=")" separator=",">
+            #{stockId}
+        </foreach>
+        GROUP BY b.id
+    </select>
+</mapper>

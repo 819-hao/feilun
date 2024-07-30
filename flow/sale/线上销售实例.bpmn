@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0myzdgz" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.4.2" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+  <bpmn:process id="toCSaleOnLineInstance" name="线上销售实例" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="locationId" label="发货位置" type="long" />
+          <camunda:formField id="ckSerialNo" label="出库单" type="string" />
+          <camunda:formField id="shortcodes" label="门店简码" type="string" />
+          <camunda:formField id="parentBusinessKey" label="父业务单号" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1hl7jkh</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="Gateway_1cia2z1" default="Flow_1uc7gvu">
+      <bpmn:incoming>Flow_1hl7jkh</bpmn:incoming>
+      <bpmn:outgoing>Flow_1uc7gvu</bpmn:outgoing>
+      <bpmn:outgoing>Flow_06etpxy</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1hl7jkh" sourceRef="StartEvent_1" targetRef="Gateway_1cia2z1" />
+    <bpmn:sequenceFlow id="Flow_1uc7gvu" sourceRef="Gateway_1cia2z1" targetRef="Activity_1gy8txb" />
+    <bpmn:sequenceFlow id="Flow_06etpxy" sourceRef="Gateway_1cia2z1" targetRef="Activity_0fvaq9x">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${locationId==1}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:callActivity id="Activity_1gy8txb" name="门店发货" calledElement="shopDeliveryFlow">
+      <bpmn:extensionElements>
+        <camunda:in local="true" variables="all" />
+        <camunda:in sourceExpression="#{shortcodes}" target="shortcodes" />
+        <camunda:in sourceExpression="#{parentBusinessKey}" target="parentBusinessKey" />
+        <camunda:in businessKey="#{execution.processBusinessKey}" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1uc7gvu</bpmn:incoming>
+      <bpmn:outgoing>Flow_0jxxgnw</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:callActivity id="Activity_0fvaq9x" name="总部发货" calledElement="zbDeliveryFlow">
+      <bpmn:extensionElements>
+        <camunda:in local="true" variables="all" />
+        <camunda:in sourceExpression="#{parentBusinessKey}" target="parentBusinessKey" />
+        <camunda:in businessKey="#{execution.processBusinessKey}" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_06etpxy</bpmn:incoming>
+      <bpmn:outgoing>Flow_0uvxkf9</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_14r6kyc">
+      <bpmn:incoming>Flow_0uvxkf9</bpmn:incoming>
+      <bpmn:incoming>Flow_0jxxgnw</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0uvxkf9" sourceRef="Activity_0fvaq9x" targetRef="Event_14r6kyc" />
+    <bpmn:sequenceFlow id="Flow_0jxxgnw" sourceRef="Activity_1gy8txb" targetRef="Event_14r6kyc" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="toCSaleOnLineInstance">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1cia2z1_di" bpmnElement="Gateway_1cia2z1" isMarkerVisible="true">
+        <dc:Bounds x="265" y="152" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_09oafk6_di" bpmnElement="Activity_1gy8txb">
+        <dc:Bounds x="390" y="200" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ml4ju0_di" bpmnElement="Activity_0fvaq9x">
+        <dc:Bounds x="390" y="70" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_14r6kyc_di" bpmnElement="Event_14r6kyc">
+        <dc:Bounds x="642" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1hl7jkh_di" bpmnElement="Flow_1hl7jkh">
+        <di:waypoint x="215" y="177" />
+        <di:waypoint x="265" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1uc7gvu_di" bpmnElement="Flow_1uc7gvu">
+        <di:waypoint x="290" y="202" />
+        <di:waypoint x="290" y="240" />
+        <di:waypoint x="390" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06etpxy_di" bpmnElement="Flow_06etpxy">
+        <di:waypoint x="290" y="152" />
+        <di:waypoint x="290" y="110" />
+        <di:waypoint x="390" y="110" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0uvxkf9_di" bpmnElement="Flow_0uvxkf9">
+        <di:waypoint x="490" y="110" />
+        <di:waypoint x="566" y="110" />
+        <di:waypoint x="566" y="177" />
+        <di:waypoint x="642" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0jxxgnw_di" bpmnElement="Flow_0jxxgnw">
+        <di:waypoint x="490" y="240" />
+        <di:waypoint x="566" y="240" />
+        <di:waypoint x="566" y="177" />
+        <di:waypoint x="642" y="177" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

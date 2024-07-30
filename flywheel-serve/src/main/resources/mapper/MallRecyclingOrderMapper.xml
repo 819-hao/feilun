@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.recycle.mapper.RecycleOrderMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.recycle.entity.MallRecyclingOrder">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="serial" column="serial" jdbcType="VARCHAR"/>
+        <result property="saleSerialNo" column="sale_serial_no" jdbcType="VARCHAR"/>
+        <result property="stockId" column="stock_id" jdbcType="INTEGER"/>
+        <result property="customerId" column="customer_id" jdbcType="INTEGER"/>
+        <result property="customerContactId" column="customer_contact_id" jdbcType="INTEGER"/>
+        <result property="employeeId" column="employee_id" jdbcType="INTEGER"/>
+        <result property="brandId" column="brand_id" jdbcType="INTEGER"/>
+        <result property="purchaseId" column="purchase_id" jdbcType="INTEGER"/>
+        <result property="saleId" column="sale_id" jdbcType="INTEGER"/>
+        <result property="detectionId" column="detection_id" jdbcType="INTEGER"/>
+        <result property="year" column="year" jdbcType="VARCHAR"/>
+        <result property="valuationPrice" column="valuation_price" jdbcType="VARCHAR"/>
+        <result property="valuationRemark" column="valuation_remark" jdbcType="VARCHAR"/>
+        <result property="valuationPriceId" column="valuation_price_id" jdbcType="INTEGER"/>
+        <result property="valuationImage" column="valuation_image" jdbcType="VARCHAR"/>
+        <result property="valuationTime" column="valuation_time" jdbcType="TIMESTAMP"/>
+        <result property="valuationPriceTwo" column="valuation_price_two" jdbcType="VARCHAR"/>
+        <result property="valuationPriceTwoRemark" column="valuation_price_two_remark" jdbcType="VARCHAR"/>
+        <result property="valuationPriceTwoId" column="valuation_price_two_id" jdbcType="INTEGER"/>
+        <result property="valuationImageTwo" column="valuation_image_two" jdbcType="VARCHAR"/>
+        <result property="valuationTimeTwo" column="valuation_time_two" jdbcType="TIMESTAMP"/>
+        <result property="agreement" column="agreement" jdbcType="VARCHAR"/>
+        <result property="state" column="state" jdbcType="INTEGER"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="shopImage" column="shop_image" jdbcType="VARCHAR"/>
+        <result property="demandId" column="demand_id" jdbcType="INTEGER"/>
+        <result property="assessId" column="assess_id" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+        <result property="recycleType" column="recycle_type" jdbcType="VARCHAR"/>
+        <result property="bizOrderCode" column="biz_order_code" jdbcType="VARCHAR"/>
+        <result property="revision" column="revision" jdbcType="INTEGER"/>
+        <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+        <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+        <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+        <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+        <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+        <result property="expressNumber" column="express_number" jdbcType="VARCHAR"/>
+        <result property="deliveryExpressNumber" column="delivery_express_number" jdbcType="VARCHAR"/>
+        <result property="balance" column="balance" jdbcType="DECIMAL"/>
+        <result property="symbol" column="symbol" jdbcType="INTEGER"/>
+        <result property="goodsId" column="goods_id" jdbcType="INTEGER"/>
+        <result property="strapMaterial" column="strap_material" jdbcType="VARCHAR"/>
+        <result property="watchSection" column="watch_section" jdbcType="VARCHAR"/>
+        <result property="watchSize" column="watch_size" jdbcType="VARCHAR"/>
+        <result property="accountName" column="account_name" jdbcType="VARCHAR"/>
+        <result property="bankAccount" column="bank_account" jdbcType="VARCHAR"/>
+        <result property="bank" column="bank" jdbcType="VARCHAR"/>
+        <result property="bankCustomerName" column="bank_customer_name" jdbcType="VARCHAR"/>
+        <result property="frontIdentityCard" column="front_identity_card" jdbcType="VARCHAR"/>
+        <result property="reverseIdentityCard" column="reverse_identity_card" jdbcType="VARCHAR"/>
+        <result property="recoveryPricingRecord" column="recovery_pricing_record" jdbcType="VARCHAR"/>
+        <result property="agreementTransfer" column="agreement_transfer" jdbcType="VARCHAR"/>
+        <result property="stockSn" column="stock_sn" jdbcType="VARCHAR"/>
+        <result property="finess" column="finess" jdbcType="VARCHAR"/>
+        <result property="warrantyDate" column="warranty_date" jdbcType="VARCHAR"/>
+        <result property="isCard" column="is_card" jdbcType="INTEGER"/>
+        <result property="attachmentList" column="attachment_list" jdbcType="VARCHAR"
+                typeHandler="com.seeease.seeeaseframework.mybatis.type.JsonTypeHandler"
+        />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,serial,sale_serial_no,
+        stock_id,customer_id,customer_contact_id,
+        employee_id,brand_id,purchase_id,
+        sale_id,detection_id,year,
+        valuation_price,valuation_remark,valuation_price_id,
+        valuation_image,valuation_time,valuation_price_two,
+        valuation_price_two_remark,valuation_price_two_id,valuation_image_two,
+        valuation_time_two,agreement,state,
+        remark,shop_image,demand_id,
+        assess_id,type,recycle_type,
+        biz_order_code,revision,created_id,
+        created_by,created_time,deleted,
+        updated_id,updated_by,updated_time,
+        express_number,delivery_express_number,balance,
+        symbol,goods_id,strap_material,
+        watch_section,watch_size,account_name,
+        bank_account,bank,bank_customer_name,
+        front_identity_card,reverse_identity_card,recovery_pricing_record,
+        agreement_transfer,stock_sn,finess,
+        warranty_date,is_card,attachment_list
+    </sql>
+</mapper>

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1naw003" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.5.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+  <bpmn:process id="confirmRepair" name="质检待转交流程" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="parentBusinessKey" label="父业务单号" type="string" />
+          <camunda:formField id="deliverTo" label="转交方" type="long" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_0ml0xlz</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="Gateway_006apth">
+      <bpmn:incoming>Flow_128brs9</bpmn:incoming>
+      <bpmn:outgoing>Flow_1v1gmix</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1n4ao3o</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1syz29r</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_128brs9" sourceRef="qtWaitDeliver" targetRef="Gateway_006apth" />
+    <bpmn:sequenceFlow id="Flow_1v1gmix" name="不接受维修退货" sourceRef="Gateway_006apth" targetRef="logisticsDelivery">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${deliverTo==1}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1n4ao3o" name="去维修" sourceRef="Gateway_006apth" targetRef="fixFlow">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${deliverTo==0}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="Event_1venlv4">
+      <bpmn:incoming>Flow_0811t5v</bpmn:incoming>
+      <bpmn:incoming>Flow_0r8a5vp</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="qtWaitDeliver" name="质检转交" camunda:candidateGroups="qt">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="fixSerialNo" label="维修单号" type="string" />
+          <camunda:formField id="fixOnQt" label="维修次数" type="long" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ml0xlz</bpmn:incoming>
+      <bpmn:outgoing>Flow_128brs9</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="logisticsDelivery" name="退货物流发货" camunda:candidateGroups="logistics">
+      <bpmn:incoming>Flow_1v1gmix</bpmn:incoming>
+      <bpmn:outgoing>Flow_0811t5v</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="inStorage" name="仓库入库" camunda:candidateGroups="warehouse">
+      <bpmn:incoming>Flow_00k44tl</bpmn:incoming>
+      <bpmn:incoming>Flow_1syz29r</bpmn:incoming>
+      <bpmn:outgoing>Flow_0r8a5vp</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="repairResultDetermine" name="维修结果判定" camunda:candidateGroups="qt">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="qtState" label="维修判定结果" type="long" />
+          <camunda:formField id="fixOnQt" label="维修次数" type="long" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ipb2oy</bpmn:incoming>
+      <bpmn:outgoing>Flow_14si67i</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_0k90jfk" default="Flow_08br9ve">
+      <bpmn:incoming>Flow_14si67i</bpmn:incoming>
+      <bpmn:outgoing>Flow_00k44tl</bpmn:outgoing>
+      <bpmn:outgoing>Flow_08br9ve</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0811t5v" sourceRef="logisticsDelivery" targetRef="Event_1venlv4" />
+    <bpmn:sequenceFlow id="Flow_0ml0xlz" sourceRef="StartEvent_1" targetRef="qtWaitDeliver" />
+    <bpmn:sequenceFlow id="Flow_0ipb2oy" sourceRef="fixFlow" targetRef="repairResultDetermine" />
+    <bpmn:sequenceFlow id="Flow_14si67i" sourceRef="repairResultDetermine" targetRef="Gateway_0k90jfk" />
+    <bpmn:sequenceFlow id="Flow_00k44tl" sourceRef="Gateway_0k90jfk" targetRef="inStorage">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${qtState==1 || qtState==2 }</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0r8a5vp" sourceRef="inStorage" targetRef="Event_1venlv4" />
+    <bpmn:sequenceFlow id="Flow_08br9ve" sourceRef="Gateway_0k90jfk" targetRef="fixFlow" />
+    <bpmn:callActivity id="fixFlow" name="维修流程" calledElement="fixFlow">
+      <bpmn:extensionElements>
+        <camunda:in businessKey="#{fixSerialNo}" />
+        <camunda:in local="true" variables="all" />
+        <camunda:in sourceExpression="#{parentBusinessKey}" target="parentBusinessKey" />
+        <camunda:in sourceExpression="#{fixOnQt}" target="fixOnQt" />
+        <camunda:in sourceExpression="#{isAllot}" target="isAllot" />
+        <camunda:in sourceExpression="#{isRepair}" target="isRepair" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_08br9ve</bpmn:incoming>
+      <bpmn:incoming>Flow_1n4ao3o</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ipb2oy</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_1syz29r" sourceRef="Gateway_006apth" targetRef="inStorage">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${deliverTo==3}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="confirmRepair">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="152" y="299" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_006apth_di" bpmnElement="Gateway_006apth" isMarkerVisible="true">
+        <dc:Bounds x="465" y="292" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1venlv4_di" bpmnElement="Event_1venlv4">
+        <dc:Bounds x="1702" y="299" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_12znxyy_di" bpmnElement="qtWaitDeliver">
+        <dc:Bounds x="290" y="277" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1w828v5_di" bpmnElement="logisticsDelivery">
+        <dc:Bounds x="1320" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0yc60w6_di" bpmnElement="inStorage">
+        <dc:Bounds x="1320" y="277" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_038zim1_di" bpmnElement="repairResultDetermine">
+        <dc:Bounds x="990" y="277" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0k90jfk_di" bpmnElement="Gateway_0k90jfk" isMarkerVisible="true">
+        <dc:Bounds x="1165" y="292" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1qesr28_di" bpmnElement="fixFlow">
+        <dc:Bounds x="770" y="277" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_128brs9_di" bpmnElement="Flow_128brs9">
+        <di:waypoint x="390" y="317" />
+        <di:waypoint x="465" y="317" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1v1gmix_di" bpmnElement="Flow_1v1gmix">
+        <di:waypoint x="490" y="292" />
+        <di:waypoint x="490" y="120" />
+        <di:waypoint x="1320" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="614" y="102" width="77" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1n4ao3o_di" bpmnElement="Flow_1n4ao3o">
+        <di:waypoint x="515" y="317" />
+        <di:waypoint x="770" y="317" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="563" y="311" width="33" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0811t5v_di" bpmnElement="Flow_0811t5v">
+        <di:waypoint x="1420" y="120" />
+        <di:waypoint x="1570" y="120" />
+        <di:waypoint x="1570" y="317" />
+        <di:waypoint x="1702" y="317" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ml0xlz_di" bpmnElement="Flow_0ml0xlz">
+        <di:waypoint x="188" y="317" />
+        <di:waypoint x="290" y="317" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ipb2oy_di" bpmnElement="Flow_0ipb2oy">
+        <di:waypoint x="870" y="317" />
+        <di:waypoint x="990" y="317" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14si67i_di" bpmnElement="Flow_14si67i">
+        <di:waypoint x="1090" y="317" />
+        <di:waypoint x="1165" y="317" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_00k44tl_di" bpmnElement="Flow_00k44tl">
+        <di:waypoint x="1215" y="317" />
+        <di:waypoint x="1320" y="317" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0r8a5vp_di" bpmnElement="Flow_0r8a5vp">
+        <di:waypoint x="1420" y="317" />
+        <di:waypoint x="1702" y="317" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08br9ve_di" bpmnElement="Flow_08br9ve">
+        <di:waypoint x="1190" y="342" />
+        <di:waypoint x="1190" y="440" />
+        <di:waypoint x="820" y="440" />
+        <di:waypoint x="820" y="357" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1syz29r_di" bpmnElement="Flow_1syz29r">
+        <di:waypoint x="490" y="342" />
+        <di:waypoint x="490" y="540" />
+        <di:waypoint x="1370" y="540" />
+        <di:waypoint x="1370" y="360" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

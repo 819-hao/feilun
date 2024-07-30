@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.maindata.mapper.UserMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.maindata.entity.User">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="userid" column="userid" jdbcType="VARCHAR"/>
+            <result property="department" column="department" jdbcType="VARCHAR"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="alias" column="alias" jdbcType="VARCHAR"/>
+            <result property="email" column="email" jdbcType="VARCHAR"/>
+            <result property="mobile" column="mobile" jdbcType="VARCHAR"/>
+            <result property="gender" column="gender" jdbcType="CHAR"/>
+            <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="CHAR"/>
+            <result property="delFlag" column="del_flag" jdbcType="CHAR"/>
+            <result property="loginDate" column="login_date" jdbcType="TIMESTAMP"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="updateBy" column="update_by" jdbcType="TIMESTAMP"/>
+            <result property="position" column="position" jdbcType="VARCHAR"/>
+            <result property="address" column="address" jdbcType="VARCHAR"/>
+            <result property="openUserid" column="open_userid" jdbcType="VARCHAR"/>
+            <result property="dataPerm" column="data_perm" jdbcType="TINYINT"/>
+            <result property="extAttrsStr" column="ext_attrs_str" jdbcType="VARCHAR"/>
+            <result property="jobNumber" column="job_number" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,userid,department,
+        name,alias,email,
+        mobile,gender,avatar,
+        status,del_flag,login_date,
+        create_time,update_time,remark,
+        create_by,update_by,position,
+        address,open_userid,data_perm,
+        ext_attrs_str,job_number
+    </sql>
+</mapper>

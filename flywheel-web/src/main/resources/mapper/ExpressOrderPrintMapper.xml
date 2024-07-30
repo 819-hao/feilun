@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.web.infrastructure.mapper.ExpressOrderPrintMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.web.entity.ExpressOrderPrint">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="expressOrderId" column="express_order_id" jdbcType="INTEGER"/>
+            <result property="printTemplate" column="print_template" jdbcType="VARCHAR"/>
+            <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+            <result property="printState" column="print_state" jdbcType="INTEGER"/>
+            <result property="printSource" column="print_source" jdbcType="INTEGER"/>
+            <result property="errorMsg" column="error_msg" jdbcType="VARCHAR"/>
+            <result property="requestId" column="request_id" jdbcType="VARCHAR"/>
+            <result property="storeId" column="store_id" jdbcType="INTEGER"/>
+            <result property="revision" column="revision" jdbcType="INTEGER"/>
+            <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+            <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+            <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+            <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+            <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,express_order_id,print_template,
+        remarks,print_state,print_source,
+        error_msg,request_id,store_id,
+        revision,created_id,created_by,
+        created_time,updated_id,updated_by,
+        updated_time,deleted
+    </sql>
+</mapper>

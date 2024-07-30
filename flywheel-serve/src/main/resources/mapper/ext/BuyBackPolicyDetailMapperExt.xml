@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.goods.mapper.BuyBackPolicyDetailMapper">
+
+    <select id="selectByBbpId" resultType="com.seeease.flywheel.serve.goods.entity.BuyBackPolicyDetail">
+        select *
+        from buy_back_policy_detail
+        where bbp_id = #{bbpId,jdbcType=INTEGER}
+          and deleted = 0
+        order by buy_back_time
+    </select>
+</mapper>

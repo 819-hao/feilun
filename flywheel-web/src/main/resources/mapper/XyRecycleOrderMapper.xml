@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.web.infrastructure.mapper.XyRecycleOrderMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.web.entity.XyRecycleOrder">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="quoteId" column="quote_id" jdbcType="VARCHAR"/>
+        <result property="quoteOrderState" column="quote_order_state" jdbcType="INTEGER"/>
+        <result property="spuId" column="spu_id" jdbcType="VARCHAR"/>
+        <result property="brandName" column="brand_name" jdbcType="VARCHAR"/>
+        <result property="model" column="model" jdbcType="VARCHAR"/>
+        <result property="bizType" column="biz_type" jdbcType="VARCHAR"/>
+        <result property="version" column="version" jdbcType="VARCHAR"/>
+        <result property="channel" column="channel" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="questionnaire" column="questionnaire" jdbcType="VARCHAR"/>
+        <result property="frontImages" column="front_images" jdbcType="VARCHAR"/>
+        <result property="backImages" column="back_images" jdbcType="VARCHAR"/>
+        <result property="claspImages" column="clasp_images" jdbcType="VARCHAR"/>
+        <result property="strapImages" column="strap_images" jdbcType="VARCHAR"/>
+        <result property="flawImages" column="flaw_images" jdbcType="VARCHAR"
+                typeHandler="com.seeease.seeeaseframework.mybatis.type.JsonTypeHandler"/>
+        <result property="watchSize" column="watch_size" jdbcType="VARCHAR"/>
+        <result property="movementType" column="movement_type" jdbcType="VARCHAR"/>
+        <result property="attachment" column="attachment" jdbcType="VARCHAR"/>
+        <result property="usageStatus" column="usage_status" jdbcType="VARCHAR"/>
+        <result property="placeOrderTime" column="place_order_time" jdbcType="TIMESTAMP"/>
+        <result property="bizOrderId" column="biz_order_id" jdbcType="VARCHAR"/>
+        <result property="apprizeAmount" column="apprize_amount" jdbcType="DECIMAL"/>
+        <result property="orderStatus" column="order_status" jdbcType="INTEGER"/>
+        <result property="shipType" column="ship_type" jdbcType="INTEGER"/>
+        <result property="sellerNick" column="seller_nick" jdbcType="VARCHAR"/>
+        <result property="sellerRealName" column="seller_real_name" jdbcType="VARCHAR"/>
+        <result property="sellerPhone" column="seller_phone" jdbcType="VARCHAR"/>
+        <result property="sellerAlipayUserId" column="seller_alipay_user_id" jdbcType="VARCHAR"/>
+        <result property="sellerAlipayAccount" column="seller_alipay_account" jdbcType="VARCHAR"/>
+        <result property="shipTime" column="ship_time" jdbcType="VARCHAR"/>
+        <result property="province" column="province" jdbcType="VARCHAR"/>
+        <result property="city" column="city" jdbcType="VARCHAR"/>
+        <result property="area" column="area" jdbcType="VARCHAR"/>
+        <result property="country" column="country" jdbcType="VARCHAR"/>
+        <result property="sellerAddress" column="seller_address" jdbcType="VARCHAR"/>
+        <result property="expressNumber" column="express_number" jdbcType="VARCHAR"/>
+        <result property="faceImages" column="face_images" jdbcType="VARCHAR"/>
+        <result property="goodsImages" column="goods_images" jdbcType="VARCHAR"
+                typeHandler="com.seeease.seeeaseframework.mybatis.type.JsonTypeHandler"/>
+        <result property="refundExpressNumber" column="refund_express_number" jdbcType="VARCHAR"/>
+        <result property="refundFaceImages" column="refund_face_images" jdbcType="VARCHAR"/>
+        <result property="refundGoodsImages" column="refund_goods_images" jdbcType="VARCHAR"
+                typeHandler="com.seeease.seeeaseframework.mybatis.type.JsonTypeHandler"/>
+        <result property="qtReport" column="qt_report" jdbcType="VARCHAR"/>
+        <result property="qtFineness" column="qt_fineness" jdbcType="VARCHAR"/>
+        <result property="qtCode" column="qt_code" jdbcType="VARCHAR"/>
+        <result property="qtFacade" column="qt_facade" jdbcType="VARCHAR"
+                typeHandler="com.seeease.seeeaseframework.mybatis.type.JsonTypeHandler"/>
+        <result property="qtDetail" column="qt_detail" jdbcType="VARCHAR"
+                typeHandler="com.seeease.seeeaseframework.mybatis.type.JsonTypeHandler"/>
+        <result property="qtAttachment" column="qt_attachment" jdbcType="VARCHAR"
+                typeHandler="com.seeease.seeeaseframework.mybatis.type.JsonTypeHandler"/>
+        <result property="finalApprizeAmount" column="final_apprize_amount" jdbcType="DECIMAL"/>
+        <result property="paymentPrice" column="payment_price" jdbcType="DECIMAL"/>
+        <result property="paymentNo" column="payment_no" jdbcType="VARCHAR"/>
+        <result property="paymentTime" column="payment_time" jdbcType="TIMESTAMP"/>
+        <result property="userEvaluate" column="user_evaluate" jdbcType="VARCHAR"/>
+        <result property="closeReason" column="close_reason" jdbcType="VARCHAR"/>
+        <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+        <result property="revision" column="revision" jdbcType="INTEGER"/>
+        <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+        <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+        <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+        <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+        <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,quote_id,quote_order_state,
+        spu_id,brand_name,model,biz_type,
+        version,channel,
+        user_id,questionnaire,front_images,
+        back_images,clasp_images,strap_images,
+        flaw_images,watch_size,movement_type,
+        attachment,usage_status,place_order_time,
+        biz_order_id,apprize_amount,order_status,
+        ship_type,seller_nick,seller_real_name,
+        seller_phone,seller_alipay_user_id,seller_alipay_account,
+        ship_time,province,city,
+        area,country,seller_address,
+        express_number,face_images,goods_images,
+        refund_express_number,refund_face_images,
+        refund_goods_images,qt_report,qt_fineness,qt_code,qt_facade,qt_detail,qt_attachment
+        final_apprize_amount,payment_price,payment_no,
+        payment_time,user_evaluate,close_reason,remarks,
+        revision,created_id,created_by,
+        created_time,updated_id,updated_by,
+        updated_time,deleted
+    </sql>
+</mapper>

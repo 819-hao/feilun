@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.financial.mapper.AuditLoggingDetailMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.financial.entity.AuditLoggingDetail">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="apaId" column="apa_id" jdbcType="INTEGER"/>
+        <result property="auditLoggingId" column="audit_logging_id" jdbcType="INTEGER"/>
+        <result property="prePaidAmount" column="pre_paid_amount" jdbcType="DECIMAL"/>
+        <result property="preReceiveAmount" column="pre_receive_amount" jdbcType="DECIMAL"/>
+        <result property="stockSn" column="stock_sn" jdbcType="VARCHAR"/>
+        <result property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+        <result property="amountReceivable" column="amount_receivable" jdbcType="DECIMAL"/>
+        <result property="amountPayable" column="amount_payable" jdbcType="DECIMAL"/>
+        <result property="brandName" column="brand_name" jdbcType="VARCHAR"/>
+        <result property="seriesName" column="series_name" jdbcType="VARCHAR"/>
+        <result property="model" column="model" jdbcType="VARCHAR"/>
+        <result property="stockId" column="stock_id" jdbcType="INTEGER"/>
+        <result property="belongId" column="belong_id" jdbcType="INTEGER"/>
+        <result property="revision" column="revision" jdbcType="INTEGER"/>
+        <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+        <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+        <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+        <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+        <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,audit_logging_id,pre_paid_amount,apa_id,
+        pre_receive_amount,stock_sn,amount_receivable,
+        amount_payable,brand_name,series_name,
+        model,stock_id,belong_id,serial_no,
+        revision,created_id,created_by,
+        created_time,deleted,updated_id,
+        updated_by,updated_time
+    </sql>
+</mapper>

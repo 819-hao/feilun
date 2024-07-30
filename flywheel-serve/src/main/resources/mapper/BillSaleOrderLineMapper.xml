@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.sale.mapper.BillSaleOrderLineMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.sale.entity.BillSaleOrderLine">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="saleId" column="sale_id" jdbcType="INTEGER"/>
+        <result property="subOrderCode" column="sub_order_code" jdbcType="VARCHAR"/>
+        <result property="spotCheckCode" column="spot_check_code" jdbcType="VARCHAR"/>
+        <result property="goodsId" column="goods_id" jdbcType="INTEGER"/>
+        <result property="stockId" column="stock_id" jdbcType="INTEGER"/>
+        <result property="consignmentPrice" column="consignment_price" jdbcType="DECIMAL"/>
+        <result property="clinchPrice" column="clinch_price" jdbcType="DECIMAL"/>
+        <result property="totalPrice" column="total_price" jdbcType="DECIMAL"/>
+        <result property="saleLineState" column="sale_line_state" jdbcType="INTEGER"/>
+        <result property="rightOfManagement" column="right_of_management" jdbcType="INTEGER"/>
+        <result property="proportion" column="proportion" jdbcType="DECIMAL"/>
+        <result property="gmvPerformance" column="gmv_performance" jdbcType="DECIMAL"/>
+        <result property="strapMaterial" column="strap_material" jdbcType="VARCHAR"/>
+        <result property="watchSection" column="watch_section" jdbcType="VARCHAR"/>
+        <result property="strapReplacementPrice" column="strap_replacement_price" jdbcType="DECIMAL"/>
+        <result property="isCounterPurchase" column="is_counter_purchase" jdbcType="INTEGER"/>
+        <result property="isRepurchasePolicy" column="is_repurchase_policy" jdbcType="INTEGER"/>
+        <result property="buyBackPolicy" column="buy_back_policy" jdbcType="VARCHAR"
+                typeHandler="com.seeease.flywheel.serve.sale.convert.BuyBackPolicyMapperTypeHandler"/>
+        <result property="repurchasePolicyUrl" column="repurchase_policy_url" jdbcType="VARCHAR"/>
+        <result property="preClinchPrice" column="pre_clinch_price" jdbcType="DECIMAL"/>
+        <result property="marginPrice" column="margin_price" jdbcType="DECIMAL"/>
+        <result property="tobPrice" column="tob_price" jdbcType="DECIMAL"/>
+        <result property="tocPrice" column="toc_price" jdbcType="DECIMAL"/>
+        <result property="tagPrice" column="tag_price" jdbcType="DECIMAL"/>
+        <result property="pricePub" column="price_pub" jdbcType="DECIMAL"/>
+        <result property="expressNumber" column="express_number" jdbcType="VARCHAR"/>
+        <result property="balanceDirection" column="balance_direction" jdbcType="INTEGER"/>
+        <result property="revision" column="revision" jdbcType="INTEGER"/>
+        <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+        <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+        <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+        <result property="consignmentSettlementOperator" column="consignment_settlement_operator" jdbcType="VARCHAR"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <result property="consignmentSaleFinishTime" column="consignment_sale_finish_time" jdbcType="TIMESTAMP"/>
+        <result property="deliveryTime" column="delivery_time" jdbcType="TIMESTAMP"/>
+        <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+        <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+        <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+        <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+        <result property="scInfoId" column="sc_info_id" jdbcType="INTEGER"/>
+        <result property="warrantyPeriod" column="warranty_period" jdbcType="INTEGER"/>
+        <result property="whetherInvoice" column="whether_invoice" jdbcType="INTEGER"/>
+        <result property="promotionConsignmentPrice" column="promotion_consignment_price" jdbcType="DECIMAL"/>
+        <result property="marketsPrice" column="markets_price" jdbcType="DECIMAL"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,sale_id,sub_order_code,total_price,promotion_consignment_price,markets_price,
+        goods_id,stock_id,consignment_price,spot_check_code,
+        clinch_price,sale_line_state,express_number,whether_invoice,
+        right_of_management,proportion,gmv_performance,warranty_period,
+        strap_material,watch_section,strap_replacement_price,
+        is_counter_purchase,is_repurchase_policy,buy_back_policy,
+        repurchase_policy_url,pre_clinch_price,tob_price,
+        toc_price,tag_price,price_pub,margin_price,sc_info_id,
+        revision,created_id,created_by,balance_direction,
+        created_time,updated_id,updated_by,consignment_settlement_operator,
+        updated_time,deleted,remarks,consignment_sale_finish_time,delivery_time
+    </sql>
+
+</mapper>

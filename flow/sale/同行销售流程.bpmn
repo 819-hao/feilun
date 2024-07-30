@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1ahc2ic" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.4.2" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+  <bpmn:process id="toBSale" name="同行销售流程" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="locationId" label="销售位置" type="long" />
+          <camunda:formField id="shortcodes" label="门店简码" type="string" />
+          <camunda:formField id="workSerialNoList" label="发货单集合" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_066z1ti</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_066z1ti" sourceRef="StartEvent_1" targetRef="Event_1pwera1" />
+    <bpmn:endEvent id="Event_1o61r2b">
+      <bpmn:incoming>Flow_1546ujl</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1546ujl" sourceRef="Event_1pwera1" targetRef="Event_1o61r2b" />
+    <bpmn:callActivity id="Event_1pwera1" name="销售发货" calledElement="toBSaleInstance">
+      <bpmn:extensionElements>
+        <camunda:in businessKey="#{workSerialNo}" />
+        <camunda:in local="true" variables="all" />
+        <camunda:in sourceExpression="#{locationId}" target="locationId" />
+        <camunda:in sourceExpression="#{shortcodes}" target="shortcodes" />
+        <camunda:in sourceExpression="#{execution.processBusinessKey}" target="parentBusinessKey" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_066z1ti</bpmn:incoming>
+      <bpmn:outgoing>Flow_1546ujl</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="workSerialNoList" camunda:elementVariable="workSerialNo" />
+    </bpmn:callActivity>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="toBSale">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1o61r2b_di" bpmnElement="Event_1o61r2b">
+        <dc:Bounds x="432" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0wtlz04_di" bpmnElement="Event_1pwera1">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_066z1ti_di" bpmnElement="Flow_066z1ti">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1546ujl_di" bpmnElement="Flow_1546ujl">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="432" y="117" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.web.infrastructure.mapper.HfTradeFlowMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.web.entity.HfTradeFlow">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="tradeNo" column="trade_no" jdbcType="VARCHAR"/>
+            <result property="ordAmt" column="ord_amt" jdbcType="DECIMAL"/>
+            <result property="mobilePayType" column="mobile_pay_type" jdbcType="VARCHAR"/>
+            <result property="memberId" column="member_id" jdbcType="VARCHAR"/>
+            <result property="merName" column="mer_name" jdbcType="VARCHAR"/>
+            <result property="transDateTime" column="trans_date_time" jdbcType="TIMESTAMP"/>
+            <result property="deviceId" column="device_id" jdbcType="VARCHAR"/>
+            <result property="termOrdId" column="term_ord_id" jdbcType="VARCHAR"/>
+            <result property="ordId" column="ord_id" jdbcType="VARCHAR"/>
+            <result property="flowState" column="flow_state" jdbcType="INTEGER"/>
+            <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+            <result property="revision" column="revision" jdbcType="INTEGER"/>
+            <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+            <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+            <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+            <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+            <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,trade_no,ord_amt,
+        mobile_pay_type,member_id,mer_name,
+        trans_date_time,device_id,term_ord_id,ord_id,flow_state
+        remarks,revision,created_id,
+        created_by,created_time,updated_id,
+        updated_by,updated_time,deleted
+    </sql>
+</mapper>

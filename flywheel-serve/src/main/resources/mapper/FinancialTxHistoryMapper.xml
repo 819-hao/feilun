@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.financial.mapper.FinancialTxHistoryMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.financial.entity.FinancialTxHistory">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="sellerPhone" column="seller_phone" jdbcType="VARCHAR"/>
+            <result property="serial" column="serial" jdbcType="VARCHAR"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="tiCode" column="ti_code" jdbcType="VARCHAR"/>
+            <result property="address" column="address" jdbcType="VARCHAR"/>
+            <result property="phone" column="phone" jdbcType="VARCHAR"/>
+            <result property="accountBank" column="account_bank" jdbcType="VARCHAR"/>
+            <result property="account" column="account" jdbcType="VARCHAR"/>
+            <result property="sellerName" column="seller_name" jdbcType="VARCHAR"/>
+            <result property="idCard" column="id_card" jdbcType="VARCHAR"/>
+            <result property="sn" column="sn" jdbcType="VARCHAR"/>
+            <result property="productTitle" column="product_title" jdbcType="VARCHAR"/>
+            <result property="fineness" column="fineness" jdbcType="VARCHAR"/>
+            <result property="amount" column="amount" jdbcType="DECIMAL"/>
+            <result property="contractCode" column="contract_code" jdbcType="VARCHAR"/>
+            <result property="txTime" column="tx_time" jdbcType="TIMESTAMP"/>
+            <result property="logisticsFirm" column="logistics_firm" jdbcType="VARCHAR"/>
+            <result property="code" column="code" jdbcType="VARCHAR"/>
+            <result property="payChannel" column="pay_channel" jdbcType="VARCHAR"/>
+            <result property="receiveAccount" column="receive_account" jdbcType="VARCHAR"/>
+            <result property="txCode" column="tx_code" jdbcType="VARCHAR"/>
+            <result property="amountUppercase" column="amount_uppercase" jdbcType="VARCHAR"/>
+            <result property="buyer" column="buyer" jdbcType="VARCHAR"/>
+            <result property="certifier" column="certifier" jdbcType="VARCHAR"/>
+            <result property="certifierTime" column="certifier_time" jdbcType="TIMESTAMP"/>
+            <result property="revision" column="revision" jdbcType="INTEGER"/>
+            <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+            <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+            <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+            <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+            <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,remark,seller_phone,
+        serial,name,ti_code,
+        address,phone,account_bank,
+        account,seller_name,id_card,
+        sn,product_title,fineness,
+        amount,contract_code,tx_time,
+        logistics_firm,code,pay_channel,
+        receive_account,tx_code,amount_uppercase,
+        buyer,certifier,certifier_time,
+        revision,created_id,created_by,
+        created_time,updated_id,updated_by,
+        updated_time,deleted
+    </sql>
+</mapper>

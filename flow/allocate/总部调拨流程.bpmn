@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_10i32w9" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.4.2" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+  <bpmn:process id="hqAllocation" name="总部调拨流程" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="workSerialJsonList" label="调拨作业集合" type="string" />
+          <camunda:formField id="fromShopShortcodes" label="发货方门店简码" type="string">
+            <camunda:validation />
+          </camunda:formField>
+          <camunda:formField id="toShopShortcodes" label="收货方门店简码" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1mkd25f</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1mkd25f" sourceRef="StartEvent_1" targetRef="Activity_1ddj77i" />
+    <bpmn:endEvent id="Event_1r9o54b">
+      <bpmn:incoming>Flow_1dgi8si</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1dgi8si" sourceRef="Activity_1ddj77i" targetRef="Event_1r9o54b" />
+    <bpmn:callActivity id="Activity_1ddj77i" name="总部调拨" calledElement="hqAllocationInstance">
+      <bpmn:extensionElements>
+        <camunda:in local="true" variables="all" />
+        <camunda:in sourceExpression="#{workSerial[&#34;ckSerialNo&#34;]}" target="ckSerialNo" />
+        <camunda:in sourceExpression="#{workSerial[&#34;rkSerialNo&#34;]}" target="rkSerialNo" />
+        <camunda:in sourceExpression="#{toShopShortcodes}" target="shortcodes" />
+        <camunda:in sourceExpression="#{execution.processBusinessKey}" target="parentBusinessKey" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1mkd25f</bpmn:incoming>
+      <bpmn:outgoing>Flow_1dgi8si</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="workSerialJsonList" camunda:elementVariable="workSerial" />
+    </bpmn:callActivity>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="hqAllocation">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1r9o54b_di" bpmnElement="Event_1r9o54b">
+        <dc:Bounds x="432" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0lfv5p7_di" bpmnElement="Activity_1ddj77i">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1mkd25f_di" bpmnElement="Flow_1mkd25f">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1dgi8si_di" bpmnElement="Flow_1dgi8si">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="432" y="117" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

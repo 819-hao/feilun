@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.stocktaking.mapper.BillStocktakingLineMapper">
+
+    <select id="pageOf"
+            parameterType="com.seeease.flywheel.stocktaking.request.StocktakingDetailsRequest"
+            resultType="com.seeease.flywheel.stocktaking.result.StocktakingDetailsResult">
+        SELECT
+        b.`name` brandName,
+        s.`name`seriesName,
+        gw.model,
+        sk.sn stockSn,
+        sk.attachment,
+        bsl.stocktaking_line_state
+        FROM
+        bill_stocktaking_line bsl
+        LEFT JOIN stock sk ON bsl.stock_id = sk.id
+        LEFT JOIN goods_watch gw ON gw.id = sk.goods_id
+        LEFT JOIN brand b ON b.id = gw.brand_id
+        LEFT JOIN series s ON s.id = gw.series_id
+        <where>
+            bsl.stock_id IS NOT NULL and bsl.stocktaking_id = #{req.id}
+            <if test="req.brandName !=null and req.brandName !=''">
+                and b.`name` like concat('%',#{req.brandName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="req.stocktakingLineState !=null">
+                and bsl.stocktaking_line_state like concat('%',#{req.stocktakingLineState,jdbcType=INTEGER},'%')
+            </if>
+        </where>
+        order by bsl.id desc
+    </select>
+
+    <select id="listStatus" resultType="java.lang.Integer">
+        SELECT
+        bsl.stocktaking_line_state
+        FROM
+        bill_stocktaking_line bsl
+        LEFT JOIN stock sk ON bsl.stock_id = sk.id
+        LEFT JOIN goods_watch gw ON gw.id = sk.goods_id
+        LEFT JOIN brand b ON b.id = gw.brand_id
+        LEFT JOIN series s ON s.id = gw.series_id
+        <where>
+            bsl.stock_id IS NOT NULL and bsl.stocktaking_id = #{req.id}
+            <if test="req.brandName !=null and req.brandName !=''">
+                and b.`name` like concat('%',#{req.brandName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="req.stocktakingLineState !=null">
+                and bsl.stocktaking_line_state like concat('%',#{req.stocktakingLineState,jdbcType=INTEGER},'%')
+            </if>
+        </where>
+    </select>
+
+    <update id="updateStockId">
+        UPDATE bill_stocktaking_line bsl
+                INNER JOIN stock s on  s.wno = bsl.wno
+                set bsl.stock_id = s.id
+        WHERE bsl.stocktaking_id  = #{stId}
+    </update>
+</mapper>

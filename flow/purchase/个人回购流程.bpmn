@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1lj2c8g" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.5.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+  <bpmn:process id="personalBuyBack" name="个人回购流程" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="shortcodes" label="门店简码" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_19d4cnt</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_19d4cnt" sourceRef="StartEvent_1" targetRef="uploadExpressNumber" />
+    <bpmn:userTask id="uploadExpressNumber" name="上传快递单号" camunda:candidateGroups="${authGroups}">
+      <bpmn:extensionElements>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="Groovy">   String shop = execution.getVariable("shortcodes")
+    if(null != shop){
+        execution.setVariable("authGroups", shop+"shopowner" +","+shop+"shopclerk")
+    }else {
+        execution.setVariable("authGroups", "buy")
+    }</camunda:script>
+        </camunda:executionListener>
+        <camunda:formData>
+          <camunda:formField id="storeWorkSerialNo" label="入库单号" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_19d4cnt</bpmn:incoming>
+      <bpmn:outgoing>Flow_0hjc1a4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0hjc1a4" sourceRef="uploadExpressNumber" targetRef="zbReceivelc" />
+    <bpmn:callActivity id="zbReceivelc" name="总部收货入库" calledElement="zbReceivingFlow">
+      <bpmn:extensionElements>
+        <camunda:in businessKey="${storeWorkSerialNo}" />
+        <camunda:inputOutput>
+          <camunda:inputParameter name="parentBusinessKey">#{execution.processBusinessKey}</camunda:inputParameter>
+          <camunda:outputParameter name="receivingState">${receivingState}</camunda:outputParameter>
+        </camunda:inputOutput>
+        <camunda:out local="true" variables="all" />
+        <camunda:in sourceExpression="#{execution.processBusinessKey}" target="parentBusinessKey" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0hjc1a4</bpmn:incoming>
+      <bpmn:outgoing>Flow_14hums4</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:exclusiveGateway id="Gateway_0giog2p" default="Flow_0eulfuj">
+      <bpmn:incoming>Flow_14hums4</bpmn:incoming>
+      <bpmn:outgoing>Flow_08g0wun</bpmn:outgoing>
+      <bpmn:outgoing>Flow_07f4th0</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0eulfuj</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_14hums4" sourceRef="zbReceivelc" targetRef="Gateway_0giog2p" />
+    <bpmn:sequenceFlow id="Flow_08g0wun" sourceRef="Gateway_0giog2p" targetRef="acceptRepair">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${receivingState==3}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:userTask id="acceptRepair" name="维修确认" camunda:candidateGroups="${authGroups}">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="deliverTo" label="转交方" type="long" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_08g0wun</bpmn:incoming>
+      <bpmn:outgoing>Flow_0afzyrl</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_07f4th0" sourceRef="Gateway_0giog2p" targetRef="returnReceive">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${receivingState==2}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1i3esbp" sourceRef="returnReceive" targetRef="confirmReturn" />
+    <bpmn:endEvent id="Event_1umy7ng">
+      <bpmn:incoming>Flow_1lf9epm</bpmn:incoming>
+      <bpmn:incoming>Flow_154towl</bpmn:incoming>
+      <bpmn:incoming>Flow_0eulfuj</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1lf9epm" sourceRef="confirmReturn" targetRef="Event_1umy7ng" />
+    <bpmn:sequenceFlow id="Flow_0afzyrl" sourceRef="acceptRepair" targetRef="Activity_1hkvyq9" />
+    <bpmn:callActivity id="Activity_1hkvyq9" name="质检待转交" calledElement="confirmRepair">
+      <bpmn:extensionElements>
+        <camunda:in businessKey="${storeWorkSerialNo}" />
+        <camunda:inputOutput>
+          <camunda:inputParameter name="parentBusinessKey">#{execution.processBusinessKey}</camunda:inputParameter>
+          <camunda:inputParameter name="deliverTo">${deliverTo}</camunda:inputParameter>
+        </camunda:inputOutput>
+        <camunda:in local="true" variables="all" />
+        <camunda:in sourceExpression="#{isAllot}" target="isAllot" />
+        <camunda:in sourceExpression="#{isRepair}" target="isRepair" />
+        <camunda:in sourceExpression="#{execution.processBusinessKey}" target="parentBusinessKey" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0afzyrl</bpmn:incoming>
+      <bpmn:outgoing>Flow_1k70q3r</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:exclusiveGateway id="Gateway_102pu0d" default="Flow_1yw0lem">
+      <bpmn:incoming>Flow_1k70q3r</bpmn:incoming>
+      <bpmn:outgoing>Flow_1yw0lem</bpmn:outgoing>
+      <bpmn:outgoing>Flow_154towl</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1k70q3r" sourceRef="Activity_1hkvyq9" targetRef="Gateway_102pu0d" />
+    <bpmn:sequenceFlow id="Flow_1yw0lem" sourceRef="Gateway_102pu0d" targetRef="returnReceive" />
+    <bpmn:sequenceFlow id="Flow_154towl" sourceRef="Gateway_102pu0d" targetRef="Event_1umy7ng">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${deliverTo==0}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0eulfuj" sourceRef="Gateway_0giog2p" targetRef="Event_1umy7ng" />
+    <bpmn:userTask id="returnReceive" name="退回收货" camunda:candidateGroups="${authGroups}">
+      <bpmn:incoming>Flow_07f4th0</bpmn:incoming>
+      <bpmn:incoming>Flow_1yw0lem</bpmn:incoming>
+      <bpmn:outgoing>Flow_1i3esbp</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="confirmReturn" name="归还用户" camunda:candidateGroups="${authGroups}">
+      <bpmn:incoming>Flow_1i3esbp</bpmn:incoming>
+      <bpmn:outgoing>Flow_1lf9epm</bpmn:outgoing>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="personalBuyBack">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="279" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_08olimd_di" bpmnElement="uploadExpressNumber">
+        <dc:Bounds x="270" y="257" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ltgpbv_di" bpmnElement="zbReceivelc">
+        <dc:Bounds x="430" y="257" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0giog2p_di" bpmnElement="Gateway_0giog2p" isMarkerVisible="true">
+        <dc:Bounds x="595" y="272" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0wo74uv_di" bpmnElement="acceptRepair">
+        <dc:Bounds x="710" y="257" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1umy7ng_di" bpmnElement="Event_1umy7ng">
+        <dc:Bounds x="1432" y="279" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_05nrzq2_di" bpmnElement="Activity_1hkvyq9">
+        <dc:Bounds x="880" y="257" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_102pu0d_di" bpmnElement="Gateway_102pu0d" isMarkerVisible="true">
+        <dc:Bounds x="1055" y="272" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0xl3xv2_di" bpmnElement="returnReceive">
+        <dc:Bounds x="1030" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0msasu4_di" bpmnElement="confirmReturn">
+        <dc:Bounds x="1210" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_19d4cnt_di" bpmnElement="Flow_19d4cnt">
+        <di:waypoint x="215" y="297" />
+        <di:waypoint x="270" y="297" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0hjc1a4_di" bpmnElement="Flow_0hjc1a4">
+        <di:waypoint x="370" y="297" />
+        <di:waypoint x="430" y="297" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14hums4_di" bpmnElement="Flow_14hums4">
+        <di:waypoint x="530" y="297" />
+        <di:waypoint x="595" y="297" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08g0wun_di" bpmnElement="Flow_08g0wun">
+        <di:waypoint x="645" y="297" />
+        <di:waypoint x="710" y="297" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07f4th0_di" bpmnElement="Flow_07f4th0">
+        <di:waypoint x="620" y="272" />
+        <di:waypoint x="620" y="120" />
+        <di:waypoint x="1030" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1i3esbp_di" bpmnElement="Flow_1i3esbp">
+        <di:waypoint x="1130" y="120" />
+        <di:waypoint x="1210" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lf9epm_di" bpmnElement="Flow_1lf9epm">
+        <di:waypoint x="1310" y="120" />
+        <di:waypoint x="1370" y="120" />
+        <di:waypoint x="1370" y="297" />
+        <di:waypoint x="1432" y="297" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0afzyrl_di" bpmnElement="Flow_0afzyrl">
+        <di:waypoint x="810" y="297" />
+        <di:waypoint x="880" y="297" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1k70q3r_di" bpmnElement="Flow_1k70q3r">
+        <di:waypoint x="980" y="297" />
+        <di:waypoint x="1055" y="297" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1yw0lem_di" bpmnElement="Flow_1yw0lem">
+        <di:waypoint x="1080" y="272" />
+        <di:waypoint x="1080" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_154towl_di" bpmnElement="Flow_154towl">
+        <di:waypoint x="1105" y="297" />
+        <di:waypoint x="1432" y="297" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0eulfuj_di" bpmnElement="Flow_0eulfuj">
+        <di:waypoint x="620" y="322" />
+        <di:waypoint x="620" y="490" />
+        <di:waypoint x="1370" y="490" />
+        <di:waypoint x="1370" y="297" />
+        <di:waypoint x="1432" y="297" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.sale.mapper.BillSaleOrderMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.sale.entity.BillSaleOrder">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+        <result property="parentSerialNo" column="parent_serial_no" jdbcType="VARCHAR"/>
+        <result property="bizOrderCode" column="biz_order_code" jdbcType="VARCHAR"/>
+        <result property="saleType" column="sale_type" jdbcType="INTEGER"/>
+        <result property="saleMode" column="sale_mode" jdbcType="INTEGER"/>
+        <result property="saleChannel" column="sale_channel" jdbcType="INTEGER"/>
+        <result property="saleSource" column="sale_source" jdbcType="INTEGER"/>
+        <result property="inspectionType" column="inspection_type" jdbcType="INTEGER"/>
+        <result property="customerId" column="customer_id" jdbcType="INTEGER"/>
+        <result property="customerContactId" column="customer_contact_id" jdbcType="INTEGER"/>
+        <result property="transferCustomerId" column="transfer_customer_id" jdbcType="INTEGER"/>
+        <result property="firstSalesman" column="first_salesman" jdbcType="INTEGER"/>
+        <result property="secondSalesman" column="second_salesman" jdbcType="INTEGER"/>
+        <result property="thirdSalesman" column="third_salesman" jdbcType="INTEGER"/>
+        <result property="deposit" column="deposit" jdbcType="DECIMAL"/>
+        <result property="paymentMethod" column="payment_method" jdbcType="INTEGER"/>
+        <result property="buyCause" column="buy_cause" jdbcType="INTEGER"/>
+        <result property="totalSalePrice" column="total_sale_price" jdbcType="DECIMAL"/>
+        <result property="saleState" column="sale_state" jdbcType="INTEGER"/>
+        <result property="saleNumber" column="sale_number" jdbcType="INTEGER"/>
+        <result property="shopId" column="shop_id" jdbcType="INTEGER"/>
+        <result property="deliveryLocationId" column="delivery_location_id" jdbcType="INTEGER"/>
+        <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+        <result property="saleRemarks" column="sale_remarks" jdbcType="VARCHAR"/>
+        <result property="finishTime" column="finish_time" jdbcType="TIMESTAMP"/>
+        <result property="revision" column="revision" jdbcType="INTEGER"/>
+        <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+        <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+        <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+        <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+        <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,serial_no,parent_serial_no,
+        biz_order_code,sale_type,sale_mode,
+        sale_channel,sale_source,customer_id,customer_contact_id,
+        first_salesman,second_salesman,third_salesman,
+        deposit,payment_method,buy_cause,
+        total_sale_price,sale_state,inspection_type,
+        sale_number,shop_id,delivery_location_id,
+        remarks,finish_time,transfer_customer_id,
+            revision,created_id,created_by,
+        created_time,updated_id,updated_by,
+        updated_time,deleted
+    </sql>
+</mapper>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.purchase.mapper.BillPurchasePlanMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.purchase.entity.BillPurchasePlan">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+        <result property="purchaseNumber" column="purchase_number" jdbcType="INTEGER"/>
+        <result property="demanderStoreId" column="demander_store_id" jdbcType="INTEGER"/>
+        <result property="storeId" column="store_id" jdbcType="INTEGER"/>
+        <result property="planStartTime" column="plan_start_time" jdbcType="TIMESTAMP"/>
+        <result property="planEndTime" column="plan_end_time" jdbcType="TIMESTAMP"/>
+        <result property="enableChangeTime" column="enable_change_time" jdbcType="TIMESTAMP"/>
+        <result property="selectionTime" column="selection_time" jdbcType="TIMESTAMP"/>
+        <result property="demandStartTime" column="demand_start_time" jdbcType="TIMESTAMP"/>
+        <result property="estimatedDeliveryTime" column="estimated_delivery_time" jdbcType="TIMESTAMP"/>
+        <result property="businessType" column="business_type" jdbcType="INTEGER"/>
+        <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+        <result property="revision" column="revision" jdbcType="INTEGER"/>
+        <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+        <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+        <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+        <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+        <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,serial_no,purchase_number,enable_change_time,
+        demander_store_id,store_id,plan_start_time,
+        plan_end_time,selection_time,demand_start_time,estimated_delivery_time,business_type,
+        revision,created_id,remarks,
+        created_by,created_time,updated_id,
+        updated_by,updated_time,deleted
+    </sql>
+</mapper>

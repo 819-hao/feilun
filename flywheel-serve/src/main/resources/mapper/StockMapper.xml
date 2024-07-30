@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.goods.mapper.StockMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.goods.entity.Stock">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="trackId" column="track_id" jdbcType="VARCHAR"/>
+            <result property="goodsId" column="goods_id" jdbcType="INTEGER"/>
+            <result property="wno" column="wno" jdbcType="VARCHAR"/>
+            <result property="stockStatus" column="stock_status" jdbcType="INTEGER"/>
+            <result property="imgs" column="imgs" jdbcType="VARCHAR"/>
+            <result property="finess" column="finess" jdbcType="VARCHAR"/>
+            <result property="purchasePrice" column="purchase_price" jdbcType="DECIMAL"/>
+            <result property="fixPrice" column="fix_price" jdbcType="DECIMAL"/>
+            <result property="addPrice" column="add_price" jdbcType="DECIMAL"/>
+            <result property="tobPrice" column="tob_price" jdbcType="DECIMAL"/>
+            <result property="tocPrice" column="toc_price" jdbcType="DECIMAL"/>
+            <result property="tagPrice" column="tag_price" jdbcType="DECIMAL"/>
+            <result property="totalPrice" column="total_price" jdbcType="DECIMAL"/>
+            <result property="storePrice" column="store_price" jdbcType="DECIMAL"/>
+            <result property="week" column="week" jdbcType="VARCHAR"/>
+            <result property="claspMaterial" column="clasp_material" jdbcType="VARCHAR"/>
+            <result property="fixDay" column="fix_day" jdbcType="VARCHAR"/>
+            <result property="clasp" column="clasp" jdbcType="VARCHAR"/>
+            <result property="tableCover" column="table_cover" jdbcType="VARCHAR"/>
+            <result property="caseNo" column="case_no" jdbcType="VARCHAR"/>
+            <result property="caseNumber" column="case_number" jdbcType="VARCHAR"/>
+            <result property="strap" column="strap" jdbcType="VARCHAR"/>
+            <result property="strapMaterial" column="strap_material" jdbcType="VARCHAR"/>
+            <result property="movementSequenceNumber" column="movement_sequence_number" jdbcType="VARCHAR"/>
+            <result property="balanceWheel" column="balance_wheel" jdbcType="VARCHAR"/>
+            <result property="vibrationFrequency" column="vibration_frequency" jdbcType="VARCHAR"/>
+            <result property="egs" column="egs" jdbcType="VARCHAR"/>
+            <result property="attachment" column="attachment" jdbcType="VARCHAR"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="customerPurchaseWay" column="customer_purchase_way" jdbcType="SMALLINT"/>
+            <result property="stockSrc" column="stock_src" jdbcType="INTEGER"/>
+            <result property="unusualDesc" column="unusual_desc" jdbcType="VARCHAR"/>
+            <result property="unusualImgs" column="unusual_imgs" jdbcType="VARCHAR"/>
+            <result property="sn" column="sn" jdbcType="VARCHAR"/>
+            <result property="belongId" column="belong_id" jdbcType="INTEGER"/>
+            <result property="sourceSubjectId" column="source_subject_id" jdbcType="INTEGER"/>
+            <result property="belongName" column="belong_name" jdbcType="VARCHAR"/>
+            <result property="locationId" column="location_id" jdbcType="INTEGER"/>
+            <result property="locationName" column="location_name" jdbcType="VARCHAR"/>
+            <result property="rkTime" column="rk_time" jdbcType="TIMESTAMP"/>
+            <result property="ckTime" column="ck_time" jdbcType="TIMESTAMP"/>
+            <result property="ccId" column="cc_id" jdbcType="INTEGER"/>
+            <result property="company" column="company" jdbcType="VARCHAR"/>
+            <result property="goodsModel" column="goods_model" jdbcType="VARCHAR"/>
+            <result property="supplierName" column="supplier_name" jdbcType="VARCHAR"/>
+            <result property="storageLocation" column="storage_location" jdbcType="INTEGER"/>
+            <result property="storageAge" column="storage_age" jdbcType="INTEGER"/>
+            <result property="totalStorageAge" column="total_storage_age" jdbcType="INTEGER"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="syncUpdateTime" column="sync_update_time" jdbcType="TIMESTAMP"/>
+            <result property="syncCreateTime" column="sync_create_time" jdbcType="TIMESTAMP"/>
+            <result property="level" column="level" jdbcType="VARCHAR"/>
+            <result property="watchSection" column="watch_section" jdbcType="VARCHAR"/>
+            <result property="temp" column="temp" jdbcType="INTEGER"/>
+            <result property="weixiu" column="weixiu" jdbcType="VARCHAR"/>
+            <result property="date" column="date" jdbcType="VARCHAR"/>
+            <result property="jxcStockSrc" column="jxc_stock_src" jdbcType="INTEGER"/>
+            <result property="purchaserId" column="purchaser_id" jdbcType="INTEGER"/>
+            <result property="storeRkTime" column="store_rk_time" jdbcType="TIMESTAMP"/>
+            <result property="warrantyDate" column="warranty_date" jdbcType="VARCHAR"/>
+            <result property="isBox" column="is_box" jdbcType="INTEGER"/>
+            <result property="isCard" column="is_card" jdbcType="INTEGER"/>
+            <result property="isWarranty" column="is_warranty" jdbcType="INTEGER"/>
+            <result property="isInvoice" column="is_invoice" jdbcType="INTEGER"/>
+            <result property="isInstruction" column="is_instruction" jdbcType="INTEGER"/>
+            <result property="isUnderselling" column="is_underselling" jdbcType="INTEGER"/>
+            <result property="locationIdOld" column="location_id_old" jdbcType="INTEGER"/>
+            <result property="consignmentPrice" column="consignment_price" jdbcType="DECIMAL"/>
+            <result property="belongIdOld" column="belong_id_old" jdbcType="INTEGER"/>
+            <result property="storeId" column="store_id" jdbcType="INTEGER"/>
+            <result property="sourceStoreId" column="source_store_id" jdbcType="INTEGER"/>
+            <result property="rightOfManagement" column="right_of_management" jdbcType="INTEGER"/>
+            <result property="demandId" column="demand_id" jdbcType="INTEGER"/>
+            <result property="forecastFixPrice" column="forecast_fix_price" jdbcType="DECIMAL"/>
+            <result property="buyBackPrice" column="buy_back_price" jdbcType="DECIMAL"/>
+            <result property="isRecycling" column="is_recycling" jdbcType="INTEGER"/>
+            <result property="salesPriority" column="sales_priority" jdbcType="INTEGER"/>
+            <result property="lockDemand" column="lock_demand" jdbcType="INTEGER"/>
+            <result property="watchSizeRecycling" column="watch_size_recycling" jdbcType="VARCHAR"/>
+            <result property="defectOrNot" column="defect_or_not" jdbcType="INTEGER"/>
+            <result property="defectDescription" column="defect_description" jdbcType="VARCHAR"/>
+            <result property="useConfig" column="use_config" jdbcType="INTEGER"/>
+            <result property="limitedCode" column="limited_code" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,track_id,goods_id,
+        wno,stock_status,imgs,
+        finess,purchase_price,fix_price,
+        add_price,tob_price,toc_price,
+        tag_price,total_price,store_price,
+        week,clasp_material,fix_day,
+        clasp,table_cover,case_no,
+        case_number,strap,strap_material,
+        movement_sequence_number,balance_wheel,vibration_frequency,
+        egs,attachment,remark,
+        customer_purchase_way,stock_src,
+        unusual_desc,unusual_imgs,
+        sn,belong_id,source_subject_id,
+        belong_name,location_id,location_name,
+        rk_time,ck_time,cc_id,
+        company,goods_model,supplier_name,
+        storage_location,storage_age,total_storage_age,
+        create_time,sync_update_time,sync_create_time,
+        level,watch_section,temp,
+        weixiu,date,jxc_stock_src,
+        purchaser_id,store_rk_time,warranty_date,
+        is_box,is_card,is_warranty,
+        is_invoice,is_instruction,is_underselling,
+        location_id_old,consignment_price,belong_id_old,
+        store_id,source_store_id,right_of_management,
+        demand_id,forecast_fix_price,buy_back_price,
+        is_recycling,sales_priority,lock_demand,
+        watch_size_recycling,defect_or_not,defect_description,
+        use_config,limited_code
+    </sql>
+</mapper>

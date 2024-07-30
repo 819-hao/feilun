@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.goods.mapper.SeriesMapper">
+
+    <select id="queryPage" resultType="com.seeease.flywheel.goods.result.SeriesPageResult">
+        select * from (
+        SELECT
+        s.id,
+        b.id brandId,
+        IF ( gw.id IS NULL, 0, count( 0 ) ) modelNum ,
+        s.NAME,
+        b.NAME brandName,
+        s.vulgo,
+        s.series_type type,
+        s.updated_time updateTime,
+        s.updated_by updateBy
+        FROM
+        series s
+        LEFT JOIN goods_watch gw ON gw.series_id = s.id
+        LEFT JOIN brand b ON s.brand_id = b.id
+        <where>
+            s.deleted = 0
+            <if test="request.brandName != null  and request.brandName != ''">
+                and b.name like concat('%', #{request.brandName}, '%')
+            </if>
+            <if test="request.name != null  and request.name != ''">
+                and s.name like concat('%', #{request.name}, '%')
+            </if>
+            <if test="request.vulgo != null and request.vulgo != ''">
+                and s.vulgo like concat ('%',#{request.vulgo},'%')
+            </if>
+            <if test="request.type != null ">
+                and s.series_type = #{request.type}
+            </if>
+            <if test="request.brandId != null ">
+                and b.id = #{request.brandId}
+            </if>
+        </where>
+        group by s.id) a
+        ORDER BY id desc
+    </select>
+    <select id="getSeriesTypeByStockId" resultType="java.lang.Integer">
+        SELECT ser.series_type
+        FROM series ser
+                 INNER JOIN goods_watch gw ON gw.series_id = ser.id
+                 INNER JOIN stock s ON s.goods_id = gw.id
+        WHERE s.id = #{stockId}
+    </select>
+    <select id="getSeriesTypeByGoodsId" resultType="java.lang.Integer">
+        SELECT ser.series_type
+        FROM series ser
+                 INNER JOIN goods_watch gw ON gw.series_id = ser.id
+        WHERE gw.id = #{goodsId}
+    </select>
+
+</mapper>

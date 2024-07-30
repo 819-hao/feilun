@@ -1,0 +1,935 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.goods.mapper.StockMapper">
+
+    <resultMap id="StockInfoResultMap" type="com.seeease.flywheel.goods.entity.StockBaseInfo">
+        <id property="stockId" column="id" jdbcType="INTEGER"/>
+        <result property="goodsId" column="goods_id" jdbcType="INTEGER"/>
+        <result property="wno" column="wno" jdbcType="VARCHAR"/>
+        <result property="finess" column="finess" jdbcType="VARCHAR"/>
+        <result property="totalPrice" column="total_price" jdbcType="DECIMAL"/>
+        <result property="consignmentPrice" column="consignment_price" jdbcType="DECIMAL"/>
+        <result property="attachment" column="attachment" jdbcType="VARCHAR"/>
+        <result property="stockSn" column="sn" jdbcType="VARCHAR"/>
+        <result property="locationId" column="location_id" jdbcType="BIGINT"/>
+        <result property="rightOfManagement" column="right_of_management" jdbcType="BIGINT"/>
+        <result property="warrantyDate" column="warranty_date" jdbcType="VARCHAR"/>
+        <result property="brandName" column="brandName" jdbcType="VARCHAR"/>
+        <result property="seriesName" column="seriesName" jdbcType="VARCHAR"/>
+        <result property="model" column="model" jdbcType="VARCHAR"/>
+        <result property="image" column="image" jdbcType="VARCHAR"/>
+        <result property="pricePub" column="price_pub" jdbcType="DECIMAL"/>
+        <result property="purchasePrice" column="purchasePrice" jdbcType="DECIMAL"/>
+        <result property="tobPrice" column="tobPrice" jdbcType="DECIMAL"/>
+        <result property="tocPrice" column="tocPrice" jdbcType="DECIMAL"/>
+        <result property="ccId" column="ccId" jdbcType="INTEGER"/>
+        <result property="sourceSubjectId" column="sourceSubjectId" jdbcType="INTEGER"/>
+        <result property="isUnderselling" column="isUnderselling" jdbcType="INTEGER"/>
+        <result property="stockStatus" column="stockStatus" jdbcType="INTEGER"/>
+        <result property="brandId" column="brand_id" jdbcType="INTEGER"/>
+        <result property="stockSrc" column="stock_src" jdbcType="INTEGER"/>
+        <result property="storageAge" column="storage_age" jdbcType="INTEGER"/>
+        <result property="totalStorageAge" column="total_storage_age" jdbcType="INTEGER"/>
+        <result property="strapMaterial" column="strap_material" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="SelectStockInfoResultMap">
+        SELECT s.id,
+               s.`level`,
+               s.wno,
+               s.finess,
+               s.total_price,
+               s.consignment_price,
+               s.new_settle_price,
+               s.attachment,
+               s.sn,
+               s.warranty_date,
+               s.location_id,
+               s.right_of_management,
+               gw.id as            goods_id,
+               gw.brand_id,
+               gw.price_pub,
+               gw.model,
+               gw.image,
+               b.`name`            brandName,
+               ser.`name`          seriesName,
+               ser.series_type          seriesType,
+               s.tob_price         tobPrice,
+               s.toc_price         tocPrice,
+               s.tag_price         tagPrice,
+               s.cc_id             ccId,
+               s.stock_src,
+               s.storage_age,
+               s.total_storage_age,
+               s.is_underselling   isUnderselling,
+               s.source_subject_id sourceSubjectId,
+               s.purchase_price    purchasePrice,
+               s.strap_material,
+               s.stock_status      stockStatus
+        FROM stock s
+                 INNER JOIN goods_watch gw ON gw.id = s.goods_id
+                 INNER JOIN brand b ON b.id = gw.brand_id
+                 INNER JOIN series ser ON ser.id = gw.series_id
+    </sql>
+
+    <select id="selectByStockIdList" resultType="com.seeease.flywheel.serve.goods.entity.StockExt">
+        SELECT
+        s.id stockId,
+        s.`level`,
+        b.id as brandId,
+        gw.id as goods_id,
+        gw.price_pub,
+        gw.model,
+        gw.image,
+        b.`name` brandName,
+        ser.`name` seriesName,
+        ser.series_type seriesType,
+        s.created_by,
+        s.stock_src,
+        s.stock_status,
+        s.sn stockSn,
+        s.finess,
+        s.is_card isCard,
+        s.warranty_date warrantyDate,
+        GROUP_CONCAT( dd.dict_label ORDER BY dd.dict_sort DESC ) AS attachmentDetails,
+        s.attachment,
+        s.tob_price tobPrice,
+        s.toc_price tocPrice,
+        s.tag_price tagPrice,
+        s.wno wno
+        FROM
+        stock s
+        LEFT JOIN stock_dict sd ON sd.stock_id = s.id
+        LEFT JOIN dict_data dd ON sd.dict_id = dd.dict_code
+        INNER JOIN goods_watch gw ON gw.id = s.goods_id
+        INNER JOIN brand b ON b.id = gw.brand_id
+        INNER JOIN series ser ON ser.id = gw.series_id
+        WHERE
+        s.id in (
+        <foreach collection="stockIdList" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+        GROUP BY
+        s.id
+    </select>
+
+    <update id="removeUnusualDesc">
+        update  stock
+        set unusual_desc = NULL
+        WHERE id in (
+        <foreach collection="stockIdList" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </update>
+
+    <select id="listSaleableStockBySn" resultMap="StockInfoResultMap">
+        <include refid="SelectStockInfoResultMap"/>
+        <where>
+            s.stock_status = 100
+            AND s.temp is null
+            AND s.sn in (
+            <foreach collection="stockSnList" item="sn" separator=",">
+                #{sn}
+            </foreach>
+            )
+            <if test="rightOfManagement != null">
+                AND s.right_of_management = #{rightOfManagement}
+            </if>
+        </where>
+    </select>
+
+    <select id="listStock" parameterType="com.seeease.flywheel.goods.request.StockListRequest"
+            resultMap="StockInfoResultMap">
+        <include refid="SelectStockInfoResultMap"/>
+        LEFT JOIN ext_attachment_stock eas ON eas.stock_id = s.id
+        <where>
+            s.temp is null
+            <if test="request.idList != null and request.idList.size() >0">
+                <foreach collection="request.idList" item="item" open="and s.id in (" separator=","
+                         close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="request.wno != null and request.wno != ''">
+                AND s.wno = #{request.wno}
+            </if>
+            <if test="request.rightOfManagement != null">
+                AND s.right_of_management = #{request.rightOfManagement}
+            </if>
+            <if test="request.brandName != null and request.brandName != ''">
+                AND b.`name` LIKE CONCAT(#{request.brandName},'%')
+            </if>
+            <if test="request.seriesName != null and request.seriesName != ''">
+                AND ser.`name` LIKE CONCAT(#{request.seriesName},'%')
+            </if>
+            <if test="request.seriesType != null ">
+                AND ser.`series_type` = #{request.seriesType}
+            </if>
+            <if test="request.model != null and request.model != ''">
+                AND gw.`model` LIKE CONCAT(#{request.model},'%')
+            </if>
+            <if test="request.stockSn != null and request.stockSn != ''">
+                AND s.sn LIKE CONCAT(#{request.stockSn},'%')
+            </if>
+            <if test="request.stockSnList != null and request.stockSnList.size() >0">
+                <foreach collection="request.stockSnList" item="sn" open="and s.sn in (" separator=","
+                         close=")">
+                    #{sn}
+                </foreach>
+            </if>
+            <if test="request.stockStatus != null">
+                AND s.stock_status = #{request.stockStatus}
+            </if>
+            <if test="request.salesPriority != null">
+                AND s.sales_priority != #{request.salesPriority}
+            </if>
+            <if test="request.stockSrc != null">
+                AND s.stock_src = #{request.stockSrc}
+            </if>
+            <if test="request.locationId != null">
+                AND s.location_id = #{request.locationId}
+            </if>
+            <if test="request.excludedLocationId != null">
+                AND s.location_id != #{request.excludedLocationId}
+            </if>
+            <if test="request.startStorageAge != null and request.endStorageAge != null">
+                AND storage_age BETWEEN #{request.startStorageAge} AND #{request.endStorageAge}
+            </if>
+            <if test="request.startTotalStorageAge != null and request.endTotalStorageAge != null">
+                AND total_storage_age BETWEEN #{request.startTotalStorageAge} AND #{request.endTotalStorageAge}
+            </if>
+            <if test="request.goodsIdList !=null">
+                <foreach collection="request.goodsIdList" separator="," item="goodsId" open="AND s.goods_id in ("
+                         close=")">
+                    #{goodsId}
+                </foreach>
+            </if>
+
+            <if test="request.single == true">
+                AND eas.id is null
+            </if>
+            <if test="request.colour != null and request.colour != ''">
+                AND eas.colour = #{request.colour}
+            </if>
+            <if test="request.material != null and request.material != ''">
+                AND eas.material = #{request.material}
+            </if>
+            <if test="request.size != null and request.size != ''">
+                AND eas.size = #{request.size}
+            </if>
+            <if test="request.gwModel != null and request.gwModel != ''">
+                AND eas.gw_model = #{request.gwModel}
+            </if>
+        </where>
+        ORDER BY s.id desc
+    </select>
+
+    <select id="listStockByApply" parameterType="com.seeease.flywheel.goods.request.StockListRequest"
+            resultMap="StockInfoResultMap">
+        <include refid="SelectStockInfoResultMap"/>
+        <where>
+            s.temp is null
+            <if test="request.rightOfManagement != null">
+                AND s.right_of_management = #{request.rightOfManagement}
+            </if>
+            <if test="request.brandName != null and request.brandName != ''">
+                AND b.`name` LIKE CONCAT(#{request.brandName},'%')
+            </if>
+            <if test="request.seriesName != null and request.seriesName != ''">
+                AND ser.`name` LIKE CONCAT(#{request.seriesName},'%')
+            </if>
+            <if test="request.model != null and request.model != ''">
+                AND gw.`model` LIKE CONCAT(#{request.model},'%')
+            </if>
+            <if test="request.stockSn != null and request.stockSn != ''">
+                AND s.sn LIKE CONCAT(#{request.stockSn},'%')
+            </if>
+            <if test="request.stockStatusList != null and request.stockStatusList.size() >0">
+                <foreach collection="request.stockStatusList" item="id" open="and s.stock_status in (" separator=","
+                         close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="request.finess != null and request.finess != ''">
+                AND s.finess LIKE CONCAT(#{request.finess},'%')
+            </if>
+
+            <if test="request.salesPriority != null">
+                AND s.sales_priority != #{request.salesPriority}
+            </if>
+
+            <if test="request.goodsIdList != null and request.goodsIdList.size() >0">
+                <foreach collection="request.goodsIdList" item="id" open="and s.goods_id in (" separator=","
+                         close=")">
+                    #{id}
+                </foreach>
+            </if>
+
+        </where>
+        ORDER BY s.id desc
+    </select>
+
+    <select id="selectStockToDJCGById" resultType="java.lang.Integer">
+        select COUNT(1)
+        from stock s
+                 LEFT JOIN batch_stock bs on bs.stock_id = s.id
+                 LEFT JOIN batch_purchase bp on bs.batch_id = bp.batch_id
+        WHERE bp.batch_source = 1
+          and s.id = #{stockId}
+        order by bp.id desc limit 1
+    </select>
+
+    <select id="selectStockListByIds" resultType="com.seeease.flywheel.serve.goods.entity.StockPo">
+        select s.*,
+        b.name brandName,
+        ss.`name` seriesName,
+        gw.model modelName,
+        gw.price_pub pricePub
+        from stock s
+        LEFT JOIN goods_watch gw on gw.id = s.goods_id
+        LEFT JOIN brand b on b.id = gw.brand_id
+        LEFT JOIN series ss on ss.id = gw.series_id
+        where s.temp is null and s.id IN (
+        <foreach collection="stockIds" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </select>
+    <select id="exceptionStock" resultType="com.seeease.flywheel.goods.result.StockExceptionListResult">
+
+        SELECT
+
+        s.id stockId,
+        s.sn stockSn,
+        s.unusual_desc unusualDesc,
+        s.goods_id goodsId,
+        s.finess,
+        s.rk_time,
+        s.attachment,
+        s.stock_status,
+        s.stock_src,
+        s.remark remarks,
+        s.purchase_price,
+        s.total_price,
+        psn.name managementOf,
+        tg.tag_name locationName,
+        ps.name belongName,
+        ct.customer_name
+
+        FROM
+        stock s
+        LEFT JOIN customer_contacts ccn on ccn.id = s.cc_id
+        LEFT JOIN customer ct ON ccn.customer_id = ct.id
+        LEFT JOIN purchase_subject ps ON s.belong_id = ps.id
+        LEFT JOIN store_management sm ON s.location_id = sm.id
+        LEFT JOIN tag tg ON sm.tag_id = tg.id
+        LEFT JOIN purchase_subject pss ON s.source_subject_id = pss.id
+        LEFT JOIN storage_location sl on s.storage_location = sl.id
+        LEFT JOIN purchase_subject psn on s.right_of_management = psn.id
+        LEFT JOIN store si on s.store_id = si.id
+        LEFT JOIN store_management smm ON s.demand_id = smm.id
+        LEFT JOIN tag tag on smm.tag_id = tag.id
+        <where>
+
+            <if test="request.startTime != null and request.startTime != '' and request.endTime != null and request.endTime != ''">
+
+                and DATE_FORMAT(s.rk_time,'%Y-%m-%d %H:%i:%s') between #{request.startTime} and #{request.endTime}
+
+            </if>
+
+            <if test="request.stockSn != null and request.stockSn !=''">
+                and s.sn = #{request.stockSn}
+            </if>
+
+            <if test="request.locationId != null">
+                and s.location_id = #{request.locationId}
+            </if>
+
+            <if test="request.rightOfManagement != null ">
+                and s.right_of_management = #{request.rightOfManagement}
+            </if>
+
+            <if test="request.storeId != null">
+                and s.store_id = #{request.storeId}
+            </if>
+
+            <if test="request.goodsIdList !=null">
+                <foreach collection="request.goodsIdList" item="cid" open="and s.goods_id in (" separator=","
+                         close=")">
+                    #{cid}
+                </foreach>
+            </if>
+            <if test="request.stockSrc != null">
+                and s.stock_src = #{request.stockSrc}
+            </if>
+            <if test="request.stockStatus != null">
+                and s.stock_status = #{request.stockStatus}
+            </if>
+            <if test="request.stockStatus == null">
+                and s.stock_status in (777, 760)
+            </if>
+        </where>
+        ORDER BY s.id DESC
+    </select>
+
+    <update id="recalculateConsignmentPrice">
+        UPDATE stock s
+        INNER JOIN goods_watch gw ON s.goods_id = gw.id
+        INNER JOIN purchase_subject ps ON s.source_subject_id = ps.id
+        SET
+        s.total_price = s.purchase_price + IFNULL(s.fix_price,0) + IFNULL(s.add_price,0)
+--           ,
+--         s.consignment_price =
+--         CASE
+--         ps.watch_status
+--         WHEN 1 THEN
+--         s.purchase_price + IFNULL(s.fix_price,0) + gw.price_pub * ps.consignment_point / 100
+--         WHEN 2 THEN
+--         ( s.purchase_price + IFNULL(s.fix_price,0) ) *(
+--         1+ps.consignment_point / 100
+--         )
+--         END
+        WHERE
+        s.id IN (
+        <foreach collection="stockIds" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </update>
+
+    <update id="cleanDemandIdByIds">
+        UPDATE stock
+        SET demand_id = NULL
+        WHERE id IN (
+        <foreach collection="ids" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </update>
+    <update id="cleanCkTimeByIds">
+        UPDATE stock
+        SET ck_time = NULL
+        WHERE id IN (
+        <foreach collection="ids" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </update>
+
+    <sql id="sales_priority_update">
+        ,sales_priority =
+        CASE WHEN finess = 'S级/99新' THEN sales_priority
+            WHEN DATEDIFF(NOW(), IFNULL(rk_time, NOW()))>90 THEN 0
+            WHEN right_of_management = 53 THEN 1 ELSE 2
+        END
+    </sql>
+
+    <update id="refreshStorageAge">
+        UPDATE stock
+        SET total_storage_age = DATEDIFF(NOW(), IFNULL(rk_time, NOW())),
+        storage_age = DATEDIFF(NOW(), IFNULL(store_rk_time, NOW()))
+        <include refid="sales_priority_update"/>
+        WHERE `stock_status` NOT IN (9, 888)
+        AND `temp` IS NULL
+        <if test="stockIdList !=null">
+            <foreach collection="stockIdList" item="id" separator="," open="AND id IN (" close=")">
+                #{id}
+            </foreach>
+        </if>
+    </update>
+
+    <select id="getConsignmentPrice" resultType="com.seeease.flywheel.serve.goods.entity.Stock">
+
+        SELECT
+        s.consignment_price,
+        s.id id,
+        s.tob_price tobPrice,
+        s.toc_price tocPrice,
+        s.sn sn
+        FROM
+        stock s
+        INNER JOIN goods_watch gw ON s.goods_id = gw.id
+        INNER JOIN purchase_subject ps ON s.source_subject_id = ps.id
+        WHERE
+        s.id IN (
+        <foreach collection="stockIds" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </select>
+
+    <select id="getConsignmentPrice2" resultType="com.seeease.flywheel.serve.goods.entity.Stock">
+
+        SELECT s.purchase_price + #{fixPrice} + IFNULL(s.add_price, 0) total_price,
+               CASE
+                   ps.watch_status
+                   WHEN 1 THEN
+                           s.purchase_price + #{fixPrice} +
+                           gw.price_pub * ps.consignment_point / 100
+                   WHEN 2 THEN
+                           (s.purchase_price + #{fixPrice}) * (
+                           1 + ps.consignment_point / 100
+                           )
+                   END                                                 consignment_price,
+               s.id                                                    id,
+               s.tob_price                                             tobPrice,
+               s.toc_price                                             tocPrice,
+               s.sn                                                    sn,
+               s.source_subject_id
+        FROM stock s
+                 INNER JOIN goods_watch gw ON s.goods_id = gw.id
+                 INNER JOIN purchase_subject ps ON s.source_subject_id = ps.id
+        WHERE s.id = #{stockId}
+    </select>
+
+    <select id="list" resultMap="BaseResultMap">
+        SELECT
+        s.*
+        FROM
+        stock s
+        LEFT JOIN goods_watch gw ON s.goods_id = gw.id
+        LEFT JOIN brand b ON gw.brand_id = b.id
+        <where>
+            s.store_id = #{s}
+            AND s.temp IS NULL
+            AND s.stock_status IN (
+            100,
+            610,
+            777)
+            <if test="b != null and b !=''">
+                AND b.`name` LIKE CONCAT('%',#{b},'%')
+            </if>
+            <if test="m != null and m !=''">
+                AND gw.`model` LIKE CONCAT('%',#{m},'%')
+            </if>
+        </where>
+    </select>
+    <select id="listByRequest" resultType="com.seeease.flywheel.goods.entity.StockInfo">
+        SELECT s.id stockId,
+        s.wno,
+        s.finess,
+        s.tag_price,
+        s.attachment,
+        smi.box_number,
+        s.sn stockSn,
+        gw.id as goods_id,
+        gw.brand_id,
+        gw.price_pub,
+        gw.watch_size,
+        gw.model,
+        b.`name` brandName,
+        ser.`name` seriesName,
+        s.stock_status stockStatus
+        FROM stock s
+        left join stock_manage_info smi on smi.stock_id = s.id
+        INNER JOIN goods_watch gw ON gw.id = s.goods_id
+        INNER JOIN brand b ON b.id = gw.brand_id
+        INNER JOIN series ser ON ser.id = gw.series_id
+        <where>
+            gw.del_flag = 0 and s.stock_status!=9 AND s.temp is null
+            <if test="request.stockSn != null and request.stockSn != ''">
+                AND s.sn = #{request.stockSn}
+            </if>
+            <if test="request.storeId != null">
+                AND s.store_id = #{request.storeId}
+            </if>
+            <if test="request.stockStatus != null">
+                AND s.stock_status = #{request.stockStatus}
+            </if>
+            <if test="request.model != null and request.model != ''">
+                and gw.model like concat ('%',#{request.model},'%')
+            </if>
+            <if test="request.boxNumber != null and request.boxNumber != ''">
+                and smi.box_number = #{request.boxNumber}
+            </if>
+            <if test="request.rkStartTime != null and request.rkStartTime != '' and
+            request.rkEndTime != null and request.rkEndTime != ''">
+                AND DATE_FORMAT(s.rk_time,'%Y-%m-%d %H:%i:%s') BETWEEN #{request.rkStartTime} AND
+                #{request.rkEndTime}
+            </if>
+            <if test="request.brandIds !=null and request.brandIds.size() > 0">
+                <foreach collection="request.brandIds" item="id" separator="," open="AND b.id IN (" close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+        order by b.id,gw.id,s.finess
+    </select>
+    <select id="modelStockFoldList" resultType="com.seeease.flywheel.goods.result.StockGoodQueryResult">
+        SELECT
+        s.*,
+        ct.customer_name,
+        ct.type customerType,
+        gw.image,
+        gw.model,
+        gw.model_code,
+        gw.price_pub,
+        gw.movement,
+        gw.sex,
+        gw.watch_size,
+        ss.NAME as series_name,
+        bd.NAME as brand_name,
+        ps.`name` belongName,
+        tg.tag_name locationName,
+        s.storage_age storageAge,
+        pss.`name` purchaseSubject,
+        s.`warranty_date` warrantyDate,
+        s.`is_box` isBox,
+        s.`is_card` isCard,
+        s.`is_warranty` isWarranty,
+        s.`defect_or_not` defectOrNot,
+        s.`defect_description` defectDescription,
+        sl.name storage_name,
+        psn.name managementOf,
+        si.store_name,
+        sp.promotion_price promotionPrice,
+        tag.tag_name demandName,
+        smi.box_number
+        FROM
+        stock s
+        LEFT JOIN goods_watch gw ON s.goods_id = gw.id
+        LEFT JOIN series ss ON gw.series_id = ss.id
+        LEFT JOIN brand bd ON gw.brand_id = bd.id
+        LEFT JOIN customer_contacts ccn on ccn.id = s.cc_id
+        LEFT JOIN customer ct ON ccn.customer_id = ct.id
+        LEFT JOIN purchase_subject ps ON s.belong_id=ps.id
+        LEFT JOIN store_management sm ON s.location_id=sm.id
+        LEFT JOIN tag tg ON sm.tag_id=tg.id
+        LEFT JOIN purchase_subject pss ON s.source_subject_id=pss.id
+        LEFT JOIN storage_location sl on s.storage_location = sl.id
+        LEFT JOIN purchase_subject psn on s.right_of_management= psn.id
+        LEFT JOIN store si on s.store_id = si.id
+        LEFT JOIN store_management smm ON s.demand_id=smm.id
+        LEFT JOIN tag tag on smm.tag_id = tag.id
+        left join stock_promotion sp on sp.stock_id = s.id and sp.status = 1 and sp.deleted = 0
+        left join stock_manage_info smi on s.id = smi.stock_id
+        <where>
+            gw.del_flag = 0 and s.stock_status!=9 and temp is null
+            <if test="request.whetherPromotion == 1">
+                and sp.id is not null
+            </if>
+            <if test="request.visibleShop==true">
+                and shop_hide=0
+            </if>
+            <if test="request.finess != null and request.finess!=''">
+                and s.finess = #{request.finess}
+            </if>
+            <if test="request.sn != null and request.sn !=''">
+                and s.sn = #{request.sn}
+            </if>
+            <if test="request.brandName != null and request.brandName != ''">
+                and bd.id in
+                <foreach collection="request.brandName" index="index" item="item" open="(" separator="," close=")">
+                    #{request.brandName[${index}]}
+                </foreach>
+            </if>
+            <if test="request.sex != null and request.sex != ''">
+                and gw.sex = #{request.sex}
+            </if>
+            <if test="request.seriesName != null and request.seriesName != ''">
+                and ss.name like concat ('%',#{request.seriesName},'%')
+            </if>
+            <if test="request.model != null and request.model != ''">
+                and REPLACE(gw.model,".","") like concat ("%",REPLACE(#{request.model},".",""),"%")
+            </if>
+            <if test="request.stockStatus != null and request.queryBatchBorrowing == false">
+                and s.stock_status = #{request.stockStatus}
+            </if>
+            <if test="request.stockStatus != null and request.queryBatchBorrowing == true">
+                and (s.stock_status = #{request.stockStatus} or s.stock_status = 10000 or s.stock_status = 610)
+            </if>
+            <if test="request.belongId != null">
+                and s.belong_id = #{request.belongId}
+            </if>
+            <if test="request.locationId != null">
+                and s.location_id = #{request.locationId}
+            </if>
+            <if test="request.stockSrc != null">
+                and s.stock_src = #{request.stockSrc}
+            </if>
+            <if test="request.beginCreateTime != null and request.beginCreateTime != '' and request.endCreateTime != null and request.endCreateTime != ''">
+                and s.rk_time between #{request.beginCreateTime} and #{request.endCreateTime}
+            </if>
+            <if test="request.beginStorageAge != null and request.beginStorageAge != '' and request.endStorageAge != null and request.endStorageAge != ''">
+                and s.total_storage_age between #{request.beginStorageAge} and #{request.endStorageAge}
+            </if>
+            <if test="request.beginStoreAge != null and request.endStoreAge != null">
+                and s.storage_age between #{request.beginStoreAge} and #{request.endStoreAge}
+            </if>
+            <if test="request.minToBPriceRange != null and request.maxToBPriceRange != null">
+                and s.tob_price between #{request.minToBPriceRange} and #{request.maxToBPriceRange}
+            </if>
+            <if test="request.minToCPriceRange != null and request.maxToCPriceRange != null">
+                and s.toc_price between #{request.minToCPriceRange} and #{request.maxToCPriceRange}
+            </if>
+            <if test="request.minTagPriceRange != null and request.maxTagPriceRange != null">
+                and s.tag_price between #{request.minTagPriceRange} and #{request.maxTagPriceRange}
+            </if>
+            <if test="request.phoneComprehensiveSearch != null and request.phoneComprehensiveSearch != ''">
+                and (bd.name like concat ('%',#{request.phoneComprehensiveSearch},'%')
+                or ss.name like concat ('%',#{request.phoneComprehensiveSearch},'%')
+                or gw.model like concat ('%',#{request.phoneComprehensiveSearch},'%')
+                or s.sn like concat ('%',#{request.phoneComprehensiveSearch},'%')
+                or s.wno = #{request.phoneComprehensiveSearch})
+            </if>
+            <if test="request.watchcaseMaterial != null and request.watchcaseMaterial != ''">
+                and gw.watchcase_material like concat ('%',#{request.watchcaseMaterial},'%')
+            </if>
+            <if test="request.headMaterial != null and request.headMaterial != ''">
+                and gw.head_material like concat ('%',#{request.headMaterial},'%')
+            </if>
+            <if test="request.phoneFiness != null and request.phoneFiness.length > 0 ">
+                <foreach collection="request.phoneFiness" item="finess" index="index" open="and s.finess in ("
+                         separator=","
+                         close=")">
+                    #{request.phoneFiness[${index}],javaType=String}
+                </foreach>
+            </if>
+            <if test="request.phoneStockSrc != null and request.phoneStockSrc.length > 0">
+                <foreach collection="request.phoneStockSrc" item="stockSrc" index="index" open="and s.stock_src in ("
+                         separator="," close=")">
+                    #{request.phoneStockSrc[${index}],javaType=INTEGER}
+                </foreach>
+            </if>
+            <if test="request.phonePricePub != null and request.phonePricePub.size() > 0 ">
+                <foreach collection="request.phonePricePub" item="pricePub" index="index"
+                         open="and gw.price_pub between "
+                         separator="and ">
+                    #{request.phonePricePub[${index}],javaType=DECIMAL}
+                </foreach>
+            </if>
+            <if test="request.phoneTagPrice != null and request.phoneTagPrice.size() > 0 ">
+                <foreach collection="request.phoneTagPrice" item="tagPrice" index="index"
+                         open="and s.tag_price between "
+                         separator="and ">
+                    #{request.phoneTagPrice[${index}],javaType=DECIMAL}
+                </foreach>
+            </if>
+            <if test="request.phonePriceB != null and request.phonePriceB.size() > 0 ">
+                <foreach collection="request.phonePriceB" item="priceB" index="index" open="and s.tob_price between "
+                         separator="and ">
+                    #{request.phonePriceB[${index}],javaType=DECIMAL}
+                </foreach>
+            </if>
+            <if test="request.phonePriceC != null and request.phonePriceC.size() > 0 ">
+                <foreach collection="request.phonePriceC" item="priceC" index="index" open="and s.toc_price between "
+                         separator="and ">
+                    #{request.phonePriceC[${index}],javaType=DECIMAL}
+                </foreach>
+            </if>
+            <if test="request.phoneIsSale != null and request.phoneIsSale == 0">
+                and s.stock_status != 100
+            </if>
+            <if test="request.phoneIsSale != null and request.phoneIsSale == 1">
+                and s.stock_status = 100
+            </if>
+            <if test="request.phoneIsSale != null and request.phoneIsSale == 2">
+                and (s.stock_status = 1605 or s.stock_status = 207)
+            </if>
+            <if test="request.wno != null and request.wno != ''">
+                and s.wno = #{request.wno}
+            </if>
+            <if test="request.rightOfManagement != null and request.rightOfManagement != ''">
+                and s.right_of_management = #{request.rightOfManagement}
+            </if>
+            <if test="request.storeId != null">
+                and s.store_id = #{request.storeId}
+            </if>
+            <if test="request.demandId != null">
+                and s.demand_id = #{request.demandId}
+            </if>
+            <if test="request.level != null">
+                and s.level = #{request.level}
+            </if>
+            <if test="request.salesPriority != null">
+                and s.sales_priority = #{request.salesPriority}
+            </if>
+            <if test="request.boxNumber != null and request.boxNumber != ''">
+                and smi.box_number = #{request.boxNumber}
+            </if>
+            <if test="request.goodsId != null">
+                and s.goods_id = #{request.goodsId} and s.id != #{request.id}
+            </if>
+        </where>
+        <if test="request.groupingGoodsId==true">
+            group by s.goods_id
+        </if>
+        ORDER BY id DESC
+    </select>
+    <select id="listStockBySettlement" resultType="com.seeease.flywheel.goods.entity.StockBaseInfo">
+        SELECT s.id stockId,
+        s.wno,
+        s.finess,
+        s.total_price,
+        s.consignment_price,
+        s.attachment,
+        s.sn stockSn,
+        s.warranty_date,
+        s.location_id,
+        s.belong_id belongId,
+        s.right_of_management,
+        gw.id goodsId,
+        gw.brand_id,
+        gw.price_pub,
+        gw.model,
+        gw.image,
+        s.tob_price tobPrice,
+        s.toc_price tocPrice,
+        s.cc_id ccId,
+        s.stock_src,
+        s.source_subject_id sourceSubjectId,
+        s.purchase_price purchasePrice,
+        s.stock_status stockStatus,
+        bp.serial_no originSerialNo
+        FROM stock s
+        INNER JOIN bill_purchase_line bpl on bpl.stock_id = s.id
+        INNER JOIN bill_purchase bp on bp.id = bpl.purchase_id
+        INNER JOIN goods_watch gw ON gw.id = s.goods_id
+        INNER JOIN accounts_payable_accounting apa on apa.stock_id = s.id and apa.stock_sn = s.sn
+        <where>
+            s.temp is null and (bpl.whether_settle is null or bpl.whether_settle = 0 ) and apa.deleted = 0 and apa.type
+            = 4 and
+            bpl.deleted = 0 and s.deleted = 0 and bp.deleted = 0
+            <if test="request.rightOfManagement != null">
+                AND s.right_of_management = #{request.rightOfManagement}
+            </if>
+            <if test="request.model != null and request.model != ''">
+                AND gw.`model` LIKE CONCAT(#{request.model},'%')
+            </if>
+            <if test="request.stockSn != null and request.stockSn != ''">
+                AND s.sn LIKE CONCAT(#{request.stockSn},'%')
+            </if>
+            <if test="request.stockStatus != null">
+                AND s.stock_status = #{request.stockStatus}
+            </if>
+            <if test="request.customerId !=null">
+                and bp.customer_id = #{request.customerId}
+            </if>
+            <if test="request.stockSrc != null">
+                AND s.stock_src = #{request.stockSrc}
+            </if>
+            <if test="request.stockSnList != null and request.stockSnList.size() >0">
+                <foreach collection="request.stockSnList" item="sn" open="and s.sn in (" separator=","
+                         close=")">
+                    #{sn}
+                </foreach>
+            </if>
+
+        </where>
+        ORDER BY s.id desc
+    </select>
+    <select id="listStockByInvoice" resultType="com.seeease.flywheel.goods.entity.StockBaseInfo">
+        SELECT s.id stockId,
+        s.wno,
+        s.finess,
+        s.total_price,
+        s.consignment_price,
+        s.attachment,
+        s.sn stockSn,
+        s.warranty_date,
+        s.location_id,
+        s.right_of_management,
+        s.belong_id,
+        gw.id goodsId,
+        gw.brand_id,
+        gw.price_pub,
+        gw.model,
+        gw.image,
+        s.tob_price tobPrice,
+        s.toc_price tocPrice,
+        s.cc_id ccId,
+        s.stock_src,
+        s.source_subject_id sourceSubjectId,
+        s.purchase_price purchasePrice,
+        s.stock_status stockStatus,
+        bso.serial_no originSerialNo,
+        bso.serial_no serialNo,
+        bsol.id lineId,
+        bsol.clinch_price clinchPrice
+        FROM stock s
+        INNER JOIN bill_sale_order_line bsol on bsol.stock_id = s.id and bsol.whether_invoice = 0
+        INNER JOIN bill_sale_order bso on bso.id = bsol.sale_id
+        INNER JOIN goods_watch gw ON gw.id = s.goods_id
+        <where>
+            s.temp is null and bsol.deleted = 0 and s.deleted = 0 and bso.deleted = 0 and bsol.sale_line_state in (4,5)
+            <if test="request.serialNo != null">
+                AND bso.serial_no = #{request.serialNo}
+            </if>
+            <if test="request.model != null and request.model != ''">
+                AND gw.`model` LIKE CONCAT(#{request.model},'%')
+            </if>
+            <if test="request.stockSn != null and request.stockSn != ''">
+                AND s.sn LIKE CONCAT(#{request.stockSn},'%')
+            </if>
+            <if test="request.stockStatus != null">
+                AND s.stock_status = #{request.stockStatus}
+            </if>
+            <if test="request.customerId !=null">
+                and bso.customer_id = #{request.customerId}
+            </if>
+            <if test="request.stockSnList != null and request.stockSnList.size() >0">
+                <foreach collection="request.stockSnList" item="sn" open="and s.sn in (" separator=","
+                         close=")">
+                    #{sn}
+                </foreach>
+            </if>
+        </where>
+        ORDER BY s.id desc
+    </select>
+
+
+    <resultMap id="StockQuantityResultMap" type="com.seeease.flywheel.serve.goods.entity.StockQuantityDTO">
+        <result property="goodsId" column="id" jdbcType="INTEGER"/>
+        <result property="model" column="model" jdbcType="VARCHAR"/>
+        <result property="stockQuantity" column="stockQuantity" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="countSaleStockQuantity" resultMap="StockQuantityResultMap">
+        SELECT
+        gw.id,
+        gw.model,
+        COUNT(s.id) AS stockQuantity
+        FROM goods_watch gw
+        LEFT JOIN stock s ON s.goods_id = gw.id AND s.stock_status = 100 AND s.location_id = #{locationId}
+        <where>
+            <foreach collection="goodsIdList" item="goodsId" open="AND gw.id in (" separator="," close=")">
+                #{goodsId}
+            </foreach>
+        </where>
+        GROUP BY gw.id
+    </select>
+
+    <select id="countAllocateStockQuantity" resultMap="StockQuantityResultMap">
+        SELECT
+        gw.id,
+        gw.model,
+        COUNT(s.id) AS stockQuantity
+        FROM goods_watch gw
+        LEFT JOIN stock s ON s.goods_id = gw.id AND s.stock_status = 100 AND s.right_of_management =
+        #{rightOfManagement}
+        <where>
+            <foreach collection="goodsIdList" item="goodsId" open="AND gw.id in (" separator="," close=")">
+                #{goodsId}
+            </foreach>
+        </where>
+        GROUP BY gw.id
+    </select>
+    <select id="queryUnallocatedGoodsCount" resultType="java.lang.Long">
+        SELECT count(1)
+        FROM stock s
+                 LEFT JOIN goods_watch gw ON s.goods_id = gw.id
+                 LEFT JOIN store_management sm1 ON s.demand_id = sm1.id
+                 LEFT JOIN tag tg1 ON sm1.tag_id = tg1.id
+        where gw.del_flag = 0
+          and s.stock_status in (100, 600, 610, 760, 777)
+          and s.location_id = 1
+          and tg1.tag_name is null
+    </select>
+    <select id="selectWhetherProtectById" resultType="java.lang.Integer">
+        select whether_protect from stock where id = #{id}
+    </select>
+</mapper>

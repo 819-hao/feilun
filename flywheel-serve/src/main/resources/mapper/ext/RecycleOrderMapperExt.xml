@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.recycle.mapper.RecycleOrderMapper">
+
+    <select id="listByRequest" parameterType="com.seeease.flywheel.recycle.request.RecycleOrderListRequest"
+            resultType="com.seeease.flywheel.recycle.result.RecyclingListResult">
+        select
+        brv.*,
+        brv.state mallState,
+        brv.state lineState,
+        DATE_FORMAT (brv.created_time,'%Y-%m-%d %H:%i:%s') createdTime,
+        bd.NAME brandName,
+        gw.image,
+        gw.model,
+        ss.NAME seriesName,
+        s.finess,
+        s.is_card,
+        s.warranty_date,
+        s.sn stockSn,
+        gw.price_pub,
+        tag.tag_name demandName,
+        u.name employeeName,
+        c.name customer_name,
+        c.phone customer_phone
+        from
+        mall_recycling_order brv
+        LEFT JOIN stock s on s.id = brv.stock_id
+        LEFT JOIN goods_watch gw ON s.goods_id = gw.id
+        LEFT JOIN series ss ON gw.series_id = ss.id
+        LEFT JOIN brand bd ON gw.brand_id = bd.id
+        left join store_management sm on s.demand_id = sm.id
+        left join tag tag on sm.tag_id=tag.id
+        left join user u on brv.employee_id = u.id
+        left join customer_contacts c on brv.customer_contact_id = c.id
+        <where>
+            <if test="request.storeId != null">
+                and brv.demand_id = #{request.storeId}
+            </if>
+            <if test="request.state != null">
+                and brv.state = #{request.state}
+            </if>
+            <if test="request.recycleType != null">
+                and brv.recycle_type = #{request.recycleType}
+            </if>
+            <if test="request.finess != null and request.finess != ''">
+                and s.finess = #{request.finess}
+            </if>
+            <if test="request.stockSn != null and request.stockSn != ''">
+                and s.sn = #{request.stockSn}
+            </if>
+            <if test="request.model != null and request.model != ''">
+                and REPLACE(gw.model,".","") like concat ("%",REPLACE(#{request.model},".",""),"%")
+            </if>
+            <if test="request.customerName != null and request.customerName != ''">
+                and c.name like concat ('%',#{request.customerName},'%')
+            </if>
+            <if test="request.employeeName != null and request.employeeName != ''">
+                and u.name like concat ('%',#{request.employeeName},'%')
+            </if>
+            <if test="request.seriesName != null and request.seriesName != ''">
+                and ss.name like concat ('%',#{request.seriesName},'%')
+            </if>
+            <if test="request.lineStateList != null">
+                and brv.state in
+                <foreach collection="request.lineStateList" index="index" item="item" open="(" separator="," close=")">
+                    #{request.lineStateList[${index}]}
+                </foreach>
+            </if>
+            <if test="request.brandId != null">
+                and bd.id in
+                <foreach collection="request.brandId" index="index" item="item" open="(" separator="," close=")">
+                    #{request.brandId[${index}]}
+                </foreach>
+            </if>
+            <if test="request.recycleId != null">
+                and brv.id in
+                <foreach collection="request.recycleId" index="index" item="item" open="(" separator="," close=")">
+                    #{request.recycleId[${index}]}
+                </foreach>
+            </if>
+            <if test="request.beginCreateTime != null and request.beginCreateTime != '' and request.endCreateTime != null and request.endCreateTime != ''">
+                and DATE_FORMAT(brv.created_time,'%Y-%m-%d %H:%i:%s')
+                between #{request.beginCreateTime} and #{request.endCreateTime}
+            </if>
+        </where>
+        order by brv.created_time desc
+    </select>
+
+    <select id="listByRequestByRecycle" parameterType="com.seeease.flywheel.recycle.request.RecycleOrderListRequest"
+            resultType="com.seeease.flywheel.recycle.result.RecyclingListResult">
+        select
+        brv.*,
+        brv.state mallState,
+        brv.state lineState,
+        bd.`name` brandName,
+        ss.`name` seriesName,
+        gw.model model,
+        DATE_FORMAT (brv.created_time,'%Y-%m-%d %H:%i:%s') createdTime,
+        DATE_FORMAT (brv.valuation_time,'%Y-%m-%d %H:%i:%s') valuationTime,
+        DATE_FORMAT (brv.valuation_time_two,'%Y-%m-%d %H:%i:%s') valuationTimeTwo,
+        if(brv.valuation_time_two is null,if (brv.valuation_time, null, DATE_FORMAT (brv.valuation_time,'%Y-%m-%d
+        %H:%i:%s')),
+        DATE_FORMAT (brv.valuation_time_two,'%Y-%m-%d %H:%i:%s')) latestValuationTime,
+        gw.price_pub,
+        tag.tag_name demandName,
+        u.name employeeName,
+        c.name customer_name,
+        c.phone customer_phone
+        from
+        mall_recycling_order brv
+        LEFT JOIN goods_watch gw ON brv.goods_id = gw.id
+        LEFT JOIN series ss ON gw.series_id = ss.id
+        LEFT JOIN brand bd ON brv.brand_id = bd.id
+        left join store_management sm on brv.demand_id = sm.id
+        left join tag tag on sm.tag_id=tag.id
+        left join user u on brv.employee_id = u.id
+        left join customer_contacts c on brv.customer_contact_id = c.id
+        <where>
+            <if test="request.storeId != null">
+                and brv.demand_id = #{request.storeId}
+            </if>
+            <if test="request.state != null">
+                and brv.state = #{request.state}
+            </if>
+            <if test="request.recycleType != null">
+                and brv.recycle_type = #{request.recycleType}
+            </if>
+            <if test="request.finess != null and request.finess != ''">
+                and brv.finess = #{request.finess}
+            </if>
+            <if test="request.demandId != null">
+                and brv.demand_id = #{request.demandId}
+            </if>
+            <if test="request.stockSn != null and request.stockSn != ''">
+                and brv.stock_sn = #{request.stockSn}
+            </if>
+            <if test="request.model != null and request.model != ''">
+                and REPLACE(gw.model,".","") like concat ("%",REPLACE(#{request.model},".",""),"%")
+            </if>
+            <if test="request.customerName != null and request.customerName != ''">
+                and c.name like concat ('%',#{request.customerName},'%')
+            </if>
+            <if test="request.brandName != null and request.brandName != ''">
+                and bd.name like concat ('%',#{request.brandName},'%')
+            </if>
+            <if test="request.employeeName != null and request.employeeName != ''">
+                and u.name like concat ('%',#{request.employeeName},'%')
+            </if>
+            <if test="request.customerPhone != null and request.customerPhone != ''">
+                and c.phone like concat ('%',#{request.customerPhone},'%')
+            </if>
+            <if test="request.seriesName != null and request.seriesName != ''">
+                and ss.name like concat ('%',#{request.seriesName},'%')
+            </if>
+            <if test="request.lineStateList != null">
+                and brv.state in
+                <foreach collection="request.lineStateList" index="index" item="item" open="(" separator="," close=")">
+                    #{request.lineStateList[${index}]}
+                </foreach>
+            </if>
+            <if test="request.brandId != null">
+                and bd.id in
+                <foreach collection="request.brandId" index="index" item="item" open="(" separator="," close=")">
+                    #{request.brandId[${index}]}
+                </foreach>
+            </if>
+            <if test="request.recycleId != null">
+                and brv.id in
+                <foreach collection="request.recycleId" index="index" item="item" open="(" separator="," close=")">
+                    #{request.recycleId[${index}]}
+                </foreach>
+            </if>
+            <if test="request.beginCreateTime != null and request.beginCreateTime != '' and request.endCreateTime != null and request.endCreateTime != ''">
+                and DATE_FORMAT(brv.created_time,'%Y-%m-%d %H:%i:%s')
+                between #{request.beginCreateTime} and #{request.endCreateTime}
+            </if>
+        </where>
+        order by brv.created_time desc
+    </select>
+
+
+</mapper>

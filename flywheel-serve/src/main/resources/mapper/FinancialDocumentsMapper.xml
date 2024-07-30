@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.financial.mapper.FinancialDocumentsMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.financial.entity.FinancialDocuments">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="serialNumber" column="serial_number" jdbcType="VARCHAR"/>
+            <result property="assocSerialNumber" column="assoc_serial_number" jdbcType="VARCHAR"/>
+            <result property="thirdNumber" column="third_number" jdbcType="VARCHAR"/>
+            <result property="orderType" column="order_type" jdbcType="INTEGER"/>
+            <result property="orderOrigin" column="order_origin" jdbcType="INTEGER"/>
+            <result property="saleMode" column="sale_mode" jdbcType="INTEGER"/>
+            <result property="customerId" column="customer_id" jdbcType="INTEGER"/>
+            <result property="orderNumber" column="order_number" jdbcType="INTEGER"/>
+            <result property="orderMoney" column="order_money" jdbcType="DECIMAL"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="outStoreTime" column="out_store_time" jdbcType="TIMESTAMP"/>
+            <result property="belongId" column="belong_id" jdbcType="INTEGER"/>
+            <result property="divideInto" column="divide_into" jdbcType="INTEGER"/>
+            <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+            <result property="clcId" column="clc_id" jdbcType="INTEGER"/>
+            <result property="oldToNew" column="old_to_new" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,serial_number,assoc_serial_number,
+        third_number,order_type,order_origin,
+        customer_id,order_number,order_money,
+        create_by,create_time,out_store_time,
+        belong_id,divide_into,deleted,
+        clc_id,old_to_new,sale_mode
+    </sql>
+</mapper>

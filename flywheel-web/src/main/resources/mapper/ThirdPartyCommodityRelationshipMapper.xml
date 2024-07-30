@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.web.infrastructure.mapper.ThirdPartyCommodityRelationshipMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.web.entity.ThirdPartyCommodityRelationship">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="goodsWatchModel" column="goods_watch_model" jdbcType="VARCHAR"/>
+            <result property="thirdPartyGoodsId" column="third_party_goods_id" jdbcType="VARCHAR"/>
+            <result property="inventoryStatus" column="inventory_status" jdbcType="INTEGER"/>
+            <result property="snModelStatus" column="sn_model_status" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,goods_watch_model,third_party_goods_id,
+        inventory_status,sn_model_status
+    </sql>
+</mapper>

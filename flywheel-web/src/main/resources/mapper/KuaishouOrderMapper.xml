@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.web.infrastructure.mapper.KuaishouOrderMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.web.entity.KuaishouOrder">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="kuaiShouShopId" column="kuai_shou_shop_id" jdbcType="BIGINT"/>
+            <result property="kuaiShouShopName" column="kuai_shou_shop_name" jdbcType="VARCHAR"/>
+            <result property="orderId" column="order_id" jdbcType="VARCHAR"/>
+            <result property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="shopId" column="shop_id" jdbcType="INTEGER"/>
+            <result property="orderStatus" column="order_status" jdbcType="INTEGER"/>
+            <result property="orderType" column="order_type" jdbcType="INTEGER"/>
+            <result property="activityType" column="activity_type" jdbcType="INTEGER"/>
+            <result property="payType" column="pay_type" jdbcType="INTEGER"/>
+            <result property="payChannel" column="pay_channel" jdbcType="VARCHAR"/>
+            <result property="coType" column="co_type" jdbcType="INTEGER"/>
+            <result property="carrierType" column="carrier_type" jdbcType="INTEGER"/>
+            <result property="carrierId" column="carrier_id" jdbcType="BIGINT"/>
+            <result property="orderAmount" column="order_amount" jdbcType="DECIMAL"/>
+            <result property="payAmount" column="pay_amount" jdbcType="DECIMAL"/>
+            <result property="payTime" column="pay_time" jdbcType="TIMESTAMP"/>
+            <result property="buyerWords" column="buyer_words" jdbcType="VARCHAR"/>
+            <result property="sellerWords" column="seller_words" jdbcType="VARCHAR"/>
+            <result property="province" column="province" jdbcType="VARCHAR"/>
+            <result property="city" column="city" jdbcType="VARCHAR"/>
+            <result property="town" column="town" jdbcType="VARCHAR"/>
+            <result property="street" column="street" jdbcType="VARCHAR"/>
+            <result property="encryptPostTel" column="encrypt_post_tel" jdbcType="VARCHAR"/>
+            <result property="encryptPostReceiver" column="encrypt_post_receiver" jdbcType="VARCHAR"/>
+            <result property="encryptAddrArea" column="encrypt_addr_area" jdbcType="VARCHAR"/>
+            <result property="encryptDetail" column="encrypt_detail" jdbcType="VARCHAR"/>
+            <result property="decryptPostTel" column="decrypt_post_tel" jdbcType="VARCHAR"/>
+            <result property="decryptPostReceiver" column="decrypt_post_receiver" jdbcType="VARCHAR"/>
+            <result property="decryptAddrDetail" column="decrypt_addr_detail" jdbcType="VARCHAR"/>
+            <result property="maskPostTel" column="mask_post_tel" jdbcType="VARCHAR"/>
+            <result property="maskPostReceiver" column="mask_post_receiver" jdbcType="VARCHAR"/>
+            <result property="maskDetail" column="mask_detail" jdbcType="VARCHAR"/>
+            <result property="cancelTime" column="cancel_time" jdbcType="TIMESTAMP"/>
+            <result property="cancelReason" column="cancel_reason" jdbcType="VARCHAR"/>
+            <result property="revision" column="revision" jdbcType="INTEGER"/>
+            <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+            <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+            <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+            <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+            <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+            <result property="whetherUse" column="whether_use" jdbcType="INTEGER"/>
+            <result property="usageTime" column="usage_time" jdbcType="TIMESTAMP"/>
+            <result property="whetherQuery" column="whether_query" jdbcType="INTEGER"/>
+            <result property="whetherNotify" column="whether_notify" jdbcType="INTEGER"/>
+            <result property="roleName" column="role_name" jdbcType="VARCHAR"/>
+            <result property="roleType" column="role_type" jdbcType="INTEGER"/>
+            <result property="roleId" column="role_id" jdbcType="BIGINT"/>
+            <result property="skuId" column="sku_id" jdbcType="BIGINT"/>
+            <result property="relSkuId" column="rel_sku_id" jdbcType="BIGINT"/>
+            <result property="skuDesc" column="sku_desc" jdbcType="VARCHAR"/>
+            <result property="skuNick" column="sku_nick" jdbcType="VARCHAR"/>
+            <result property="itemId" column="item_id" jdbcType="BIGINT"/>
+            <result property="relItemId" column="rel_item_id" jdbcType="BIGINT"/>
+            <result property="itemLinkUrl" column="item_link_url" jdbcType="VARCHAR"/>
+            <result property="itemTitle" column="item_title" jdbcType="VARCHAR"/>
+            <result property="itemPicUrl" column="item_pic_url" jdbcType="VARCHAR"/>
+            <result property="num" column="num" jdbcType="INTEGER"/>
+            <result property="originalPrice" column="original_price" jdbcType="DECIMAL"/>
+            <result property="discountFee" column="discount_fee" jdbcType="DECIMAL"/>
+            <result property="price" column="price" jdbcType="DECIMAL"/>
+            <result property="itemType" column="item_type" jdbcType="INTEGER"/>
+            <result property="sellerOpenId" column="seller_open_id" jdbcType="VARCHAR"/>
+            <result property="goodsModel" column="goods_model" jdbcType="VARCHAR"/>
+            <result property="modelCode" column="model_code" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,kuai_shou_shop_id,kuai_shou_shop_name,
+        order_id,serial_no,shop_id,
+        order_status,order_type,activity_type,
+        pay_type,pay_channel,co_type,
+        carrier_type,carrier_id,order_amount,
+        pay_amount,pay_time,buyer_words,
+        seller_words,province,city,
+        town,street,encrypt_post_tel,
+        encrypt_post_receiver,encrypt_addr_area,encrypt_detail,
+        decrypt_post_tel,decrypt_post_receiver,decrypt_addr_detail,
+        mask_post_tel,mask_post_receiver,mask_detail,
+        cancel_time,cancel_reason,revision,
+        created_id,created_by,created_time,
+        updated_id,updated_by,updated_time,
+        deleted,whether_use,usage_time,
+        whether_query,whether_notify,role_name,
+        role_type,role_id,sku_id,
+        rel_sku_id,sku_desc,sku_nick,
+        item_id,rel_item_id,item_link_url,
+        item_title,item_pic_url,num,
+        original_price,discount_fee,price,
+        item_type,seller_open_id,goods_model,model_code
+    </sql>
+</mapper>

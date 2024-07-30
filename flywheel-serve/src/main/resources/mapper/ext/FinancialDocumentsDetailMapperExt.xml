@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.financial.mapper.FinancialDocumentsDetailMapper">
+
+    <select id="selectListBySerialNumberAndStockIds"
+            resultType="com.seeease.flywheel.serve.financial.entity.FinancialDocumentsDetail">
+        SELECT
+        fdd.*
+        FROM
+        financial_documents_detail fdd
+        INNER JOIN financial_documents fd ON fdd.financial_documents_id = fd.id
+        WHERE
+        fd.serial_number LIKE concat( #{serialNumber}, "%" )
+        AND fd.deleted = 0
+        AND fdd.stock_id IN (
+        <foreach collection="stockIds" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </select>
+</mapper>

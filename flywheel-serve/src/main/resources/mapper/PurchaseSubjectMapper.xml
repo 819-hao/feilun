@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.maindata.mapper.PurchaseSubjectMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.maindata.entity.PurchaseSubject">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="subjectCompany" column="subject_company" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="delFlag" column="del_flag" jdbcType="TINYINT"/>
+            <result property="throughThePlatform" column="through_the_platform" jdbcType="TINYINT"/>
+            <result property="consignmentPoint" column="consignment_point" jdbcType="DECIMAL"/>
+            <result property="watchStatus" column="watch_status" jdbcType="INTEGER"/>
+            <result property="storeId" column="store_id" jdbcType="BIGINT"/>
+            <result property="isFlow" column="is_flow" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,name,create_time,subject_company,
+        update_time,create_by,update_by,
+        del_flag,through_the_platform,consignment_point,
+        watch_status,store_id,is_flow
+    </sql>
+</mapper>

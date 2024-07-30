@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.customer.mapper.BankMapper">
+
+    <select id="getPage" resultType="com.seeease.flywheel.customer.result.BankPageResult">
+        select id ,
+        customer_id customerId,
+        bank_name bankName,
+        bank_card bankCard,
+        bank_account bankAccount
+        from bank
+        <where>
+            <if test="request.customerId != null">
+                and customer_id = #{request.customerId}
+            </if>
+            <if test="request.bankCard != null and request.bankCard != ''">
+                and banck_card = #{request.bankCard}
+            </if>
+        </where>
+    </select>
+</mapper>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1hjfens" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.4.2" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+  <bpmn:process id="exceptionStockHandle" name="异常商品维修流程" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="storeWorkSerialNoList" label="出库单列表" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_02c4qai</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_02c4qai" sourceRef="StartEvent_1" targetRef="Activity_007bcwh" />
+    <bpmn:endEvent id="Event_1yubh1v">
+      <bpmn:incoming>Flow_0lkmynq</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0lkmynq" sourceRef="Activity_007bcwh" targetRef="Event_1yubh1v" />
+    <bpmn:callActivity id="Activity_007bcwh" name="异常商品维修" calledElement="exceptionStockHandleInstance">
+      <bpmn:extensionElements>
+        <camunda:in local="true" variables="all" />
+        <camunda:in sourceExpression="#{execution.processBusinessKey}" target="parentBusinessKey" />
+        <camunda:in businessKey="#{serialNo}" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_02c4qai</bpmn:incoming>
+      <bpmn:outgoing>Flow_0lkmynq</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="${storeWorkSerialNoList}" camunda:elementVariable="serialNo" />
+    </bpmn:callActivity>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="exceptionStockHandle">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1yubh1v_di" bpmnElement="Event_1yubh1v">
+        <dc:Bounds x="432" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_18ypmde_di" bpmnElement="Activity_007bcwh">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_02c4qai_di" bpmnElement="Flow_02c4qai">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0lkmynq_di" bpmnElement="Flow_0lkmynq">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="432" y="117" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.goods.mapper.GoodsWatchMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.goods.entity.GoodsWatch">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="brandId" column="brand_id" jdbcType="INTEGER"/>
+            <result property="seriesId" column="series_id" jdbcType="INTEGER"/>
+            <result property="image" column="image" jdbcType="VARCHAR"/>
+            <result property="model" column="model" jdbcType="VARCHAR"/>
+            <result property="modelCode" column="model_code" jdbcType="VARCHAR"/>
+            <result property="pricePub" column="price_pub" jdbcType="DECIMAL"/>
+            <result property="currentPrice" column="current_price" jdbcType="DECIMAL"/>
+            <result property="twoZeroFullPrice" column="two_zero_full_price" jdbcType="DECIMAL"/>
+            <result property="twoTwoFullPrice" column="two_two_full_price" jdbcType="DECIMAL"/>
+            <result property="movement" column="movement" jdbcType="VARCHAR"/>
+            <result property="sex" column="sex" jdbcType="VARCHAR"/>
+            <result property="nickName" column="nick_name" jdbcType="VARCHAR"/>
+            <result property="limited" column="limited" jdbcType="INTEGER"/>
+            <result property="pinNumber" column="pin_number" jdbcType="TINYINT"/>
+            <result property="movementModel" column="movement_model" jdbcType="VARCHAR"/>
+            <result property="manufacturer" column="manufacturer" jdbcType="VARCHAR"/>
+            <result property="technologyCertification" column="technology_certification" jdbcType="VARCHAR"/>
+            <result property="balanceWheel" column="balance_wheel" jdbcType="VARCHAR"/>
+            <result property="gemsNum" column="gems_num" jdbcType="VARCHAR"/>
+            <result property="vibrationFrequency" column="vibration_frequency" jdbcType="VARCHAR"/>
+            <result property="mark" column="mark" jdbcType="VARCHAR"/>
+            <result property="watchSize" column="watch_size" jdbcType="VARCHAR"/>
+            <result property="backThrough" column="back_through" jdbcType="VARCHAR"/>
+            <result property="weight" column="weight" jdbcType="VARCHAR"/>
+            <result property="occasion" column="occasion" jdbcType="VARCHAR"/>
+            <result property="shape" column="shape" jdbcType="VARCHAR"/>
+            <result property="color" column="color" jdbcType="VARCHAR"/>
+            <result property="braceletColor" column="bracelet_color" jdbcType="VARCHAR"/>
+            <result property="week" column="week" jdbcType="VARCHAR"/>
+            <result property="depth" column="depth" jdbcType="VARCHAR"/>
+            <result property="waterproof" column="waterproof" jdbcType="VARCHAR"/>
+            <result property="material" column="material" jdbcType="VARCHAR"/>
+            <result property="claspMaterial" column="clasp_material" jdbcType="VARCHAR"/>
+            <result property="watchcaseMaterial" column="watchcase_material" jdbcType="VARCHAR"/>
+            <result property="strapMaterial" column="strap_material" jdbcType="VARCHAR"/>
+            <result property="headMaterial" column="head_material" jdbcType="VARCHAR"/>
+            <result property="crystalMaterial" column="crystal_material" jdbcType="VARCHAR"/>
+            <result property="timescaleType" column="timescale_type" jdbcType="VARCHAR"/>
+            <result property="watchEarSpacing" column="watch_ear_spacing" jdbcType="VARCHAR"/>
+            <result property="buckleType" column="buckle_type" jdbcType="VARCHAR"/>
+            <result property="gemsMosaic" column="gems_mosaic" jdbcType="VARCHAR"/>
+            <result property="powerReserve" column="power_reserve" jdbcType="VARCHAR"/>
+            <result property="capacity" column="capacity" jdbcType="VARCHAR"/>
+            <result property="trait" column="trait" jdbcType="VARCHAR"/>
+            <result property="listingDate" column="listing_date" jdbcType="VARCHAR"/>
+            <result property="generations" column="generations" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="delFlag" column="del_flag" jdbcType="TINYINT"/>
+            <result property="simplifyModel" column="simplify_model" jdbcType="VARCHAR"/>
+            <result property="revision" column="revision" jdbcType="INTEGER"/>
+            <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+            <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+            <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+            <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+            <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+            <result property="bagStyle" column="bag_style" jdbcType="VARCHAR"/>
+            <result property="bagMaterial" column="bag_material" jdbcType="VARCHAR"/>
+            <result property="bagSize" column="bag_size" jdbcType="VARCHAR"/>
+            <result property="bagColor" column="bag_color" jdbcType="VARCHAR"/>
+            <result property="bagWeight" column="bag_weight" jdbcType="VARCHAR"/>
+            <result property="bagOcMode" column="bag_OC_mode" jdbcType="VARCHAR"/>
+            <result property="bagStructure" column="bag_structure" jdbcType="VARCHAR"/>
+            <result property="bagOrigin" column="bag_origin" jdbcType="VARCHAR"/>
+            <result property="jewelsStyle" column="jewels_style" jdbcType="VARCHAR"/>
+            <result property="jewelsMaterial" column="jewels_material" jdbcType="VARCHAR"/>
+            <result property="jewelsSize" column="jewels_size" jdbcType="VARCHAR"/>
+            <result property="jewelsWeight" column="jewels_weight" jdbcType="VARCHAR"/>
+            <result property="jewelsSetMaterial" column="jewels_set_material" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,brand_id,series_id,
+        image,model,model_code,
+        price_pub,current_price,two_zero_full_price,
+        two_two_full_price,
+        movement,sex,nick_name,
+        limited,pin_number,movement_model,
+        manufacturer,technology_certification,balance_wheel,
+        gems_num,vibration_frequency,mark,
+        watch_size,back_through,weight,
+        occasion,shape,color,
+        bracelet_color,week,depth,
+        waterproof,material,clasp_material,
+        watchcase_material,strap_material,head_material,
+        crystal_material,timescale_type,watch_ear_spacing,
+        buckle_type,gems_mosaic,power_reserve,
+        capacity,trait,listing_date,
+        generations,create_time,update_time,
+        create_by,update_by,del_flag,
+        simplify_model,revision,created_id,
+        created_by,created_time,updated_id,
+        updated_by,updated_time,deleted,
+        bag_style,bag_material,bag_size,
+        bag_color,bag_weight,bag_OC_mode,
+        bag_structure,bag_origin,jewels_style,
+        jewels_material,jewels_size,jewels_weight,
+        jewels_set_material
+    </sql>
+</mapper>

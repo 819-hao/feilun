@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.purchase.mapper.BillPurchaseMapper">
+    <update id="updateTotalPrice">
+        update bill_purchase
+        set total_purchase_price = total_purchase_price + (#{totalPrice})
+        where id = #{bpId}
+    </update>
+
+    <select id="listByRequest" parameterType="com.seeease.flywheel.purchase.request.PurchaseListRequest"
+            resultMap="BaseResultMap">
+        SELECT bp.* from bill_purchase bp
+        <if test="(request.stockSn != null and request.stockSn!='') or (request.oldStockSn != null and request.oldStockSn!='')">
+            INNER JOIN bill_purchase_line bpl on bpl.purchase_id = bp.id and (bpl.stock_sn = #{request.stockSn} or
+            bpl.old_stock_sn = #{request.oldStockSn})
+        </if>
+        <where>
+            bp.deleted = 0
+            <if test="request.startTime != null and request.startTime != '' and request.endTime != null and request.endTime != ''">
+                AND DATE_FORMAT(bp.created_time,'%Y-%m-%d %H:%i:%s') BETWEEN #{request.startTime} AND #{request.endTime}
+            </if>
+            <if test="request.serialNo !=null and request.serialNo !=''">
+                and bp.serial_no like CONCAT(#{request.serialNo},'%')
+            </if>
+            <if test="request.purchaseType !=null">
+                and bp.purchase_type =#{request.purchaseType}
+            </if>
+            <if test="request.purchaseMode !=null">
+                and bp.purchase_mode =#{request.purchaseMode}
+            </if>
+            <if test="request.purchaseState !=null">
+                and bp.purchase_state =#{request.purchaseState}
+            </if>
+
+            <if test="request.storeId !=null">
+                and bp.store_id =#{request.storeId}
+            </if>
+
+            <if test="request.createdBy !=null and request.createdBy !=''">
+                and bp.created_by like CONCAT(#{request.createdBy},'%')
+            </if>
+            <if test="request.expressNumber !=null and request.expressNumber !=''">
+                and bp.express_number like CONCAT(#{request.expressNumber},'%')
+            </if>
+            <if test="request.customerIdList !=null">
+                <foreach collection="request.customerIdList" item="cid" open="and bp.customer_id in (" separator=","
+                         close=")">
+                    #{cid}
+                </foreach>
+            </if>
+            <if test="request.purchaseSubjectId != null and request.purchaseSubjectId !=-1 ">
+                and bp.purchase_subject_id = #{request.purchaseSubjectId}
+            </if>
+        </where>
+        ORDER BY bp.id desc
+    </select>
+
+    <select id="listByReturn" parameterType="com.seeease.flywheel.goods.request.StockListRequest"
+            resultType="com.seeease.flywheel.goods.entity.StockBaseInfo">
+
+        select
+        bp.serial_no serialNo,
+        bp.purchase_type purchaseType,
+        bp.purchase_subject_id purchaseSubjectId,
+        bpl.purchase_price purchasePrice,
+        bpl.stock_id stockId,
+        s.goods_id goodsId,
+        s.sn stockSn,
+        s.location_id,
+        s.attachment,
+        bpl.remarks remark,
+        s.right_of_management rightOfManagement,
+        s.finess finess,
+        s.wno wno,
+        s.consignment_price consignmentPrice,
+        s.toc_price tocPrice,
+        s.source_subject_id sourceSubjectId,
+        s.cc_id ccId,
+        s.is_underselling,
+        s.total_price totalPrice
+        from
+        bill_purchase bp inner join bill_purchase_line bpl on bp.id = bpl.purchase_id
+        inner join stock s on bpl.stock_id = s.id
+
+        <where>
+            bpl.deleted = 0 and s.deleted = 0 and bp.deleted = 0 and s.stock_status = 100
+
+            <if test="request.serialNo !=null and request.serialNo !=''">
+                and bp.serial_no = #{request.serialNo}
+            </if>
+
+            <if test="request.customerId !=null">
+                and bp.customer_id = #{request.customerId}
+            </if>
+
+            <if test="request.stockSrc !=null">
+                and s.stock_src = #{request.stockSrc}
+            </if>
+
+            <if test="request.stockSn !=null and request.stockSn !=''">
+                and s.sn like CONCAT(#{request.stockSn},'%')
+            </if>
+
+
+            <if test="request.purchaseType !=null">
+                and bp.purchase_type =#{request.purchaseType}
+            </if>
+
+            <if test="request.storeId !=null">
+                and bp.store_id =#{request.storeId}
+            </if>
+
+
+            <if test="request.stockIdList !=null">
+                <foreach collection="request.stockIdList" item="id" open="and s.id in (" separator=","
+                         close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+        ORDER BY bp.id desc
+    </select>
+    <select id="checkoutStockSn" resultType="java.lang.String">
+        SELECT
+        bpl.stock_sn
+        FROM
+        bill_purchase_line bpl
+        LEFT JOIN bill_purchase bp on bpl.purchase_id = bp.id
+        where bp.purchase_state != 3
+        <foreach collection="request.stockSnList" item="sn" open="and bpl.stock_sn in (" separator=","
+                 close=")">
+            #{sn}
+        </foreach>
+        GROUP BY bpl.stock_sn
+    </select>
+    <select id="selectOneByStockId" resultType="com.seeease.flywheel.serve.purchase.entity.BillPurchase">
+        SELECT bp.*
+        FROM bill_purchase bp
+                 INNER JOIN bill_purchase_line bpl ON bpl.purchase_id = bp.id
+        where bpl.stock_id = #{stockId}
+          and bp.purchase_source = 104
+          and bp.purchase_state = 4
+        order by id desc limit 1
+    </select>
+
+    <insert id="selectInsert" parameterType="com.seeease.flywheel.goods.request.SelectInsertPurchaseRequest"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="id"
+    >
+        INSERT INTO bill_purchase (id,serial_no,
+                                   purchase_type,
+                                   purchase_mode,
+                                   purchase_source,
+                                   apply_payment_serial_no,
+                                   customer_id,
+                                   customer_contact_id,
+                                   purchase_subject_id,
+                                   via_subject_id,
+                                   demander_store_id,
+                                   total_purchase_price,
+                                   purchase_state,
+                                   img_list,
+                                   remarks,
+                                   purchase_number,
+                                   is_settlement,
+                                   store_id,
+                                   store_tag,
+                                   revision,
+                                   created_id,
+                                   created_by,
+                                   created_time,
+                                   updated_id,
+                                   updated_by,
+                                   updated_time,
+                                   deleted,
+                                   purchase_id,
+                                   account_name,
+                                   bank_account,
+                                   bank,
+                                   bank_customer_name,
+                                   batch_picture_url,
+                                   pre_payment)
+        SELECT null ,
+               #{request.serialNo},
+               purchase_type,
+               purchase_mode,
+               purchase_source,
+               apply_payment_serial_no,
+               customer_id,
+               customer_contact_id,
+               purchase_subject_id,
+               via_subject_id,
+               demander_store_id,
+               #{request.totalPurchasePrice},
+               1,
+               img_list,
+               remarks,
+               1,
+               is_settlement,
+               store_id,
+               store_tag,
+               revision,
+               created_id,
+               created_by,
+               now(),
+               created_id,
+               created_by,
+               now(),
+               deleted,
+               purchase_id,
+               account_name,
+               bank_account,
+               bank,
+               bank_customer_name,
+               batch_picture_url,
+               pre_payment
+        FROM bill_purchase
+        WHERE id = #{request.id}
+    </insert>
+
+</mapper>

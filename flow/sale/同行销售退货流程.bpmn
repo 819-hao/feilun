@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0s26spb" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.5.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+  <bpmn:process id="toBSaleReturn" name="同行销售退货流程" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="locationId" label="收货位置" type="long" />
+          <camunda:formField id="shortcodes" label="门店简码" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1btrd0k</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1btrd0k" sourceRef="StartEvent_1" targetRef="uploadToBReturnExpressNumber" />
+    <bpmn:userTask id="uploadToBReturnExpressNumber" name="上传快递信息" camunda:candidateGroups="purchaser">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="workSerialNoList" label="入库单号集合" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1btrd0k</bpmn:incoming>
+      <bpmn:outgoing>Flow_1e2t483</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_0yzrm6q">
+      <bpmn:incoming>Flow_09bl5i9</bpmn:incoming>
+      <bpmn:incoming>Flow_01x0ukp</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_09bl5i9" sourceRef="Activity_0k9aavr" targetRef="Event_0yzrm6q" />
+    <bpmn:callActivity id="Activity_0k9aavr" name="门店收货" calledElement="shopReceivingFlow">
+      <bpmn:extensionElements>
+        <camunda:in businessKey="#{workSerialNo}" />
+        <camunda:in local="true" variables="all" />
+        <camunda:in sourceExpression="#{execution.processBusinessKey}" target="parentBusinessKey" />
+        <camunda:in sourceExpression="#{shortcodes}" target="shortcodes" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_18blijp</bpmn:incoming>
+      <bpmn:outgoing>Flow_09bl5i9</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="workSerialNoList" camunda:elementVariable="workSerialNo" />
+    </bpmn:callActivity>
+    <bpmn:exclusiveGateway id="Gateway_021rk4x" default="Flow_18blijp">
+      <bpmn:incoming>Flow_1e2t483</bpmn:incoming>
+      <bpmn:outgoing>Flow_0uvv3iy</bpmn:outgoing>
+      <bpmn:outgoing>Flow_18blijp</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1e2t483" sourceRef="uploadToBReturnExpressNumber" targetRef="Gateway_021rk4x" />
+    <bpmn:sequenceFlow id="Flow_0uvv3iy" sourceRef="Gateway_021rk4x" targetRef="Activity_16iapig">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${locationId==1}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_01x0ukp" sourceRef="Activity_16iapig" targetRef="Event_0yzrm6q" />
+    <bpmn:sequenceFlow id="Flow_18blijp" sourceRef="Gateway_021rk4x" targetRef="Activity_0k9aavr" />
+    <bpmn:callActivity id="Activity_16iapig" name="总部收货" calledElement="zbReceivingFlow">
+      <bpmn:extensionElements>
+        <camunda:in businessKey="#{workSerialNo}" />
+        <camunda:in local="true" variables="all" />
+        <camunda:in sourceExpression="#{execution.processBusinessKey}" target="parentBusinessKey" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0uvv3iy</bpmn:incoming>
+      <bpmn:outgoing>Flow_01x0ukp</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="workSerialNoList" camunda:elementVariable="workSerialNo" />
+    </bpmn:callActivity>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="toBSaleReturn">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="219" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1pgm17z_di" bpmnElement="uploadToBReturnExpressNumber">
+        <dc:Bounds x="270" y="197" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0yzrm6q_di" bpmnElement="Event_0yzrm6q">
+        <dc:Bounds x="812" y="219" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ridbjq_di" bpmnElement="Activity_0k9aavr">
+        <dc:Bounds x="560" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_021rk4x_di" bpmnElement="Gateway_021rk4x" isMarkerVisible="true">
+        <dc:Bounds x="425" y="212" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_067v2la_di" bpmnElement="Activity_16iapig">
+        <dc:Bounds x="560" y="310" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1btrd0k_di" bpmnElement="Flow_1btrd0k">
+        <di:waypoint x="215" y="237" />
+        <di:waypoint x="270" y="237" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09bl5i9_di" bpmnElement="Flow_09bl5i9">
+        <di:waypoint x="660" y="120" />
+        <di:waypoint x="746" y="120" />
+        <di:waypoint x="746" y="237" />
+        <di:waypoint x="812" y="237" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1e2t483_di" bpmnElement="Flow_1e2t483">
+        <di:waypoint x="370" y="237" />
+        <di:waypoint x="425" y="237" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0uvv3iy_di" bpmnElement="Flow_0uvv3iy">
+        <di:waypoint x="450" y="262" />
+        <di:waypoint x="450" y="350" />
+        <di:waypoint x="560" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_01x0ukp_di" bpmnElement="Flow_01x0ukp">
+        <di:waypoint x="660" y="350" />
+        <di:waypoint x="746" y="350" />
+        <di:waypoint x="746" y="237" />
+        <di:waypoint x="812" y="237" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18blijp_di" bpmnElement="Flow_18blijp">
+        <di:waypoint x="450" y="212" />
+        <di:waypoint x="450" y="120" />
+        <di:waypoint x="560" y="120" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

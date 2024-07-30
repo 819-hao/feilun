@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.storework.mapper.BillStoreWorkPreMapper">
+    <select id="rfidWaitOutStoreList" resultType="com.seeease.flywheel.rfid.result.RfidOutStoreListResult">
+        SELECT
+        (select count(*) from bill_store_work_pre pre
+        left join `goods_watch` gw on pre.goods_id = gw.id
+        left join brand b on gw.brand_id = b.id
+        where pre.origin_serial_no = bp.origin_serial_no and pre.work_state = #{waitStatus}
+            and b.name not in (
+            <foreach collection="brandNameList" item="id" separator=",">
+                #{name}
+            </foreach>
+            )
+            ) AS
+        waitNo,
+        (select count(*) from bill_store_work_pre pre
+        left join `goods_watch` gw on pre.goods_id = gw.id
+        left join brand b on gw.brand_id = b.id
+        where pre.origin_serial_no = bp.origin_serial_no and pre.work_state = 6
+        and b.name not in (
+        <foreach collection="brandNameList" item="id" separator=",">
+            #{name}
+        </foreach>
+        )
+            ) AS
+        outNO,
+        bp.origin_serial_no `no`,
+        bp.created_by createUser,
+        bp.created_time createTime,
+        CASE
+        WHEN bp.work_source in (301,306)  THEN
+        "个人销售"
+        WHEN bp.work_source = 201 THEN
+        "总部调拨"
+        WHEN bp.work_source = 202 THEN
+        "门店调拨"
+        ELSE "同行销售"
+        END AS type
+        FROM
+        bill_store_work_pre bp
+        LEFT JOIN stock s ON s.id = bp.stock_id
+        <where>
+            bp.work_state = #{waitStatus}
+            AND bp.belonging_store_id = #{sid}
+            <if test="q != null and q != ''">
+                <choose>
+                    <when test="q.startsWith('XYW')">
+                        and (s.wno = #{q} or bp.goods_id = #{gid})
+                    </when>
+                    <otherwise>
+                        and bp.origin_serial_no LIKE CONCAT('%', #{q}, '%')
+                    </otherwise>
+                </choose>
+            </if>
+        </where>
+        group by bp.origin_serial_no
+        order by bp.created_time desc
+    </select>
+
+    <select id="rfidWaitReceiveList" resultType="com.seeease.flywheel.rfid.result.RfidShopReceiveListResult">
+        SELECT
+        (select count(*) from bill_store_work_pre where origin_serial_no = bp.origin_serial_no and work_state = 1) AS
+        waitNo,
+        (select count(*) from bill_store_work_pre where origin_serial_no = bp.origin_serial_no and work_state = 4) AS
+        outNO,
+        bp.origin_serial_no `no`,
+        bp.created_by createUser,
+        bp.created_time createTime
+        FROM
+        bill_store_work_pre bp
+        LEFT JOIN stock s ON s.id = bp.stock_id
+        <where>
+            bp.work_state = 1
+            AND bp.belonging_store_id = #{sid}
+            <if test="q != null and q != ''">
+                <choose>
+                    <when test="q.startsWith('XYW')">
+                        and (s.wno = #{q} or bp.goods_id = #{gid})
+                    </when>
+                    <otherwise>
+                        and bp.origin_serial_no LIKE CONCAT('%', #{q}, '%')
+                    </otherwise>
+                </choose>
+            </if>
+        </where>
+        group by bp.origin_serial_no
+        order by bp.created_time desc
+    </select>
+
+    <select id="b3Page" resultType="com.seeease.flywheel.sale.result.B3SaleReturnOrderListResult">
+        SELECT
+        gw.image,
+        b.`name` brandName,
+        s.`name` seriesName,
+        gw.model,
+        sk.sn,
+        sk.attachment,
+        bsol.express_number rtNo,
+        bsr.express_number stNo,
+        bs.serial_no atNo,
+        bsr.biz_order_code tiktokNo,
+        t1.tag_name origin,
+        cc.`name` cName,
+        cc.phone cPhone,
+        cc.address cAddress,
+        bsr.created_time createTime,
+        bswp.id,
+        bswp.serial_no,
+        bsro.remark remark,
+        bsro.id bsroId
+        FROM
+        bill_store_work_pre bswp
+        LEFT JOIN bill_sale_return_order bsr ON bswp.origin_serial_no = bsr.serial_no
+        LEFT JOIN bill_sale_return_order_line bsro ON bsr.id = bsro.sale_return_id
+        LEFT JOIN customer_contacts cc on cc.id = bsr.customer_contact_id
+        LEFT JOIN bill_sale_order bs ON bsr.sale_id = bs.id
+        LEFT JOIN bill_sale_order_line bsol ON bsol.stock_id = bsro.stock_id
+        AND bs.id = bsol.sale_id
+        LEFT JOIN store_management sm1 ON bs.shop_id = sm1.id
+        LEFT JOIN tag t1 ON sm1.tag_id = t1.id
+        LEFT JOIN store_management sm2 ON bs.delivery_location_id = sm2.id
+        LEFT JOIN tag t2 ON sm2.tag_id = t2.id
+        LEFT JOIN stock sk ON sk.id = bsro.stock_id
+        LEFT JOIN goods_watch gw ON sk.goods_id = gw.id
+        LEFT JOIN brand b ON gw.brand_id = b.id
+        LEFT JOIN series s ON gw.series_id = s.id
+        <where>
+            bswp.work_source IN ( 304, 305 ) and
+            <foreach collection="b3ShopId" item="item" open=" sm2.id  in (" separator=","
+                     close=")">
+                #{item}
+            </foreach>
+            and bswp.work_state = 1
+            <if test="req.origin != null">
+                and sm1.id = #{req.origin}
+            </if>
+            <if test="req.model != null and req.model != ''">
+                and gw.model like concat("%",#{req.model},"%")
+            </if>
+            <if test="req.sn != null and req.sn != ''">
+                and sk.sn like concat("%",#{req.sn},"%")
+            </if>
+            <if test="req.startTime != null and req.startTime != ''
+                        and req.endTime != null and req.endTime != ''">
+                and bsr.created_time between #{req.startTime} and #{req.endTime}
+            </if>
+            <if test="req.atNo != null and req.atNo != ''">
+                and bsr.sale_serial_no like concat("%",#{req.atNo},"%")
+            </if>
+            <if test="req.rtNo != null and req.rtNo != ''">
+                and  bsol.express_number like concat("%",#{req.rtNo},"%")
+            </if>
+            <if test="req.stNo != null and req.stNo != ''">
+                and  bsr.express_number like concat("%",#{req.stNo},"%")
+            </if>
+            <if test="req.tiktokNo != null and req.tiktokNo != ''">
+                and  bsr.biz_order_code like concat("%",#{req.tiktokNo},"%")
+            </if>
+        </where>
+        order by  bsr.created_time desc
+    </select>
+</mapper>

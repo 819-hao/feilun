@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.sale.mapper.BillSaleReturnOrderMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.sale.entity.BillSaleReturnOrder">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+        <result property="parentSerialNo" column="parent_serial_no" jdbcType="VARCHAR"/>
+        <result property="saleId" column="sale_id" jdbcType="INTEGER"/>
+        <result property="bizOrderCode" column="biz_order_code" jdbcType="VARCHAR"/>
+        <result property="saleReturnType" column="sale_return_type" jdbcType="INTEGER"/>
+        <result property="saleReturnSource" column="sale_return_source" jdbcType="INTEGER"/>
+        <result property="saleReturnState" column="sale_return_state" jdbcType="INTEGER"/>
+        <result property="expressNumber" column="express_number" jdbcType="VARCHAR"/>
+        <result property="saleReturnNumber" column="sale_return_number" jdbcType="INTEGER"/>
+        <result property="totalSaleReturnPrice" column="total_sale_return_price" jdbcType="DECIMAL"/>
+        <result property="customerId" column="customer_id" jdbcType="INTEGER"/>
+        <result property="customerContactId" column="customer_contact_id" jdbcType="INTEGER"/>
+        <result property="shopId" column="shop_id" jdbcType="INTEGER"/>
+        <result property="deliveryLocationId" column="delivery_location_id" jdbcType="INTEGER"/>
+        <result property="refundFlag" column="refund_flag" jdbcType="INTEGER"/>
+        <result property="finishTime" column="finish_time" jdbcType="TIMESTAMP"/>
+        <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+        <result property="saleSerialNo" column="sale_serial_no" jdbcType="VARCHAR"/>
+        <result property="revision" column="revision" jdbcType="INTEGER"/>
+        <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+        <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+        <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+        <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+        <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,serial_no,sale_id,parent_serial_no,refund_flag,
+        biz_order_code,sale_return_type,delivery_location_id,
+        sale_return_source,sale_return_state,express_number,
+        sale_return_number,total_sale_return_price,
+        customer_id,customer_contact_id,remarks,
+        revision,created_id,created_by,shop_id,sale_serial_no,
+        created_time,updated_id,updated_by,
+        updated_time,deleted,finish_time
+    </sql>
+</mapper>

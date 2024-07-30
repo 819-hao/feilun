@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.web.infrastructure.mapper.DouYinProductMappingMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.web.entity.DouYinProductMapping">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="douYinShopId" column="dou_yin_shop_id" jdbcType="INTEGER"/>
+        <result property="shopId" column="shop_id" jdbcType="INTEGER"/>
+        <result property="douYinProductId" column="dou_yin_product_id" jdbcType="VARCHAR"/>
+        <result property="douYinSkuId" column="dou_yin_sku_id" jdbcType="VARCHAR"/>
+        <result property="modelCode" column="model_code" jdbcType="VARCHAR"/>
+        <result property="goodsId" column="goods_id" jdbcType="INTEGER"/>
+        <result property="number" column="number" jdbcType="INTEGER"/>
+        <result property="syncTime" column="sync_time" jdbcType="TIMESTAMP"/>
+        <result property="revision" column="revision" jdbcType="INTEGER"/>
+        <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+        <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+        <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+        <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+        <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,dou_yin_shop_id,shop_id,
+        dou_yin_product_id,dou_yin_sku_id,model_code,goods_id,
+        number,sync_time,revision,
+        created_id,created_by,created_time,
+        updated_id,updated_by,updated_time,
+        deleted
+    </sql>
+
+
+    <resultMap id="VOResultMap" type="com.seeease.flywheel.web.entity.DouYinProductMappingVO">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="douYinShopId" column="dou_yin_shop_id" jdbcType="INTEGER"/>
+        <result property="shopId" column="shop_id" jdbcType="INTEGER"/>
+        <result property="douYinProductId" column="dou_yin_product_id" jdbcType="VARCHAR"/>
+        <result property="douYinSkuId" column="dou_yin_sku_id" jdbcType="VARCHAR"/>
+        <result property="goodsId" column="goods_id" jdbcType="INTEGER"/>
+        <result property="number" column="count_number" jdbcType="INTEGER"/>
+        <result property="modelCode" column="model_code" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="selectProductStock" resultMap="VOResultMap">
+        SELECT dpm.*,COUNT(s.id) as count_number
+        FROM douyin_product_mapping dpm
+        LEFT JOIN stock s ON s.goods_id = dpm.goods_id AND s.stock_status IN (100, 666) AND s.temp IS NULL AND s.finess = 'S级/99新'
+<!--        AND s.right_of_management IN (-->
+<!--        <foreach collection="rightOfManagementList" item="rom" separator=",">-->
+<!--            #{rom}-->
+<!--        </foreach>-->
+<!--        )-->
+        WHERE dpm.shop_id = #{shopId}
+        GROUP BY dpm.id
+    </select>
+
+
+    <delete id="deleteBySku">
+        DELETE FROM douyin_product_mapping
+        WHERE shop_id = #{shopId}
+        AND dou_yin_sku_id IN (
+        <foreach collection="shuIdList" item="skuId" separator=",">
+            #{skuId}
+        </foreach>
+        )
+    </delete>
+
+    <select id="selectSubject" resultType="java.lang.Integer">
+        SELECT subject_id from store_relationship_subject WHERE store_management_id in (
+        <foreach collection="shopIdList" separator="," item="shopId">
+            #{shopId}
+        </foreach>
+        )
+    </select>
+
+</mapper>

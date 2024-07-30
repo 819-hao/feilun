@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.fix.mapper.BillFixMapper2">
+
+    <select id="getPage" resultType="com.seeease.flywheel.fix.result.FixListResult">
+
+        SELECT
+        bf.id,
+        bf.serial_no,
+        bf.fix_state,
+        bf.origin_serial_no,
+        bf.store_work_serial_no,
+        bf.flow_grade,
+        bf.fix_source,
+        bf.special_expediting,
+        bf.repair_flag,
+        bf.fix_money ,
+        bf.fix_day ,
+        DATE_FORMAT(bf.created_time,'%Y-%m-%d %H:%i:%s') createdTime,
+        DATE_FORMAT(bf.task_arrive_time,'%Y-%m-%d %H:%i:%s') taskArriveTime,
+        DATE_FORMAT(bf.repair_time,'%Y-%m-%d %H:%i:%s') repairTime,
+        bf.created_by ,
+        bf.fix_advise ,
+        bf.remark,
+        b.name brandName,
+        se.name seriesName,
+        gw.model model,
+        s.sn stockSn,
+        cr.customer_name customerCustomerName,
+        if(bf.fix_state=2,DATEDIFF(bf.updated_time,bf.repair_time)+1 ,0) realityFixTime,
+        bqt.fix_day qtFixDay,
+        if(bf.finish_time is null,DATE_FORMAT(DATE_ADD(bf.repair_time, INTERVAL bf.fix_day
+        DAY),'%Y-%m-%d'),bf.finish_time) finishTime,
+        bf.timeout_msg timeoutMsg,
+        u.`name` maintenanceMasterName,
+        bf.stock_id stockId
+
+        FROM
+        bill_fix bf
+
+        LEFT JOIN stock s ON bf.stock_id = s.id
+        LEFT JOIN goods_watch gw ON s.goods_id = gw.id
+        LEFT JOIN series se ON gw.series_id = se.id
+        LEFT JOIN brand b ON se.brand_id = b.id
+        LEFT JOIN customer cr ON bf.customer_id = cr.id
+        LEFT JOIN customer_contacts ccn ON ccn.customer_id = cr.id
+
+        LEFT JOIN bill_quality_testing bqt on bqt.origin_serial_no = bf.origin_serial_no and
+        bqt.store_work_serial_no= bf.store_work_serial_no and bqt.stock_id= bf.stock_id
+        left join `user` u on u.id = bf.maintenance_master_id
+
+
+        <where>
+            <if test="request.startTime != null and request.startTime != '' and request.endTime != null and request.endTime != ''">
+                and DATE_FORMAT(bf.created_time,'%Y-%m-%d %H:%i:%s') between #{request.startTime}
+                and #{request.endTime}
+            </if>
+
+            <if test="request.fixState != null">
+                and bf.fix_state = #{request.fixState}
+            </if>
+
+            <if test="request.flowGrade != null">
+                and bf.flow_grade = #{request.flowGrade}
+            </if>
+
+            <if test="request.fixSource != null">
+                and bf.fix_source = #{request.fixSource}
+            </if>
+
+            <if test="request.specialExpediting != null">
+                and bf.special_expediting = #{request.specialExpediting}
+            </if>
+
+            <if test="request.repairFlag != null">
+                and bf.repair_flag = #{request.repairFlag}
+            </if>
+
+            <if test="request.brand != null and request.brand != ''">
+                and b.name like concat('%',#{request.brand,jdbcType=VARCHAR},'%')
+            </if>
+
+            <if test="request.model != null and request.model != ''">
+                and gw.model like concat('%',#{request.model,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="request.stockSn != null and request.stockSn != ''">
+                and s.sn like concat('%',#{request.stockSn,jdbcType=VARCHAR},'%')
+            </if>
+
+            <if test="request.table != null and request.table">
+
+                and if(bf.finish_time is null
+                ,(DATEDIFF(now(),bf.repair_time)) > bf.fix_day
+                ,true
+                )
+                and bf.repair_time is not null and bf.fix_state = 1
+            </if>
+
+            <if test="request.timeoutSelect != null and request.timeoutSelect">
+                and if(bf.finish_time is null
+                ,if(bf.fix_state = 2,(DATEDIFF(bf.updated_time,bf.repair_time)) >
+                bf.fix_day,(DATEDIFF(now(),bf.repair_time)) > bf.fix_day)
+                ,true
+                )
+                and bf.repair_time is not null
+            </if>
+            <if test="request.timeoutSelect != null and !request.timeoutSelect">
+                and if(bf.finish_time is null
+                ,if(bf.fix_state = 2,(DATEDIFF(bf.updated_time,bf.repair_time)) <![CDATA[ <= ]]>
+                bf.fix_day,(DATEDIFF(now(),bf.repair_time)) <![CDATA[ <= ]]> bf.fix_day)
+                ,false
+                )
+                and bf.repair_time is not null
+            </if>
+
+            <if test="request.timeoutMsgSelect != null and request.timeoutMsgSelect">
+                and bf.timeout_msg is not null
+            </if>
+
+            <if test="request.timeoutMsgSelect != null and !request.timeoutMsgSelect">
+                and bf.timeout_msg is null
+            </if>
+
+
+        </where>
+        group by bf.id, cr.id
+        order by bf.fix_state, bf.created_time desc
+
+    </select>
+
+</mapper>

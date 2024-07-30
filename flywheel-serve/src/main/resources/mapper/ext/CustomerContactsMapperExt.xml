@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.customer.mapper.CustomerContactsMapper">
+    <select id="getPage" resultType="com.seeease.flywheel.customer.result.CustomerPageResult">
+        SELECT cc.`name`,
+        cc.id customerContactsId,
+        cc.customer_id customerId,
+        cc.phone
+        FROM customer_contacts cc
+        LEFT JOIN customer c ON c.id = cc.customer_id
+        <where>
+            <if test="request.type != null">
+                and c.type = #{request.type}
+            </if>
+            <if test="request.searchCriteria != null and request.searchCriteria != ''">
+                and (cc.name = #{request.searchCriteria}
+                OR cc.phone = #{request.searchCriteria})
+            </if>
+        </where>
+    </select>
+
+    <select id="customerAndContractsPage"
+            resultType="com.seeease.flywheel.customer.result.CustomerAndContractsPageQueryResult">
+        SELECT
+        c.`id` as customerId,
+        c.`customer_name` as customerName,
+        cc.`id` as contactId,
+        cc.`name` as contactName,
+        cc.`address` as contactAddress,
+        cc.`phone` as contactPhone
+        FROM customer_contacts cc
+        LEFT JOIN customer c ON c.id = cc.customer_id
+        <where>
+            cc.deleted = 0
+            and c.del_flag = 0
+            and c.type = 2
+            <if test="request.customerName != null and request.customerName != ''">
+                and c.customer_name like concat("%",#{request.customerName},"%")
+            </if>
+            <if test="request.searchCriteria != null and request.searchCriteria != ''">
+                and (cc.name like concat("%",#{request.searchCriteria},"%")
+                OR cc.phone like concat("%",#{request.searchCriteria},"%"))
+            </if>
+        </where>
+    </select>
+
+</mapper>

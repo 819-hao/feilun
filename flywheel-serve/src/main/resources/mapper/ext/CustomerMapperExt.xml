@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.customer.mapper.CustomerMapper">
+
+    <select id="queryCustomerPO" resultType="com.seeease.flywheel.serve.customer.entity.CustomerPO">
+        SELECT c.id            customerId,
+               cc.id           customerContactsId,
+               c.customer_name customerName,
+               c.account_name  accountName,
+               c.bank          bank,
+               c.bank_account  bankAccount,
+               cc.name         contactName,
+               cc.phone        contactPhone,
+               cc.address      contactAddress
+        FROM customer c
+                 LEFT JOIN customer_contacts cc ON c.id = cc.customer_id
+        where cc.id =
+              #{customerContactsId}
+    </select>
+    <select id="searchByNameOrPhone" resultType="com.seeease.flywheel.serve.customer.entity.Customer">
+        select c.*
+        from customer c
+        left join customer_contacts cc on c.id = cc.customer_id
+        <where>
+            <if test="customerName !=null">
+                and c.customer_name LIKE CONCAT('%',#{customerName},'%')
+            </if>
+            <if test="customerPhone !=null">
+                and cc.phone =#{customerPhone}
+            </if>
+        </where>
+    </select>
+    <select id="queryByName" resultType="com.seeease.flywheel.serve.customer.entity.Customer">
+        select *
+        from customer
+        where customer_name = #{name} limit 1
+    </select>
+</mapper>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.fix.mapper.LogFixOptMapper">
+
+    <select id="getPage" resultType="com.seeease.flywheel.fix.result.FixLogResult">
+
+
+        SELECT
+        lfo.id,
+        lfo.serial_no,
+        lfo.fix_state,
+        lfo.origin_serial_no,
+        lfo.store_work_serial_no,
+        lfo.flow_grade,
+        lfo.fix_source,
+        lfo.special_expediting,
+        lfo.repair_flag,
+        lfo.fix_money ,
+        lfo.fix_day ,
+        DATE_FORMAT(lfo.created_time,'%Y-%m-%d %H:%i:%s') createdTime,
+        DATE_FORMAT(lfo.task_arrive_time,'%Y-%m-%d %H:%i:%s') taskArriveTime,
+        lfo.created_by ,
+        lfo.fix_advise ,
+        lfo.remark,
+        b.name brandName,
+        se.name seriesName,
+        gw.model model,
+        s.sn stockSn,
+        cr.customer_name customerCustomerName
+
+        FROM
+        log_fix_opt lfo 
+        LEFT JOIN stock s ON lfo.stock_id = s.id
+        LEFT JOIN goods_watch gw ON s.goods_id = gw.id
+        LEFT JOIN series se ON gw.series_id = se.id
+        LEFT JOIN brand b ON se.brand_id = b.id
+        LEFT JOIN customer cr ON  lfo.customer_id = cr.id
+        LEFT JOIN customer_contacts ccn ON ccn.customer_id = cr.id
+
+        <where>
+            <if test="request.startTime != null and request.startTime != '' and request.endTime != null and request.endTime != ''">
+                and DATE_FORMAT(lfo.created_time,'%Y-%m-%d %H:%i:%s') between #{request.startTime}
+                and #{request.endTime}
+            </if>
+
+            <if test="request.fixState != null">
+                and lfo.fix_state = #{request.fixState}
+            </if>
+
+            <if test="request.flowGrade != null">
+                and lfo.flow_grade = #{request.flowGrade}
+            </if>
+
+            <if test="request.fixSource != null">
+                and lfo.fix_source = #{request.fixSource}
+            </if>
+
+            <if test="request.specialExpediting != null">
+                and lfo.special_expediting = #{request.specialExpediting}
+            </if>
+
+            <if test="request.repairFlag != null">
+                and lfo.repair_flag = #{request.repairFlag}
+            </if>
+
+            <if test="request.brand != null and request.brand != ''">
+                and b.name like concat('%',#{request.brand,jdbcType=VARCHAR},'%')
+            </if>
+
+            <if test="request.model != null and request.model != ''">
+                and gw.model like concat('%',#{request.model,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="request.stockSn != null and request.stockSn != ''">
+                and s.sn like concat('%',#{request.stockSn,jdbcType=VARCHAR},'%')
+            </if>
+
+        </where>
+        group by lfo.id, cr.id
+        order by lfo.fix_state, lfo.created_time desc
+    </select>
+</mapper>

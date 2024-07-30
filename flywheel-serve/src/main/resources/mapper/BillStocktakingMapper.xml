@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.stocktaking.mapper.BillStocktakingMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.stocktaking.entity.BillStocktaking">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="storeId" column="store_id" jdbcType="INTEGER"/>
+            <result property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="stocktakingState" column="stocktaking_state" jdbcType="INTEGER"/>
+            <result property="stocktakingSource" column="stocktaking_source" jdbcType="INTEGER"/>
+            <result property="quantity" column="quantity" jdbcType="INTEGER"/>
+            <result property="matchQuantity" column="match_quantity" jdbcType="INTEGER"/>
+            <result property="profitQuantity" column="profit_quantity" jdbcType="INTEGER"/>
+            <result property="lossQuantity" column="loss_quantity" jdbcType="INTEGER"/>
+            <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+            <result property="revision" column="revision" jdbcType="INTEGER"/>
+            <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+            <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+            <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+            <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+            <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,store_id,serial_no,
+        stocktaking_state,stocktaking_source,quantity,
+        match_quantity,profit_quantity,loss_quantity,
+        remarks,revision,created_id,
+        created_by,created_time,updated_id,
+        updated_by,updated_time,deleted
+    </sql>
+</mapper>

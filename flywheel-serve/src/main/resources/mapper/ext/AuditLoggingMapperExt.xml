@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.financial.mapper.AuditLoggingMapper">
+
+    <select id="getPage" resultType="com.seeease.flywheel.financial.result.AuditLoggingPageResult">
+        select al.*
+        from audit_logging al
+        <where>
+            al.deleted = 0
+            <if test="request.createdStartTime != null and request.createdEndTime != null">
+                and al.created_time BETWEEN #{request.createdStartTime} AND #{request.createdEndTime}
+            </if>
+            <if test="request.type != null">
+                and al.type = #{request.type}
+            </if>
+            <if test="request.stockSn != null or request.model != null">
+                and exists(select ald.audit_logging_id
+                from audit_logging_detail ald
+                where ald.audit_logging_id = al.id
+                <if test="request.stockSn != null">
+                    and ald.stock_sn = #{request.stockSn}
+                </if>
+                <if test="request.model != null">
+                    and ald.model = #{request.model}
+                </if>
+                )
+            </if>
+            <if test="request.classification != null">
+                and al.classification= #{request.classification}
+            </if>
+            <if test="request.salesMethod != null">
+                and al.sales_method= #{request.salesMethod}
+            </if>
+            <if test="request.customerType != null">
+                and al.customer_type= #{request.customerType}
+            </if>
+            <if test="request.applicant != null">
+                and al.applicant= #{request.applicant}
+            </if>
+            <if test="request.afpSerialNo != null">
+                and al.afp_serial_no= #{request.afpSerialNo}
+            </if>
+            <if test="request.arcSerialNo != null">
+                and al.arc_serial_no= #{request.arcSerialNo}
+            </if>
+            <if test="request.shopId != null">
+                and al.shop_id= #{request.shopId}
+            </if>
+            <if test="request.searchCustomerCriteria !=null and request.searchCustomerCriteria != ''">
+                and (al.customer_id in (
+                <foreach collection="request.customerIds" item="id" separator=",">
+                    #{id}
+                </foreach>
+                )
+                or al.customer_contact_id in (
+                <foreach collection="request.contactsIds" item="id" separator=",">
+                    #{id}
+                </foreach>
+                ) )
+            </if>
+        </where>
+        order by al.id desc
+    </select>
+
+</mapper>

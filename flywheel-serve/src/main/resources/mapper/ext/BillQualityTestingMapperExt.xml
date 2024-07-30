@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.qt.mapper.BillQualityTestingMapper">
+
+    <select id="getPage" resultType="com.seeease.flywheel.qt.result.QualityTestingListResult">
+
+        SELECT
+        bqt.id,
+        bqt.serial_no,
+        bqt.store_work_serial_no,
+        bqt.origin_serial_no,
+        bqt.qt_state,
+        bqt.qt_conclusion,
+        bqt.qt_source,
+        DATE_FORMAT(bqt.task_arrive_time,'%Y-%m-%d %H:%i:%s') taskArriveTime,
+        IF
+        ( bqt.fix_id IS NULL, 0, 1 ) fixOnQt,
+        s.finess,
+        s.sn stockSn,
+        s.attachment,
+        s.`week`,
+        s.strap_material,
+        s.watch_section,
+        s.goods_id,
+        s.id stockId
+
+        FROM
+        bill_quality_testing bqt
+        LEFT JOIN stock s ON s.id = bqt.stock_id
+        <where>
+            bqt.deleted = 0
+            <if test="request.startTime != null and request.startTime != '' and request.endTime != null and request.endTime != ''">
+                and DATE_FORMAT(bqt.created_time,'%Y-%m-%d %H:%i:%s') between #{request.startTime}
+                and #{request.endTime}
+            </if>
+
+            <if test="request.stockSn != null and request.stockSn != ''">
+                and s.sn like concat('%',#{request.stockSn,jdbcType=VARCHAR},'%')
+            </if>
+
+            <if test="request.originSerialNo != null and request.originSerialNo != ''">
+                and bqt.origin_serial_no like concat('%',#{request.originSerialNo,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="request.qtState != null">
+                and bqt.qt_state = #{request.qtState}
+            </if>
+
+            <if test="request.qtSource != null">
+                and bqt.qt_source = #{request.qtSource}
+            </if>
+
+            <if test="request.fixOnQt != null and request.fixOnQt == 0">
+                and bqt.fix_id is null
+            </if>
+
+            <if test="request.fixOnQt != null and request.fixOnQt == 1">
+                and bqt.fix_id is not null
+            </if>
+
+        </where>
+
+        order by bqt.id desc
+
+    </select>
+
+    <select id="getPageWaitDeliver" resultType="com.seeease.flywheel.qt.result.QualityTestingWaitDeliverListResult">
+        SELECT
+        bqt.id,
+        bqt.origin_serial_no,
+        bqt.store_work_serial_no,
+        s.sn stockSn,
+        s.attachment,
+        s.goods_id,
+        s.id stockId,
+        DATE_FORMAT(bqt.task_arrive_time,'%Y-%m-%d %H:%i:%s') taskArriveTime,
+        bqt.deliver_to deliverTo,
+        bqt.deliver deliver
+
+        FROM
+        bill_quality_testing bqt
+        LEFT JOIN stock s ON s.id = bqt.stock_id
+
+        <where>
+
+            bqt.deleted = 0
+            <if test="request.startTime != null and request.startTime != '' and request.endTime != null and request.endTime != ''">
+                and DATE_FORMAT(bqt.created_time,'%Y-%m-%d %H:%i:%s') between #{request.startTime}
+                and #{request.endTime}
+            </if>
+
+            <if test="request.stockSn != null and request.stockSn != ''">
+                and s.sn like concat('%',#{request.stockSn,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="request.originSerialNo != null and request.originSerialNo != ''">
+                and bqt.origin_serial_no like concat('%',#{request.originSerialNo,jdbcType=VARCHAR},'%')
+            </if>
+
+            <if test="request.deliver != null">
+                and bqt.deliver = #{request.deliver}
+            </if>
+            <if test="request.deliver == null">
+                and bqt.deliver in (0,1)
+            </if>
+        </where>
+
+        order by bqt.id desc
+
+    </select>
+</mapper>

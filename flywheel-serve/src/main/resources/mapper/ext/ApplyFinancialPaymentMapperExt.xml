@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.financial.mapper.ApplyFinancialPaymentMapper">
+    <select id="getPage"
+            resultType="com.seeease.flywheel.financial.result.ApplyFinancialPaymentPageResult">
+        SELECT
+        afp.id,
+        afp.created_by createdBy,
+        afp.serial_no serialNo,
+        afp.created_time createdTime,
+        afp.type_payment typePayment
+        FROM
+        apply_financial_payment afp
+        <where>
+            afp.deleted = 0
+            <if test="request.state != null">
+                and afp.state = #{request.state}
+            </if>
+            <if test="request.searchCriteria != null and request.searchCriteria != ''">
+                and (afp.created_by = #{request.searchCriteria}
+                OR afp.bank_customer_name = #{request.searchCriteria}
+                OR afp.customer_name = #{request.searchCriteria}
+                OR afp.customer_name = #{request.searchCriteria}
+                )
+            </if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="getPageAll"
+            resultType="com.seeease.flywheel.financial.result.ApplyFinancialPaymentPageAllResult">
+        SELECT afp.id,
+        afp.serial_no serialNo,
+        c.customer_name customerName,
+        c.id customerId,
+        c.account_name accountName,
+        c.bank bank,
+        c.bank_account bankAccount,
+        cc.name contactName,
+        cc.id contactId,
+        cc.phone contactAddress,
+        cc.address contactPhone,
+        afp.subject_payment purchaseSubjectId,
+        afp.price_payment pricePayment
+
+        FROM apply_financial_payment afp
+        left join bill_purchase bp on afp.serial_no = bp.apply_payment_serial_no
+        LEFT JOIN customer_contacts cc on afp.customer_contacts_id = cc.id
+        LEFT JOIN customer c ON c.id = cc.customer_id
+        <where>
+            afp.state = 1 and afp.whether_use = 0 and afp.deleted = 0
+            and bp.apply_payment_serial_no is null
+            <if test="request.typePayment != null ">
+                and afp.type_payment = #{request.typePayment}
+            </if>
+        </where>
+    </select>
+    <select id="queryByCondition"
+            resultType="com.seeease.flywheel.financial.result.ApplyFinancialPaymentPageQueryByConditionResult">
+        select
+        afp.id,
+        afp.created_by applicant,
+        afp.operator,
+        afp.state,
+        afp.shop_id shopId,
+        afp.sales_method salesMethod,
+        afp.demander_store_id demanderStoreId,
+        afp.type_payment typePayment,
+        afp.applicant_time applicantTime,
+        afp.operate_time operateTime,
+        afp.serial_no serialNo,
+        afp.price_payment pricePayment,
+        afp.whether_use whetherUse,
+        afp.customer_name customerName,
+        afp.bank_account bankAccount,
+        afp.bank_card bankCard,
+        afp.bank_customer_name bankCustomerName,
+        afp.bank_name bankName,
+        afp.whether_repeat whetherRepeat,
+        GROUP_CONCAT(bp.serial_no) purchaseSerialNo
+        FROM
+        apply_financial_payment afp
+        LEFT JOIN bill_purchase bp on afp.serial_no = bp.apply_payment_serial_no
+        <where>
+            afp.deleted = 0
+            <if test="request.serialNo != null ">
+                and afp.serial_no = #{request.serialNo}
+            </if>
+            <if test="request.purchaseSerialNo != null ">
+                and bp.serial_no = #{request.purchaseSerialNo}
+            </if>
+            <if test="request.operator != null ">
+                and afp.operator = #{request.operator}
+            </if>
+            <if test="request.state != null ">
+                and afp.state = #{request.state}
+            </if>
+            <if test="request.whetherRepeat != null ">
+                and afp.whether_repeat = #{request.whetherRepeat}
+            </if>
+            <if test="request.typePayment != null ">
+                and afp.type_payment = #{request.typePayment}
+            </if>
+            <if test="request.whetherUse != null ">
+                and afp.whether_use = #{request.whetherUse}
+            </if>
+            <if test="request.docBatchIds != null and request.docBatchIds.size() >0">
+                <foreach collection="request.docBatchIds" item="id" open="and afp.id in (" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="request.createdStartTime != null and request.createdEndTime != null">
+                and afp.operate_time BETWEEN #{request.createdStartTime} AND #{request.createdEndTime}
+            </if>
+            <if test="request.applicant != null ">
+                and afp.created_by = #{request.applicant}
+            </if>
+            <if test="request.applicantStartTime != null and request.applicantEndTime != null">
+                and afp.applicant_time BETWEEN #{request.applicantStartTime} AND #{request.applicantEndTime}
+            </if>
+            <if test="request.shopId != null">
+                and afp.shop_id = #{request.shopId}
+            </if>
+            <if test="request.saleMode != null">
+                and afp.sales_method = #{request.saleMode}
+            </if>
+            <if test="request.demandId != null">
+                and afp.demander_store_id = #{request.demandId}
+            </if>
+        </where>
+        group by afp.`serial_no`
+        ORDER BY
+        afp.id DESC
+    </select>
+
+    <select id="usedPrice" resultType="java.math.BigDecimal"
+            parameterType="java.lang.Integer">
+        SELECT SUM(price)
+        FROM (SELECT SUM(IF(sp.promotion_price IS NULL, s.consignment_price, sp.promotion_price * 0.8)) price
+              FROM tag t
+                       LEFT JOIN store_management sm ON t.id = sm.tag_id
+                       LEFT JOIN purchase_subject ps ON t.tag_name = ps.`name`
+                       LEFT JOIN stock s ON s.right_of_management = ps.id
+                       LEFT JOIN goods_watch gw ON gw.id = s.goods_id
+                       LEFT JOIN brand b ON gw.brand_id = b.id
+                       LEFT JOIN stock_promotion sp ON sp.stock_id = s.id and sp.`status` = 1 AND sp.deleted = 0
+              WHERE t.id = #{tagId}
+                AND s.stock_status IN (100, 666, 777)
+                AND s.temp IS NULL
+                AND s.stock_src NOT IN (104, 105)
+                AND b.NAME != '服务'
+		               AND s.sn != ' '
+              UNION
+              SELECT
+                  SUM(bpl.purchase_price) price
+              FROM
+                  bill_purchase bp
+                  LEFT JOIN bill_purchase_line bpl
+              ON bp.id = bpl.purchase_id
+                  LEFT JOIN stock s ON s.id = bpl.stock_id
+                  LEFT JOIN store_management sm ON sm.id = s.demand_id
+                  LEFT JOIN tag t ON t.id = sm.tag_id
+                  LEFT JOIN goods_watch gw ON gw.id = s.goods_id
+                  LEFT JOIN brand b ON b.id = gw.brand_id
+                  LEFT JOIN series ss ON ss.id = gw.series_id
+                  LEFT JOIN USER u ON u.id = bp.purchase_id
+              WHERE
+                  bp.deleted = 0
+                AND bp.purchase_state = 2
+                AND s.stock_status in (600,620)
+                AND s.stock_src NOT IN ( 104
+                  , 105 )
+                AND t.id = #{tagId}
+              UNION
+              SELECT
+                  IF(SUM( afp.price_payment ) IS NULL, 0, SUM( afp.price_payment )) price
+              FROM
+                  apply_financial_payment afp
+                  LEFT JOIN store_management sm
+              ON sm.id = afp.demander_store_id
+                  LEFT JOIN tag t ON t.id = sm.tag_id
+              WHERE
+                  afp.deleted = 0
+                AND afp.whether_use = 0
+                AND afp.state = 1
+                AND t.id = #{tagId}
+                AND afp.created_time
+                  > '2023-08-01 00:00:00') a
+    </select>
+
+    <select id="usedOsQuota" resultType="java.math.BigDecimal">
+        SELECT
+        IFNULL(SUM( s.new_settle_price ) ,s.purchase_price)
+        FROM
+                stock s
+                        LEFT JOIN goods_watch g on s.goods_id = g.id
+        <where>
+            ((
+            s.`level` = "压货"
+            AND
+            s.stock_status in (100,666,10000)
+            AND s.right_of_management = #{sjId}
+            )
+            OR ( s.stock_status in (600,610,620) AND s.demand_id = #{shopId} and s.stock_src IN ( 101, 102, 106, 107,108,109 ))
+            OR ( s.`level` = "压货"
+            AND s.stock_status = 770 ))
+            <if test="null != bids">
+                <foreach collection="bids" item="item" open="AND g.brand_id IN (" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="usedCtQuota" resultType="java.math.BigDecimal">
+        SELECT
+        IFNULL(SUM( s.new_settle_price ) ,s.purchase_price)
+        FROM
+        stock s
+        LEFT JOIN goods_watch g on s.goods_id = g.id
+        <where>
+            s.`level` = "代销"
+            AND s.stock_status IN (100,666)
+            and s.right_of_management = #{sjId}
+            <if test="null != bids">
+                <foreach collection="bids" item="item" open="AND g.brand_id IN (" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+</mapper>

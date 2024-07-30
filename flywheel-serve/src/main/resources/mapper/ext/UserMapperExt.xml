@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.maindata.mapper.UserMapper">
+
+    <select id="listByShop" resultMap="BaseResultMap">
+        SELECT u.*
+        FROM store_management sm
+                 LEFT JOIN user_tag ut ON ut.tag_id = sm.tag_id
+                 LEFT JOIN USER u ON u.id = ut.user_id
+        WHERE u.STATUS = 1
+          AND sm.id = #{shopId}
+        GROUP BY u.id
+    </select>
+
+    <select id="listByShopAndName" resultMap="BaseResultMap">
+        SELECT
+        u.*
+        FROM
+        store_management sm
+        LEFT JOIN user_tag ut ON ut.tag_id = sm.tag_id
+        LEFT JOIN USER u ON u.id = ut.user_id
+        WHERE
+        u.STATUS = 1
+        AND sm.id = #{shopId}
+        <if test="name !=null and name !=''">
+            AND u.name LIKE CONCAT(#{name},'%')
+        </if>
+        GROUP BY
+        u.id
+    </select>
+</mapper>

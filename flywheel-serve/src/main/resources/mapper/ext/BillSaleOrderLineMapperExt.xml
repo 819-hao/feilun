@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.sale.mapper.BillSaleOrderLineMapper">
+    <update id="updateWarrantyPeriod">
+        UPDATE bill_sale_order_line
+        set warranty_period = warranty_period + 3
+        WHERE id = #{id}
+          and warranty_period &lt; 5
+    </update>
+    <update id="updateWhetherInvoiceBySerialNoListAndStockIdList">
+        update bill_sale_order_line bsol
+        INNER JOIN bill_sale_order bso
+        ON bso.id = bsol.sale_id
+        set bsol.whether_invoice = #{state}
+        where
+        <foreach collection="serialNoList" item="id" open="bso.serial_no in (" separator="," close=")">
+            #{id}
+        </foreach>
+        <foreach collection="stockIdList" item="sid" open="and bsol.stock_id IN (" separator="," close=")">
+            #{sid}
+        </foreach>
+    </update>
+    <update id="updateWhetherInvoiceById">
+        update bill_sale_order_line set whether_invoice = #{stateEnum} where id = #{id}
+    </update>
+    <select id="selectBySaleId" resultType="com.seeease.flywheel.serve.sale.entity.BillSaleOrderLineDetailsVO">
+        SELECT bsol.id,
+               bsol.sale_id                         saleId,
+               bsol.stock_id                        stockId,
+               bsol.goods_id                        goodsId,
+               bsol.margin_price                    marginPrice,
+               bsol.balance_direction               balanceDirection,
+               bsol.consignment_price               consignmentPrice,
+               bsol.total_price                     totalPrice,
+               bsol.strap_replacement_price         strapReplacementPrice,
+               bsol.gmv_performance                 gmvPerformance,
+               bsol.proportion                      proportion,
+               bsol.promotion_consignment_price     promotionConsignmentPrice,
+               bsol.sale_line_state                 saleLineState,
+               bsol.watch_section                   watchSection,
+               bsol.price_pub                       pricePub,
+               bsol.tag_price                       tagPrice,
+               bsol.toc_price                       tocPrice,
+               bsol.tob_price                       tobPrice,
+               bsol.pre_clinch_price                preClinchPrice,
+               bsol.clinch_price                    clinchPrice,
+               bsol.whether_invoice                 whetherInvoice,
+               bsol.express_number                  expressNumber,
+               bsol.strap_material                  strapMaterial,
+               bsol.buy_back_policy                 buyBackPolicy,
+               bsol.is_repurchase_policy            isRepurchasePolicy,
+               bsol.is_counter_purchase             isCounterPurchase,
+               bsol.right_of_management             rightOfManagement,
+               bsol.new_settle_price                   newSettlePrice,
+               bsol.remarks                         remarks,
+               bsol.consignment_sale_finish_time    consignmentSaleFinishTime,
+               bsol.consignment_settlement_operator consignmentSettlementOperator,
+               bsol.sub_order_code,
+               bsol.warranty_period                 warrantyPeriod,
+               bsol.markets_price                   marketsPrice,
+               b.`name`  as                         brandName,
+               ss.`name` as                         seriesName,
+               s.attachment,
+               s.wno,
+               s.sn                                 stockSn,
+               s.belong_id                          belongId,
+               s.finess,
+               gw.model,
+               gw.movement,
+               gw.image,
+               gw.watch_size
+        from bill_sale_order_line bsol
+                 left join stock s on s.id = bsol.stock_id
+                 LEFT JOIN goods_watch gw on gw.id = bsol.goods_id
+                 LEFT JOIN brand b on gw.brand_id = b.id
+                 LEFT JOIN series ss on gw.series_id = ss.id
+        WHERE bsol.sale_id = #{saleId}
+    </select>
+    <select id="selectStateBySaleId" resultType="java.lang.Integer">
+        select sale_line_state
+        from bill_sale_order_line
+        where sale_id = #{saleId}
+    </select>
+    <select id="querySettlementList"
+            resultType="com.seeease.flywheel.serve.sale.entity.BillSaleOrderLineSettlementVO">
+        select bsol.id saleLineId,
+        bsol.sale_line_state saleLineState,
+        bsol.sale_id saleId,
+        bsol.consignment_price consignmentPrice,
+        bsol.goods_id goodsId,
+        bsol.stock_id stockId,
+        bsol.clinch_price clinchPrice,
+        bsol.right_of_management rightOfManagement,
+        bsol.pre_clinch_price preClinchPrice,
+        bsol.margin_price marginPrice,
+        bsol.balance_direction balanceDirection,
+        bsol.gmv_performance gmvPerformance,
+        bsol.tob_price tobPrice,
+        bso.serial_no serialNo,
+        bso.sale_mode saleMode,
+        bso.delivery_location_id deliveryLocationId,
+        b.`name` as brandName,
+        ss.`name` as seriesName,
+        s.attachment,
+        s.sn stockSn,
+        s.is_underselling isUnderselling,
+        s.finess,
+        gw.model,
+        bsol.price_pub pricePub
+        from bill_sale_order_line bsol
+        left join bill_sale_order bso on bso.id = bsol.sale_id
+        left join stock s on s.id = bsol.stock_id
+        LEFT JOIN goods_watch gw on gw.id = s.goods_id
+        LEFT JOIN brand b on gw.brand_id = b.id
+        LEFT JOIN series ss on gw.series_id = ss.id
+        <where>
+            bso.deleted = 0
+            <if test="request.serialNo !=null and request.serialNo !=''">
+                and bso.serial_no like CONCAT(#{request.serialNo},'%')
+            </if>
+            <if test="request.stockSn !=null">
+                and s.sn =#{request.stockSn}
+            </if>
+            <if test="request.goodsId !=null">
+                and bsol.goods_id =#{request.goodsId}
+            </if>
+            <if test="request.lineStateList !=null">
+                <foreach collection="request.lineStateList" item="cid" open="and bsol.sale_line_state in ("
+                         separator=","
+                         close=")">
+                    #{cid}
+                </foreach>
+            </if>
+            <if test="request.customerId !=null">
+                and bso.customer_id =#{request.customerId}
+            </if>
+        </where>
+        ORDER BY bsol.id desc
+    </select>
+    <select id="selectLastClinchPriceByStockId" resultType="java.math.BigDecimal">
+        select clinch_price
+        from bill_sale_order_line
+        where stock_id = #{stockId}
+        order by id desc limit 1
+    </select>
+    <select id="listStockBySnAndState"
+            resultType="com.seeease.flywheel.serve.sale.entity.BillSaleOrderLineSettlementVO">
+        select bsol.id saleLineId,
+        bsol.sale_line_state saleLineState,
+        bsol.sale_id saleId,
+        bsol.consignment_price consignmentPrice,
+        bsol.goods_id goodsId,
+        bsol.stock_id stockId,
+        bsol.clinch_price clinchPrice,
+        bsol.right_of_management rightOfManagement,
+        bsol.pre_clinch_price preClinchPrice,
+        bsol.margin_price marginPrice,
+        bsol.balance_direction balanceDirection,
+        bsol.gmv_performance gmvPerformance,
+        bsol.tob_price tobPrice,
+        bso.serial_no serialNo,
+        bso.sale_mode saleMode,
+        bso.delivery_location_id deliveryLocationId,
+        b.`name` as brandName,
+        ss.`name` as seriesName,
+        s.attachment,
+        s.sn stockSn,
+        s.is_underselling isUnderselling,
+        s.finess,
+        gw.model,
+        bsol.price_pub pricePub
+        from bill_sale_order_line bsol
+        left join bill_sale_order bso on bso.id = bsol.sale_id
+        left join stock s on s.id = bsol.stock_id
+        LEFT JOIN goods_watch gw on gw.id = s.goods_id
+        LEFT JOIN brand b on gw.brand_id = b.id
+        LEFT JOIN series ss on gw.series_id = ss.id
+        where
+        bso.deleted = 0
+        <foreach collection="snList" item="id" open="and s.sn in (" separator=","
+                 close=")">
+            #{id}
+        </foreach>
+        and bso.customer_id =#{customerId}
+        <foreach collection="stateList" item="id" open="and bsol.sale_line_state in (" separator=","
+                 close=")">
+            #{id}
+        </foreach>
+        ORDER BY bsol.id desc
+    </select>
+    <select id="countStateBySaleId" resultType="java.lang.Integer">
+        SELECT COUNT(id)
+        from bill_sale_order_line
+        where sale_line_state in (7, 8)
+          and sale_id = #{saleId}
+    </select>
+    <select id="listByStockIds" resultType="com.seeease.flywheel.serve.sale.entity.BillSaleOrderLine">
+        SELECT * FROM bill_sale_order_line WHERE stock_id in
+        <foreach collection="stockIds" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+
+    </select>
+    <select id="selectSaleModeById" resultType="java.lang.Integer">
+        select sale_mode
+        from bill_sale_order bso
+                 inner join bill_sale_order_line bsol on bsol.sale_id = bso.id
+        where bsol.id = #{saleLineId}
+    </select>
+</mapper>

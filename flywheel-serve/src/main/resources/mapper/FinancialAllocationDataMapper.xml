@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.financial.mapper.FinancialAllocationDataMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.financial.entity.FinancialAllocationData">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="shopId" column="shop_id" jdbcType="INTEGER"/>
+            <result property="shopName" column="shop_name" jdbcType="VARCHAR"/>
+            <result property="subjectId" column="subject_id" jdbcType="INTEGER"/>
+            <result property="douyinShopId" column="douyin_shop_id" jdbcType="INTEGER"/>
+            <result property="douyinName" column="douyin_name" jdbcType="VARCHAR"/>
+            <result property="clearingOrganization" column="clearing_organization" jdbcType="VARCHAR"/>
+            <result property="expenseBearingDepartment" column="expense_bearing_department" jdbcType="VARCHAR"/>
+            <result property="type" column="type" jdbcType="INTEGER"/>
+            <result property="revision" column="revision" jdbcType="INTEGER"/>
+            <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+            <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+            <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+            <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+            <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,shop_id,shop_name,
+        subject_id,douyin_shop_id,douyin_name,
+        clearing_organization,expense_bearing_department,type,
+        revision,created_id,created_by,
+        created_time,deleted,updated_id,
+        updated_by,updated_time
+    </sql>
+</mapper>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.maindata.mapper.FixSiteMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.maindata.entity.FixSite">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="tagType" column="tag_type" jdbcType="INTEGER"/>
+            <result property="siteType" column="site_type" jdbcType="INTEGER"/>
+            <result property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="originStoreId" column="origin_store_id" jdbcType="INTEGER"/>
+            <result property="siteName" column="site_name" jdbcType="VARCHAR"/>
+            <result property="siteState" column="site_state" jdbcType="INTEGER"/>
+            <result property="parentFixSiteId" column="parent_fix_site_id" jdbcType="INTEGER"/>
+            <result property="sitePhone" column="site_phone" jdbcType="VARCHAR"/>
+            <result property="siteAddress" column="site_address" jdbcType="VARCHAR"/>
+            <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+            <result property="revision" column="revision" jdbcType="INTEGER"/>
+            <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+            <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+            <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+            <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+            <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,tag_type,site_type,
+        serial_no,origin_store_id,site_name,
+        site_state,parent_fix_site_id,site_phone,site_address,
+        remarks,revision,created_id,
+        created_by,created_time,updated_id,
+        updated_by,updated_time,deleted
+    </sql>
+</mapper>

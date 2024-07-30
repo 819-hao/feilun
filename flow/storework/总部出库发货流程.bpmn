@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1fvhxh6" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.4.2" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+  <bpmn:process id="zbDeliveryFlow" name="总部出库发货流程" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="parentBusinessKey" label="父业务单号" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_0ov72d0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0ov72d0" sourceRef="StartEvent_1" targetRef="outStorage" />
+    <bpmn:exclusiveGateway id="Gateway_0e1h0th">
+      <bpmn:incoming>Flow_1j3d3g1</bpmn:incoming>
+      <bpmn:outgoing>Flow_0yi65e6</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1bmlrw5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1j3d3g1" sourceRef="qtDetermine" targetRef="Gateway_0e1h0th" />
+    <bpmn:sequenceFlow id="Flow_0yi65e6" sourceRef="Gateway_0e1h0th" targetRef="logisticsDelivery">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${qtState==1}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1bmlrw5" sourceRef="Gateway_0e1h0th" targetRef="inStorage">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${qtState==2}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:userTask id="qtDetermine" name="质检判定" camunda:candidateGroups="qt">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="qtState" label="质检判定结果" type="long" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1gaqrcd</bpmn:incoming>
+      <bpmn:outgoing>Flow_1j3d3g1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_0uqlued">
+      <bpmn:incoming>Flow_0qs875j</bpmn:incoming>
+      <bpmn:incoming>Flow_0yredw2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="outStorage" name="仓库出库" camunda:candidateGroups="warehouse">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="needQt" label="是否需要质检" type="long" defaultValue="1" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ov72d0</bpmn:incoming>
+      <bpmn:outgoing>Flow_0y61xcp</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="logisticsDelivery" name="物流发货" camunda:candidateGroups="logistics">
+      <bpmn:incoming>Flow_0yi65e6</bpmn:incoming>
+      <bpmn:incoming>Flow_0rt2a60</bpmn:incoming>
+      <bpmn:outgoing>Flow_1gygint</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="inStorage" name="仓库异常入库" camunda:candidateGroups="warehouse">
+      <bpmn:incoming>Flow_1bmlrw5</bpmn:incoming>
+      <bpmn:outgoing>Flow_13sjvwg</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1gygint" sourceRef="logisticsDelivery" targetRef="Activity_1wixekq" />
+    <bpmn:sequenceFlow id="Flow_13sjvwg" sourceRef="inStorage" targetRef="Activity_1v8ygqi" />
+    <bpmn:sequenceFlow id="Flow_0qs875j" sourceRef="Activity_1v8ygqi" targetRef="Event_0uqlued" />
+    <bpmn:sequenceFlow id="Flow_0yredw2" sourceRef="Activity_1wixekq" targetRef="Event_0uqlued" />
+    <bpmn:scriptTask id="Activity_1wixekq" name="发货标记" scriptFormat="Groovy">
+      <bpmn:incoming>Flow_1gygint</bpmn:incoming>
+      <bpmn:outgoing>Flow_0yredw2</bpmn:outgoing>
+      <bpmn:script>execution.setVariable("deliveryState", 0)</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:scriptTask id="Activity_1v8ygqi" name="发货异常标记" scriptFormat="Groovy">
+      <bpmn:incoming>Flow_13sjvwg</bpmn:incoming>
+      <bpmn:outgoing>Flow_0qs875j</bpmn:outgoing>
+      <bpmn:script>execution.setVariable("deliveryState", 2)</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:exclusiveGateway id="Gateway_1s66wz0" default="Flow_1gaqrcd">
+      <bpmn:incoming>Flow_0y61xcp</bpmn:incoming>
+      <bpmn:outgoing>Flow_1gaqrcd</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0rt2a60</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0y61xcp" sourceRef="outStorage" targetRef="Gateway_1s66wz0" />
+    <bpmn:sequenceFlow id="Flow_1gaqrcd" sourceRef="Gateway_1s66wz0" targetRef="qtDetermine" />
+    <bpmn:sequenceFlow id="Flow_0rt2a60" sourceRef="Gateway_1s66wz0" targetRef="logisticsDelivery">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${needQt==0}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="zbDeliveryFlow">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="152" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0e1h0th_di" bpmnElement="Gateway_0e1h0th" isMarkerVisible="true">
+        <dc:Bounds x="745" y="92" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0tmav1n_di" bpmnElement="qtDetermine">
+        <dc:Bounds x="590" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0uqlued_di" bpmnElement="Event_0uqlued">
+        <dc:Bounds x="1452" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0f472th_di" bpmnElement="outStorage">
+        <dc:Bounds x="290" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1gifa4v_di" bpmnElement="logisticsDelivery">
+        <dc:Bounds x="920" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ogzywf_di" bpmnElement="inStorage">
+        <dc:Bounds x="920" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_02ew1wd_di" bpmnElement="Activity_1wixekq">
+        <dc:Bounds x="1150" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1hjeyre_di" bpmnElement="Activity_1v8ygqi">
+        <dc:Bounds x="1150" y="190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1s66wz0_di" bpmnElement="Gateway_1s66wz0" isMarkerVisible="true">
+        <dc:Bounds x="455" y="92" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0ov72d0_di" bpmnElement="Flow_0ov72d0">
+        <di:waypoint x="188" y="117" />
+        <di:waypoint x="290" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1j3d3g1_di" bpmnElement="Flow_1j3d3g1">
+        <di:waypoint x="690" y="117" />
+        <di:waypoint x="745" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0yi65e6_di" bpmnElement="Flow_0yi65e6">
+        <di:waypoint x="795" y="117" />
+        <di:waypoint x="920" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1bmlrw5_di" bpmnElement="Flow_1bmlrw5">
+        <di:waypoint x="770" y="142" />
+        <di:waypoint x="770" y="230" />
+        <di:waypoint x="920" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1gygint_di" bpmnElement="Flow_1gygint">
+        <di:waypoint x="1020" y="117" />
+        <di:waypoint x="1150" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13sjvwg_di" bpmnElement="Flow_13sjvwg">
+        <di:waypoint x="1020" y="230" />
+        <di:waypoint x="1150" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qs875j_di" bpmnElement="Flow_0qs875j">
+        <di:waypoint x="1250" y="230" />
+        <di:waypoint x="1370" y="230" />
+        <di:waypoint x="1370" y="117" />
+        <di:waypoint x="1452" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0yredw2_di" bpmnElement="Flow_0yredw2">
+        <di:waypoint x="1250" y="117" />
+        <di:waypoint x="1452" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0y61xcp_di" bpmnElement="Flow_0y61xcp">
+        <di:waypoint x="390" y="117" />
+        <di:waypoint x="455" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1gaqrcd_di" bpmnElement="Flow_1gaqrcd">
+        <di:waypoint x="505" y="117" />
+        <di:waypoint x="590" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rt2a60_di" bpmnElement="Flow_0rt2a60">
+        <di:waypoint x="480" y="92" />
+        <di:waypoint x="480" y="40" />
+        <di:waypoint x="970" y="40" />
+        <di:waypoint x="970" y="77" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.sale.mapper.BillSaleOrderMapper">
+    <update id="updateDouYinOrder">
+        update douyin_order set whether_use = #{whetherUse} , usage_time = #{usageTime} ,serial_no = #{serialNo}
+        where id IN (
+        <foreach collection="ids" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </update>
+
+    <update id="updateKuaiShouOrder">
+        update kuaishou_order set whether_use = #{whetherUse} , usage_time = #{usageTime} ,serial_no = #{serialNo}
+        where id IN (
+        <foreach collection="ids" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </update>
+    <select id="listByRequest" resultType="com.seeease.flywheel.serve.sale.entity.BillSaleOrder">
+        SELECT bso.* from bill_sale_order bso
+        <if test="(request.stockSn != null and request.stockSn!='') or (request.proportion != null and request.proportion!='')">
+            INNER JOIN bill_sale_order_line bsol on bsol.sale_id = bso.id
+            <if test="request.proportion != null and request.proportion!=''">
+                and bsol.proportion = #{request.proportion}
+            </if>
+            INNER join stock s on s.id = bsol.stock_id
+            <if test="request.stockSn != null and request.stockSn!=''">
+                and s.sn = #{request.stockSn}
+            </if>
+        </if>
+        <where>
+            bso.deleted = 0
+            <if test="request.finishStartTime != null and request.finishStartTime != ''
+                        and request.finishEndTime != null and request.finishEndTime != ''">
+                AND bso.finish_time BETWEEN #{request.finishStartTime} AND #{request.finishEndTime}
+            </if>
+            <if test="request.createdStartTime != null and request.createdStartTime != ''
+                        and request.createdEndTime != null and request.createdEndTime != ''">
+                AND bso.created_time BETWEEN #{request.createdStartTime} AND #{request.createdEndTime}
+            </if>
+            <if test="request.serialNo !=null and request.serialNo !=''">
+                and bso.serial_no like CONCAT(#{request.serialNo},'%')
+            </if>
+            <if test="request.bizOrderCode !=null and request.bizOrderCode !=''">
+                and bso.biz_order_code like CONCAT('%',#{request.bizOrderCode},'%')
+            </if>
+            <if test="request.parentSerialNo !=null and request.serialNo !=''">
+                and bso.parent_serial_no like CONCAT(#{request.parentSerialNo},'%')
+            </if>
+            <if test="request.saleType !=null">
+                and bso.sale_type =#{request.saleType}
+            </if>
+            <if test="request.saleMode !=null">
+                and bso.sale_mode =#{request.saleMode}
+            </if>
+            <if test="request.saleChannel !=null">
+                and bso.sale_channel =#{request.saleChannel}
+            </if>
+            <if test="request.saleState !=null">
+                and bso.sale_state =#{request.saleState}
+            </if>
+
+            <if test="request.shopIds !=null and request.shopIds.size() > 0">
+                <foreach collection="request.shopIds" item="id" open="and bso.shop_id in (" separator=","
+                         close=")">
+                    #{id}
+                </foreach>
+            </if>
+
+            <if test="request.createdBy !=null and request.createdBy !=''">
+                and bso.created_by like CONCAT(#{request.createdBy},'%')
+            </if>
+            <if test="request.saleType == 1 and request.customerIdList !=null">
+                <foreach collection="request.customerIdList" item="cid" open="and bso.customer_id in (" separator=","
+                         close=")">
+                    #{cid}
+                </foreach>
+            </if>
+            <if test="request.saleType == 2 and request.customerContactsIdList !=null">
+                <foreach collection="request.customerContactsIdList" item="cid" open="and bso.customer_contact_id in ("
+                         separator=","
+                         close=")">
+                    #{cid}
+                </foreach>
+            </if>
+            <if test="request.inspectionType !=null">
+                and bso.inspection_type = #{request.inspectionType}
+            </if>
+        </where>
+        GROUP BY bso.id
+        ORDER BY bso.id desc
+    </select>
+    <select id="queryByIdAndCustomerId" resultType="java.lang.Integer">
+        select count(id)
+        from bill_sale_order
+        where id = #{saleId}
+          and customer_id = #{customerId}
+    </select>
+    <select id="selectBySaleLineId" resultType="com.seeease.flywheel.serve.sale.entity.BillSaleOrder">
+        select bso.*
+        from bill_sale_order bso
+                 left join bill_sale_order_line bsol on bso.id = bsol.sale_id
+        where bsol.id = #{saleLineId}
+    </select>
+    <select id="selectStateById" resultType="java.lang.Integer">
+        select sale_state
+        from bill_sale_order
+        where id = #{saleId}
+    </select>
+    <select id="export" resultType="com.seeease.flywheel.sale.result.SaleOrderListForExportResult">
+        SELECT bso.*,bsol.* from bill_sale_order_line bsol
+        INNER JOIN bill_sale_order bso on bsol.sale_id = bso.id
+        <if test="request.stockSn != null and request.stockSn!=''">
+            INNER join stock s on s.id = bsol.stock_id and s.sn = #{request.stockSn}
+        </if>
+        <where>
+            bso.deleted = 0
+            <if test="request.finishStartTime != null and request.finishStartTime != ''
+                        and request.finishEndTime != null and request.finishEndTime != ''">
+                AND bso.finish_time BETWEEN #{request.finishStartTime} AND #{request.finishEndTime}
+            </if>
+            <if test="request.createdStartTime != null and request.createdStartTime != ''
+                        and request.createdEndTime != null and request.createdEndTime != ''">
+                AND bso.created_time BETWEEN #{request.createdStartTime} AND #{request.createdEndTime}
+            </if>
+            <if test="request.serialNo !=null and request.serialNo !=''">
+                and bso.serial_no like CONCAT(#{request.serialNo},'%')
+            </if>
+            <if test="request.parentSerialNo !=null and request.serialNo !=''">
+                and bso.parent_serial_no like CONCAT(#{request.parentSerialNo},'%')
+            </if>
+            <if test="request.saleType !=null">
+                and bso.sale_type =#{request.saleType}
+            </if>
+            <if test="request.saleMode !=null">
+                and bso.sale_mode =#{request.saleMode}
+            </if>
+            <if test="request.saleChannel !=null">
+                and bso.sale_channel =#{request.saleChannel}
+            </if>
+            <if test="request.saleState !=null">
+                and bso.sale_state =#{request.saleState}
+            </if>
+            <if test="request.docBatchIds != null and request.docBatchIds.size() >0">
+                <foreach collection="request.docBatchIds" item="id" open="and bso.id in (" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="request.shopIds !=null and request.shopIds.size() > 0">
+                <foreach collection="request.shopIds" item="id" open="and bso.shop_id in (" separator=","
+                         close=")">
+                    #{id}
+                </foreach>
+            </if>
+
+            <if test="request.createdBy !=null and request.createdBy !=''">
+                and bso.created_by like CONCAT(#{request.createdBy},'%')
+            </if>
+            <if test="request.saleType == 1 and request.customerIdList !=null">
+                <foreach collection="request.customerIdList" item="cid" open="and bso.customer_id in (" separator=","
+                         close=")">
+                    #{cid}
+                </foreach>
+            </if>
+            <if test="request.saleType == 2 and request.customerContactsIdList !=null">
+                <foreach collection="request.customerContactsIdList" item="cid" open="and bso.customer_contact_id in ("
+                         separator=","
+                         close=")">
+                    #{cid}
+                </foreach>
+            </if>
+            <if test="request.inspectionType !=null">
+                and bso.inspection_type = #{request.inspectionType}
+            </if>
+        </where>
+        ORDER BY bso.id desc
+    </select>
+
+
+    <select id="queryToCOrderByFinisTime" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM bill_sale_order
+        WHERE deleted=0
+        AND sale_type = 2
+        AND sale_state = 4
+        AND TO_DAYS(finish_time) = TO_DAYS(#{saleTime})
+    </select>
+
+    <select id="queryToCOrderByRequest" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM bill_sale_order
+        WHERE deleted=0
+        AND sale_type = 2
+        AND sale_state = 4
+        <if test="thirdOrderNoList !=null">
+            <foreach collection="thirdOrderNoList" item="thirdOrderNo" open="AND biz_order_code IN (" separator=","
+                     close=")">
+                #{thirdOrderNo}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="queryToCOrderByOffset" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM bill_sale_order
+        WHERE
+        deleted=0
+        AND sale_type = 2
+        AND sale_state = 4
+        AND id > #{currentOffset}
+        limit #{limit}
+    </select>
+
+    <select id="maxToCOrderByOffset" resultType="java.lang.Integer">
+        SELECT MAX(id)
+        FROM bill_sale_order
+        WHERE deleted = 0
+          AND sale_type = 2
+          AND sale_state = 4
+          AND id > #{currentOffset}
+    </select>
+    <resultMap id="douYinSaleOrder" type="com.seeease.flywheel.sale.result.DouYinSaleOrderListResult">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="inspectionType" column="inspection_type" jdbcType="INTEGER"/>
+        <result property="bizOrderCode" column="biz_order_code" jdbcType="VARCHAR"/>
+        <result property="shopId" column="shop_id" jdbcType="INTEGER"/>
+        <collection property="lineList" javaType="java.util.ArrayList"
+                    ofType="com.seeease.flywheel.sale.result.DouYinSaleOrderListResult$SaleOrderLineDto">
+            <result property="expressNumber" column="express_number" jdbcType="VARCHAR"/>
+            <result property="spotCheckCode" column="spot_check_code" jdbcType="VARCHAR"/>
+            <result property="subOrderCode" column="sub_order_code" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+    <select id="queryDouYinSaleOrder" resultMap="douYinSaleOrder"
+            parameterType="com.seeease.flywheel.sale.request.DouYinSaleOrderListRequest">
+        SELECT
+        bso.id,
+        bso.inspection_type inspectionType,
+        bso.biz_order_code bizOrderCode,
+        bso.shop_id shopId,
+        bsol.express_number expressNumber,
+        bsol.sub_order_code subOrderCode,
+        bsol.spot_check_code spotCheckCode
+        FROM
+        bill_sale_order bso
+        INNER JOIN bill_sale_order_line bsol ON bsol.sale_id = bso.id
+        <where>
+            bso.deleted = 0 and bso.whether_notify = 0 and bso.sale_mode = 5 and bso.sale_channel = 3
+            <if test="saleState != null">
+                bso.sale_state = #{saleState}
+            </if>
+            <if test="updatedTime != null">
+                bso.updated_time > #{updatedTime}
+            </if>
+            <if test="request.serialNoList != null and request.serialNoList.size() >0">
+                <foreach collection="request.serialNoList" item="serialNo" open="and bso.serial_no in (" separator=","
+                         close=")">
+                    #{serialNo}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <select id="selectDouYinOrderBySerialNo" resultType="java.lang.Integer">
+        select dou_yin_shop_id from douyin_order where serial_no = #{serialNo} LIMIT 1
+    </select>
+</mapper>

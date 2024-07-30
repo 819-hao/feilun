@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.anomaly.mapper.BillAnomalyMapper">
+
+    <select id="list" parameterType="com.seeease.flywheel.anomaly.request.AnomalyListRequest"
+            resultType="com.seeease.flywheel.anomaly.result.AnomalyListResult">
+        SELECT
+        ba.id,
+        ba.serial_no,
+        ba.store_work_serial_no,
+        ba.anomaly_state ,
+        s.sn stocksn,
+        s.finess,
+        s.id stockId,
+        s.unusual_desc,
+        s.goods_id goodsId,
+        s.attachment,
+        s.remark remarks,
+        bqt.serial_no bqtSerialNo,
+        bqt.exception_reason bqtExceptionReason,
+        bf.serial_no fixSerialNo,
+        DATE_FORMAT(ba.created_time,'%Y-%m-%d %H:%i:%s') createdTime,
+        DATE_FORMAT(ba.finish_time,'%Y-%m-%d %H:%i:%s') finishTime
+        from bill_anomaly ba
+        left JOIN stock s on s.id = ba.stock_id
+        left join bill_quality_testing bqt on bqt.id = ba.qt_id
+        left join bill_fix bf on bf.id = ba.fix_id
+
+        <where>
+            ba.deleted = 0 and s.deleted = 0
+            <if test="request.startTime != null and request.startTime != '' and request.endTime != null and request.endTime != ''">
+                AND DATE_FORMAT(ba.created_time,'%Y-%m-%d %H:%i:%s') BETWEEN #{request.startTime} AND #{request.endTime}
+            </if>
+            <if test="request.stockSn !=null and request.stockSn !=''">
+                and s.sn = #{request.stockSn}
+            </if>
+            <if test="request.anomalyState !=null">
+                and ba.anomaly_state =#{request.anomalyState}
+            </if>
+
+            <if test="request.goodsIdList !=null">
+                <foreach collection="request.goodsIdList" item="cid" open="and s.goods_id in (" separator=","
+                         close=")">
+                    #{cid}
+                </foreach>
+            </if>
+        </where>
+        ORDER BY ba.id desc
+    </select>
+</mapper>

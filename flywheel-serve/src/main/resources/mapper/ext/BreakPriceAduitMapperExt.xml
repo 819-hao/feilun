@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.helper.mapper.BreakPriceAuditMapper">
+    <select id="pageOf" resultType="com.seeease.flywheel.helper.result.BreakPriceAuditPageResult">
+        SELECT
+        abp.id,
+        abp.stock_id,
+        abp.serial,
+        abp.reason,
+        abp.created_by,
+        abp.updated_by,
+        abp.updated_time,
+        abp.created_time,
+        abp.`status`,
+        abp.clinch_price,
+        abp.fail_reason,
+        b.`name` brandName,
+        ss.name seriesName,
+        t.tag_name storeName,
+        gw.model,
+        s.sn,
+        s.level,
+        s.toc_price,
+        s.tob_price
+        FROM
+        app_break_price_audit abp
+        LEFT JOIN stock s on s.id = abp.stock_id
+        LEFT JOIN goods_watch gw on gw.id = s.goods_id
+        LEFT JOIN brand b on b.id = gw.brand_id
+        LEFT JOIN series ss on ss.id = gw.series_id
+        LEFT JOIN store_management sm on sm.id = abp.shop_id
+        LEFT JOIN tag t on t.id = sm.tag_id
+        <where>
+            <if test="req.id != null">
+                and abp.id = #{req.id}
+            </if>
+            <if test="req.id == null and req.status != null">
+                and abp.`status`= #{req.status}
+            </if>
+            <if test="req.shopId != null">
+                and abp.shop_id = #{req.shopId}
+            </if>
+            <if test="req.sn != null and req.sn != ''">
+                and s.sn like concat("%",#{req.sn},"%")
+            </if>
+            <if test="req.createdBy != null and req.createdBy != ''">
+                and abp.created_by like concat("%",#{req.createdBy},"%")
+            </if>
+
+        </where>
+        order by abp.updated_time desc
+    </select>
+</mapper>

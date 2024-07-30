@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.maindata.mapper.StoreManagementMapper">
+    <resultMap id="result1" type="com.seeease.flywheel.serve.maindata.entity.StoreManagementForTag">
+        <result column="id" property="id"></result>
+        <result column="name" property="name"></result>
+    </resultMap>
+    <select id="selectByIds" resultType="com.seeease.flywheel.serve.maindata.entity.StoreManagementInfo">
+        SELECT sm.id,t.tag_name as name,t.shortcodes,sm.customer_contact_id as customerContactId ,c.id as customerId
+        FROM store_management sm
+        INNER JOIN tag t on sm.tag_id = t.id
+        LEFT JOIN customer_contacts cc on cc.id = sm.customer_contact_id
+        LEFT JOIN customer c on c.id = cc.customer_id
+        WHERE sm.id in (
+        <foreach collection="ids" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </select>
+
+    <select id="selectAllList" resultMap="result1">
+        SELECT sm.id, t.tag_name as name
+        FROM store_management sm
+                 INNER JOIN tag t on sm.tag_id = t.id
+        group by sm.id
+    </select>
+
+    <select id="listShop" resultType="com.seeease.flywheel.serve.maindata.entity.ShopDto">
+        SELECT sm.id,
+               sm.address,
+               sm.position,
+               t.tag_name         NAME,
+               sm.do_status       STATUS,
+               sm.mall_store_name showName
+        FROM store_management sm
+                 JOIN tag t ON sm.tag_id = t.id
+    </select>
+
+    <select id="listShopMember" resultType="com.seeease.flywheel.serve.maindata.entity.ShopMemberDto">
+        SELECT
+        sm.id shopId,
+        u.userid,
+        u.NAME userName,
+        u.avatar,
+        u.gender,
+        u.mobile,
+        GROUP_CONCAT( r.role_key ) roleKeys,
+        GROUP_CONCAT( r.role_name ) roleNames,
+        u.id id
+        FROM
+        store_management sm
+        LEFT JOIN user_tag ut ON ut.tag_id = sm.tag_id and ut.is_default=1
+        LEFT JOIN USER u ON u.id = ut.user_id
+        LEFT JOIN user_role ur ON ur.user_id = u.id
+        LEFT JOIN role r ON r.id = ur.role_id
+        WHERE
+        u.status = 1
+        <if test="sidList != null">
+            AND sm.id IN
+            <foreach collection="sidList" item="sid" open="(" close=")" separator=",">
+                #{sid}
+            </foreach>
+        </if>
+
+        <if test="roleKeyList != null">
+            AND r.`role_key` in
+            <foreach collection="roleKeyList" item="key" open="(" close=")" separator=",">
+                #{key}
+            </foreach>
+        </if>
+
+        GROUP BY
+        u.id
+
+    </select>
+
+    <select id="selectByStoreId" resultMap="BaseResultMap">
+        SELECT sm.*
+        FROM store_shop ss
+                 LEFT JOIN store_management sm ON ss.shop_id = sm.id
+        WHERE ss.store_id = #{storeId}
+          and ss.delted = 0 limit 1
+    </select>
+
+    <select id="selectByShopId" resultMap="BaseResultMap">
+        SELECT sm.*
+        FROM store_shop ss
+                 LEFT JOIN store_management sm ON ss.shop_id = sm.id
+        WHERE ss.shop_id = #{shopId}
+          and ss.delted = 0 limit 1
+    </select>
+    <select id="listShopByName" resultType="com.seeease.flywheel.serve.maindata.entity.ShopDto">
+        SELECT
+        sm.id,
+        sm.address,
+        sm.position,
+        t.tag_name NAME,
+        sm.do_status STATUS,
+        sm.mall_store_name showName,
+        s.id storeId
+        FROM
+        store_management sm
+        JOIN tag t ON sm.tag_id = t.id
+        left join store_shop ss on ss.shop_id = sm.id
+        left join store s on ss.store_id = s.id
+
+        WHERE
+        ss.delted = 0 and
+        t.tag_name in
+        <foreach collection="tagNameList" item="tagName" open="(" close=")" separator=",">
+            #{tagName}
+        </foreach>
+    </select>
+</mapper>

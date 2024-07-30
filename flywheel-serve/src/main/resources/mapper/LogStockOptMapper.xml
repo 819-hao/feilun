@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.goods.mapper.LogStockOptMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.goods.entity.LogStockOpt">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="optMode" column="opt_mode" jdbcType="INTEGER"/>
+            <result property="stockId" column="stock_id" jdbcType="INTEGER"/>
+            <result property="openingStockSn" column="opening_stock_sn" jdbcType="VARCHAR"/>
+            <result property="closingStockSn" column="closing_stock_sn" jdbcType="VARCHAR"/>
+            <result property="openingStockOther" column="opening_stock_other" jdbcType="VARCHAR"/>
+            <result property="closingStockOther" column="closing_stock_other" jdbcType="VARCHAR"/>
+            <result property="openingStockAttachment" column="opening_stock_attachment" jdbcType="VARCHAR"/>
+            <result property="closingStockAttachment" column="closing_stock_attachment" jdbcType="VARCHAR"/>
+            <result property="shopId" column="shop_id" jdbcType="INTEGER"/>
+            <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+            <result property="revision" column="revision" jdbcType="INTEGER"/>
+            <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+            <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+            <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+            <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+            <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,stock_id,opt_mode,opening_stock_sn,
+        closing_stock_sn,opening_stock_attachment,closing_stock_attachment,opening_stock_sn,
+        closing_stock_sn,
+        shop_id,remarks,revision,
+        created_id,created_by,created_time,
+        deleted,updated_id,updated_by,
+        updated_time
+    </sql>
+</mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_120b04a" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.4.2" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+  <bpmn:process id="shopBuyback" name="商城回购" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="shortcodes" label="门店简码" type="string" />
+        </camunda:formData>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="Groovy">   String shop = execution.getVariable("shortcodes")
+    if(null != shop){
+        execution.setVariable("authGroups", shop+"shopowner" +","+shop+"shopclerk")
+    }else {
+        execution.setVariable("authGroups", "admin")
+    }</camunda:script>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1thccxr</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_08d5mw5">
+      <bpmn:incoming>Flow_0fqy3z1</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1thccxr" sourceRef="StartEvent_1" targetRef="purchaseCreate" />
+    <bpmn:userTask id="purchaseCreate" name="采购建单" camunda:candidateGroups="${authGroups}">
+      <bpmn:documentation>程序后台执行</bpmn:documentation>
+      <bpmn:incoming>Flow_1thccxr</bpmn:incoming>
+      <bpmn:outgoing>Flow_0fqy3z1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0fqy3z1" sourceRef="purchaseCreate" targetRef="Event_08d5mw5" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="shopBuyback">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="152" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_08d5mw5_di" bpmnElement="Event_08d5mw5">
+        <dc:Bounds x="482" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1784fj5_di" bpmnElement="purchaseCreate">
+        <dc:Bounds x="270" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1thccxr_di" bpmnElement="Flow_1thccxr">
+        <di:waypoint x="188" y="120" />
+        <di:waypoint x="270" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0fqy3z1_di" bpmnElement="Flow_0fqy3z1">
+        <di:waypoint x="370" y="120" />
+        <di:waypoint x="482" y="120" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.goods.mapper.StockPromotionMapper">
+
+
+    <select id="pageByRequest" resultType="com.seeease.flywheel.goods.result.StockPromotionListResult">
+        SELECT sp.id,sp.stock_id,
+        sp.stock_sn,
+        sp.status,
+        sp.promotion_price,
+        sp.promotion_consignment_price,
+        sp.consignment_ratio,
+        sp.created_by,
+        sp.created_time,
+        sp.end_time,
+        sp.start_time,
+        sp.updated_by,
+        sp.updated_time
+        FROM stock_promotion sp
+        left join stock s on sp.stock_id = s.id
+        left join goods_watch gw on gw.id = s.goods_id
+        <where>
+              sp.deleted = 0
+            <if test="request.stockSn != null and request.stockSn != ''">
+                and sp.stock_sn = #{request.stockSn}
+            </if>
+            <if test="request.status != null">
+                and sp.status = #{request.status}
+            </if>
+            <if test="request.model != null and request.model != ''">
+                AND gw.`model` LIKE CONCAT('%',#{request.model},'%')
+            </if>
+            <if test="request.startTime != null and request.startTime != ''">
+                and start_time &lt;= #{request.startTime}
+            </if>
+            <if test="request.endTime != null and request.endTime != ''">
+                and end_time &lt;= #{request.endTime}
+            </if>
+        </where>
+        order by sp.id desc
+    </select>
+
+    <select id="pageOfLog" resultType="com.seeease.flywheel.goods.result.StockPromotionLogResult">
+        SELECT
+        stock_sn,
+        created_by,
+        created_time,
+        promotion_price,
+        promotion_consignment_price,
+        consignment_ratio,
+        end_time,
+        start_time
+        FROM stock_promotion_history
+        <where>
+            deleted = 0
+            <if test="request.stockSn != null and request.stockSn != ''">
+                and stock_sn = #{request.stockSn}
+            </if>
+        </where>
+        order by id desc
+    </select>
+</mapper>

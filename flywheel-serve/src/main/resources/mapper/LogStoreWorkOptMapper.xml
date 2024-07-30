@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.storework.mapper.LogStoreWorkOptMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.storework.entity.LogStoreWorkOpt">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="belongingStoreId" column="belonging_store_id" jdbcType="INTEGER"/>
+            <result property="optType" column="opt_type" jdbcType="INTEGER"/>
+            <result property="workType" column="work_type" jdbcType="INTEGER"/>
+            <result property="workSource" column="work_source" jdbcType="INTEGER"/>
+            <result property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="originSerialNo" column="origin_serial_no" jdbcType="VARCHAR"/>
+            <result property="fromWorkState" column="from_work_state" jdbcType="INTEGER"/>
+            <result property="toWorkState" column="to_work_state" jdbcType="INTEGER"/>
+            <result property="stockId" column="stock_id" jdbcType="INTEGER"/>
+            <result property="expressNumber" column="express_number" jdbcType="VARCHAR"/>
+            <result property="commoditySituation" column="commodity_situation" jdbcType="INTEGER"/>
+            <result property="taskArriveTime" column="task_arrive_time" jdbcType="TIMESTAMP"/>
+            <result property="exceptionMark" column="exception_mark" jdbcType="INTEGER"/>
+            <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+            <result property="revision" column="revision" jdbcType="INTEGER"/>
+            <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+            <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+            <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+            <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+            <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,belonging_store_id,opt_type,work_type,work_source,
+        serial_no,origin_serial_no,from_work_state,
+        to_work_state,stock_id,express_number,
+        commodity_situation,task_arrive_time,exception_mark,
+        remarks,revision,created_id,
+        created_by,created_time,updated_id,
+        updated_by,updated_time,deleted
+    </sql>
+</mapper>

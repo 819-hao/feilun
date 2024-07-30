@@ -1,0 +1,30 @@
+package com.seeease.flywheel.financial.result;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+
+/**
+ * @author wbh
+ * @date 2023/5/18
+ */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class FinancialInvoiceCreateResult implements Serializable {
+    /**
+     * id
+     */
+    private Integer id;
+
+    /**
+     * 单号
+     */
+    private String serialNo;
+
+}

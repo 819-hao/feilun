@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.financial.mapper.CustomerBalanceMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.financial.entity.CustomerBalance">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="customerId" column="customer_id" jdbcType="INTEGER"/>
+        <result property="customerContactId" column="customer_contact_id" jdbcType="INTEGER"/>
+        <result property="consignmentMargin" column="consignment_margin" jdbcType="DECIMAL"/>
+        <result property="accountBalance" column="account_balance" jdbcType="DECIMAL"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="shopId" column="shop_id" jdbcType="INTEGER"/>
+        <result property="revision" column="revision" jdbcType="INTEGER"/>
+        <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+        <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+        <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+        <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+        <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+        <result property="originSerialNo" column="origin_serial_no" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,customer_id,customer_contact_id,
+        consignment_margin,account_balance,type,
+        user_id,shop_id,revision,
+        created_id,created_by,created_time,
+        updated_id,updated_by,updated_time,
+        deleted,origin_serial_no
+    </sql>
+
+    <select id="getCustomerBalancePage" resultType="com.seeease.flywheel.customer.result.CustomerBalancePageResult">
+        SELECT cb.customer_id as customerId,
+        c.customer_name as customerName,
+        SUM(cb.consignment_margin) as consignmentMargin,
+        SUM(cb.account_balance) as accountBalance
+        from customer_balance cb
+        left join customer c on cb.customer_id = c.id
+        where c.type = 2
+        <if test="request.customerIdList != null and request.customerIdList.size() >0">
+            <foreach collection="request.customerIdList" item="customerId" open="and cb.customer_id in (" separator="," close=")">
+                #{customerId}
+            </foreach>
+        </if>
+        <if test="request.type != null">
+            and cb.type = #{request.type}
+        </if>
+        GROUP BY cb.customer_id
+
+    </select>
+</mapper>

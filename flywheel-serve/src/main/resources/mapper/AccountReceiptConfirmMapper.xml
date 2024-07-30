@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.financial.mapper.AccountReceiptConfirmMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.financial.entity.AccountReceiptConfirm">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+        <result property="originSerialNo" column="origin_serial_no" jdbcType="VARCHAR"/>
+        <result property="batchPictureUrl" column="batch_picture_url" jdbcType="VARCHAR"/>
+        <result property="rejectionCause" column="rejection_cause" jdbcType="VARCHAR"/>
+        <result property="payer" column="payer" jdbcType="VARCHAR"/>
+        <result property="statementCompanyId" column="statement_company_id" jdbcType="INTEGER"/>
+        <result property="consignmentMargin" column="consignment_margin" jdbcType="DECIMAL"/>
+        <result property="accountBalance" column="account_balance" jdbcType="DECIMAL"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="shopId" column="shop_id" jdbcType="INTEGER"/>
+        <result property="totalNumber" column="total_number" jdbcType="INTEGER"/>
+        <result property="collectionType" column="collection_type" jdbcType="INTEGER"/>
+        <result property="collectionNature" column="collection_nature" jdbcType="INTEGER"/>
+        <result property="originType" column="origin_type" jdbcType="INTEGER"/>
+        <result property="salesMethod" column="sales_method" jdbcType="INTEGER"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+        <result property="classification" column="classification" jdbcType="INTEGER"/>
+        <result property="receivableAmount" column="receivable_amount" jdbcType="DECIMAL"/>
+        <result property="waitBindingAmount" column="wait_binding_amount" jdbcType="DECIMAL"/>
+        <result property="customerId" column="customer_id" jdbcType="INTEGER"/>
+        <result property="customerName" column="customer_name" jdbcType="VARCHAR"/>
+        <result property="customerContractId" column="customer_contract_id" jdbcType="INTEGER"/>
+        <result property="customerContractName" column="customer_contract_name" jdbcType="VARCHAR"/>
+        <result property="auditDescription" column="audit_description" jdbcType="VARCHAR"/>
+        <result property="auditor" column="auditor" jdbcType="VARCHAR"/>
+        <result property="auditTime" column="audit_time" jdbcType="TIMESTAMP"/>
+        <result property="revision" column="revision" jdbcType="INTEGER"/>
+        <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+        <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+        <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+        <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+        <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,serial_no,origin_serial_no,batch_picture_url,payer,
+        status,shop_id,total_number,rejection_cause,account_balance,
+        collection_type,collection_nature,origin_type,consignment_margin,
+        sales_method,type,classification,statement_company_id,
+        receivable_amount,wait_binding_amount,customer_id,
+        customer_name,customer_contract_id,customer_contract_name,
+        revision,created_id,created_by,audit_description,auditor,audit_time,
+        created_time,deleted,updated_id,
+        updated_by,updated_time
+    </sql>
+
+
+    <select id="getMiniPage" resultType="com.seeease.flywheel.financial.result.AccountReceiptConfirmMiniPageResult">
+        select c.*
+        from account_receipt_confirm c
+        <where>
+            c.deleted = 0
+            and c.status = #{request.status}
+            <if test="request.shopId != null">
+                and c.shop_id = #{request.shopId}
+            </if>
+            <if test="request.status == 0">
+                <if test="request.searchCriteria != null and request.searchCriteria != ''">
+                    and (c.created_by like concat("%",#{request.searchCriteria},"%")
+                    or c.customer_name like concat("%",#{request.searchCriteria},"%"))
+                </if>
+            </if>
+            <if test="request.status == 1">
+                and c.wait_binding_amount > 0
+                <if test="request.searchCriteria != null and request.searchCriteria != ''">
+                    and (c.created_by like concat("%",#{request.searchCriteria},"%")
+                    or c.customer_name like concat("%",#{request.searchCriteria},"%"))
+                </if>
+            </if>
+            <if test="request.status == 2">
+                and c.wait_binding_amount = 0
+                <if test="request.searchCriteria != null and request.searchCriteria != ''">
+                    and (c.origin_serial_no like concat("%",#{request.searchCriteria},"%")
+                    or c.customer_name like concat("%",#{request.searchCriteria},"%")
+                    or c.receivable_amount like concat("%",#{request.searchCriteria},"%"))
+                </if>
+            </if>
+
+        </where>
+
+        order by id DESC
+    </select>
+
+    <select id="getPCPage" resultType="com.seeease.flywheel.financial.result.AccountReceiptConfirmPageResult">
+        select arc.*
+        from account_receipt_confirm arc
+        left join bill_sale_order bs on bs.serial_no = arc.origin_serial_no
+        left join bill_sale_order_line bsol on bsol.sale_id = bs.id
+        left join stock s on s.id = bsol.stock_id
+        <where>
+            arc.deleted = 0
+            <if test="request.stockSn != null and request.stockSn != ''">
+                and s.sn = #{request.stockSn}
+            </if>
+            <if test="request.startTime != null and request.endTime != null">
+                and arc.created_time BETWEEN #{request.startTime} AND #{request.endTime}
+            </if>
+            <if test="request.confirmStartTime != null and request.confirmEndTime != null">
+                and arc.updated_time BETWEEN #{request.confirmStartTime} AND #{request.confirmEndTime}
+            </if>
+            <if test="request.createdBy != null and request.createdBy != ''">
+                and arc.created_by like concat("%",#{request.createdBy},"%")
+            </if>
+            <if test="request.updateBy != null and request.updateBy != ''">
+                and arc.updated_by like concat("%",#{request.updateBy},"%")
+            </if>
+            <if test="request.serialNo != null and request.serialNo != ''">
+                and arc.serial_no like concat("%",#{request.serialNo},"%")
+            </if>
+            <if test="request.originSerialNo != null and request.originSerialNo != ''">
+                and arc.origin_serial_no like concat("%",#{request.originSerialNo},"%")
+            </if>
+            <if test="request.payer != null and request.payer != ''">
+                and arc.payer like concat("%",#{request.payer},"%")
+            </if>
+            <if test="request.status != null">
+                and arc.status = #{request.status}
+            </if>
+            <if test="request.storeId != null">
+                and arc.shop_id = #{request.storeId}
+            </if>
+
+            <if test="request.collectionType != null">
+                and arc.collection_type = #{request.collectionType}
+            </if>
+            <if test="request.collectionNature != null">
+                and arc.collection_nature = #{request.collectionNature}
+            </if>
+            <if test="request.type != null">
+                and arc.`type` = #{request.type}
+            </if>
+            <if test="request.salesMethod != null">
+                and arc.sales_method = #{request.salesMethod}
+            </if>
+
+            <if test="request.originType != null">
+                and arc.origin_type = #{request.originType}
+            </if>
+            <if test="request.classification != null">
+                and arc.classification = #{request.classification}
+            </if>
+
+        </where>
+        group by arc.id
+        order by id DESC
+    </select>
+
+
+</mapper>

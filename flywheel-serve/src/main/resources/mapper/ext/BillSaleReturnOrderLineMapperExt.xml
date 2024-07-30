@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.sale.mapper.BillSaleReturnOrderLineMapper">
+    <update id="updateWhetherInvoiceBySerialNoListAndStockIdList">
+        update bill_sale_return_order_line bsrol
+        bill_sale_return_order bsro ON bsro.id = bsrol.sale_return_id
+        set bsrol.whether_invoice = #{state}
+        where
+        <foreach collection="serialNoList" item="id" open="bsro.serial_no in (" separator="," close=")">
+            #{id}
+        </foreach>
+        <foreach collection="stockIdList" item="sid" open="bsrol.stock_id IN (" separator="," close=")">
+            #{sid}
+        </foreach>
+    </update>
+    <select id="selectBySaleReturnId"
+            resultType="com.seeease.flywheel.serve.sale.entity.BillSaleReturnOrderLineDetailsVO">
+        SELECT bsrol.id,
+               bsrol.sale_return_line_state saleReturnLineState,
+               bsrol.sale_line_id           saleLineId,
+               bsrol.sale_return_id         saleReturnId,
+               bsrol.goods_id               goodsId,
+               bsrol.stock_id               stockId,
+               bsrol.return_price           returnPrice,
+               bsrol.sale_serial_no         saleSerialNo,
+               bsrol.right_of_management    rightOfManagement,
+               bsrol.whether_operate        whetherOperate,
+               bsrol.location_id            locationId,
+               bsrol.whether_invoice        whetherInvoice,
+               bsol.consignment_price       consignmentPrice,
+               bsol.clinch_price            clinchPrice,
+               bsol.margin_price            marginPrice,
+               bsol.balance_direction       balanceDirection,
+               bsol.gmv_performance         gmvPerformance,
+               bsol.tob_price               tobPrice,
+               bsol.tag_price               tagPrice,
+               bsol.toc_price               tocPrice,
+               bsol.total_price             totalPrice,
+               bsol.proportion              proportion,
+               bsol.balance_direction       balanceDirection,
+               bsol.new_settle_price          newSettlePrice,
+               b.`name`  as                 brandName,
+               ss.`name` as                 seriesName,
+               s.attachment,
+               s.sn                         stockSn,
+               s.finess,
+               gw.model,
+               bsol.price_pub               pricePub
+        from bill_sale_return_order_line bsrol
+                 LEFT JOIN bill_sale_order_line bsol on bsol.id = bsrol.sale_line_id
+                 LEFT JOIN stock s on s.id = bsrol.stock_id
+                 LEFT JOIN goods_watch gw on gw.id = s.goods_id
+                 LEFT JOIN brand b on gw.brand_id = b.id
+                 LEFT JOIN series ss on gw.series_id = ss.id
+        WHERE bsrol.sale_return_id = #{saleReturnId}
+    </select>
+    <select id="selectStateByReturnId" resultType="java.lang.Integer">
+        select sale_return_line_state
+        from bill_sale_return_order_line
+        where sale_return_id = #{saleReturnId}
+    </select>
+    <select id="selectStateByReturnIdAndStockId" resultType="java.lang.Integer">
+        select sale_return_line_state
+        from bill_sale_return_order_line
+        where sale_return_id = #{saleReturnId}
+          and stock_id = #{stockId}
+    </select>
+
+    <select id="b3Page" resultType="com.seeease.flywheel.sale.result.B3SaleReturnOrderListResult">
+        SELECT
+        gw.image,
+        b.`name` brandName,
+        s.`name` seriesName,
+        gw.model,
+        sk.sn,
+        sk.attachment,
+        bsol.express_number rtNo,
+        bsr.express_number stNo,
+        bs.serial_no atNo,
+        bsr.biz_order_code tiktokNo,
+        t1.tag_name origin,
+        cc.`name` cName,
+        cc.phone cPhone,
+        cc.address cAddress,
+        bsr.created_time createTime,
+        bsro.remark,
+        bsro.id bsroId
+        FROM
+        bill_sale_return_order bsr
+        LEFT JOIN bill_sale_return_order_line bsro ON bsr.id = bsro.sale_return_id
+        LEFT JOIN bill_sale_order bs ON bsr.sale_id = bs.id
+        LEFT JOIN bill_sale_order_line bsol ON bsol.stock_id = bsro.stock_id AND bs.id = bsol.sale_id
+        LEFT JOIN customer_contacts cc on cc.id = bsr.customer_contact_id
+        LEFT JOIN store_management sm ON bs.shop_id = sm.id
+        LEFT JOIN tag t1 ON sm.tag_id = t1.id
+        LEFT JOIN store_management sm2 ON bs.delivery_location_id = sm2.id
+        LEFT JOIN tag t2 ON sm2.tag_id = t2.id
+        LEFT JOIN stock sk ON sk.id = bsro.stock_id
+        LEFT JOIN goods_watch gw ON sk.goods_id = gw.id
+        LEFT JOIN brand b ON gw.brand_id = b.id
+        LEFT JOIN series s ON gw.series_id = s.id
+        <where>
+            bsr.deleted = 0
+            <if test="req.status == 1">
+                and bsr.sale_return_state in (1,2) and
+                <foreach collection="b3ShopId" item="item" open=" sm2.id not in (" separator=","
+                         close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="req.status == 3">
+                and bsr.sale_return_state in (3,4)
+            </if>
+            <choose>
+                <when test="req.origin != null">
+                    and sm.id = #{req.origin}
+                </when>
+                <otherwise>
+                    <foreach collection="shopIds" item="item" open="and sm.id in (" separator=","
+                             close=")">
+                        #{item}
+                    </foreach>
+                </otherwise>
+            </choose>
+            <if test="req.model != null and req.model != ''">
+                and gw.model like concat("%",#{req.model},"%")
+            </if>
+            <if test="req.sn != null and req.sn != ''">
+                and sk.sn like concat("%",#{req.sn},"%")
+            </if>
+            <if test="req.startTime != null and req.startTime != ''
+                        and req.endTime != null and req.endTime != ''">
+                and bsr.created_time between #{req.startTime} and #{req.endTime}
+            </if>
+            <if test="req.atNo != null and req.atNo != ''">
+                and bsr.sale_serial_no like concat("%",#{req.atNo},"%")
+            </if>
+            <if test="req.rtNo != null and req.rtNo != ''">
+                and bsol.express_number like concat("%",#{req.rtNo},"%")
+            </if>
+            <if test="req.stNo != null and req.stNo != ''">
+                and bsr.express_number like concat("%",#{req.stNo},"%")
+            </if>
+            <if test="req.tiktokNo != null and req.tiktokNo != ''">
+                and bsr.biz_order_code like concat("%",#{req.tiktokNo},"%")
+            </if>
+        </where>
+        order by bsr.created_time desc
+    </select>
+    <select id="exportOrderReturn" resultType="com.seeease.flywheel.sale.result.SaleReturnOrderExportResult">
+        select bsro.serial_no,
+        bsro.sale_id,
+        bsro.shop_id,
+        bsrol.stock_id,
+        bsrol.sale_return_line_state,
+        bsro.customer_contact_id,
+        bsro.sale_return_state,
+        bsrol.right_of_management,
+        bsrol.sale_line_id,
+        bsrol.location_id
+        from bill_sale_return_order bsro
+        INNER JOIN bill_sale_return_order_line bsrol on bsrol.sale_return_id = bsro.id
+        INNER join stock s on s.id = bsrol.stock_id
+        <where>
+            bsro.deleted = 0
+            <if test="request.stockSn !=null and request.stockSn !=''">
+                and s.sn = #{request.stockSn}
+            </if>
+            <if test="request.finishStartTime != null and request.finishStartTime != ''
+                        and request.finishEndTime != null and request.finishEndTime != ''">
+                AND bsro.finish_time BETWEEN #{request.finishStartTime} AND #{request.finishEndTime}
+            </if>
+            <if test="request.docBatchIds != null and request.docBatchIds.size() >0">
+                <foreach collection="request.docBatchIds" item="id" open="and bsro.id in (" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="request.createdStartTime != null and request.createdStartTime != ''
+                        and request.createdEndTime != null and request.createdEndTime != ''">
+                AND bsro.created_time BETWEEN #{request.createdStartTime} AND #{request.createdEndTime}
+            </if>
+            <if test="request.serialNo !=null and request.serialNo !=''">
+                and bsro.serial_no like CONCAT(#{request.serialNo},'%')
+            </if>
+            <if test="request.parentSerialNo !=null and request.parentSerialNo !=''">
+                and bsro.parent_serial_no like CONCAT(#{request.parentSerialNo},'%')
+            </if>
+            <if test="request.saleReturnType !=null">
+                and bsro.sale_return_type =#{request.saleReturnType}
+            </if>
+            <if test="request.saleReturnState !=null">
+                and bsro.sale_return_state =#{request.saleReturnState}
+            </if>
+            <if test="request.shopIds !=null and request.shopIds.size() > 0">
+                <foreach collection="request.shopIds" item="id" open="and bsro.shop_id in (" separator=","
+                         close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="request.createdBy !=null and request.createdBy !=''">
+                and bsro.created_by like CONCAT(#{request.createdBy},'%')
+            </if>
+            <if test="request.saleReturnType == 1 and request.customerIdList !=null">
+                <foreach collection="request.customerIdList" item="cid" open="and bsro.customer_id in (" separator=","
+                         close=")">
+                    #{cid}
+                </foreach>
+            </if>
+            <if test="request.saleReturnType == 2 and request.customerContactsIdList !=null">
+                <foreach collection="request.customerContactsIdList" item="cid" open="and bsro.customer_contact_id in ("
+                         separator=","
+                         close=")">
+                    #{cid}
+                </foreach>
+            </if>
+        </where>
+        ORDER BY bsro.id desc
+    </select>
+</mapper>

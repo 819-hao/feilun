@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.goods.mapper.PhotoGalleryMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.goods.entity.PhotoGallery">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="imgUrl" column="img_url" jdbcType="VARCHAR"/>
+            <result property="stockModel" column="stock_model" jdbcType="VARCHAR"/>
+            <result property="stockSn" column="stock_sn" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
+            <result property="childId" column="child_id" jdbcType="INTEGER"/>
+            <result property="dicId" column="dic_id" jdbcType="INTEGER"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,img_url,stock_model,
+        stock_sn,status,child_id,
+        dic_id,update_by,update_time
+    </sql>
+</mapper>

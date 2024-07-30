@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.anomaly.mapper.BillAnomalyMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.anomaly.entity.BillAnomaly">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="stockId" column="stock_id" jdbcType="INTEGER"/>
+            <result property="workId" column="work_id" jdbcType="INTEGER"/>
+            <result property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="storeWorkSerialNo" column="store_work_serial_no" jdbcType="VARCHAR"/>
+            <result property="originSerialNo" column="origin_serial_no" jdbcType="VARCHAR"/>
+            <result property="qtId" column="qt_id" jdbcType="INTEGER"/>
+            <result property="fixId" column="fix_id" jdbcType="INTEGER"/>
+            <result property="anomalyState" column="anomaly_state" jdbcType="INTEGER"/>
+            <result property="finishTime" column="finish_time" jdbcType="TIMESTAMP"/>
+            <result property="taskArriveTime" column="task_arrive_time" jdbcType="TIMESTAMP"/>
+            <result property="revision" column="revision" jdbcType="INTEGER"/>
+            <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+            <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+            <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+            <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+            <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,stock_id,work_id,
+        serial_no,store_work_serial_no,origin_serial_no,
+        qt_id,fix_id,anomaly_state,
+        finish_time,task_arrive_time,revision,
+        created_id,created_by,created_time,
+        updated_id,updated_by,updated_time,
+        deleted
+    </sql>
+</mapper>

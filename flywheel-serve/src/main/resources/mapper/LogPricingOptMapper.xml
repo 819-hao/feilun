@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.pricing.mapper.LogPricingOptMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.pricing.entity.LogPricingOpt">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="pricingNode" column="pricing_node" jdbcType="INTEGER"/>
+            <result property="stockId" column="stock_id" jdbcType="INTEGER"/>
+            <result property="originSerialNo" column="origin_serial_no" jdbcType="VARCHAR"/>
+            <result property="storeWorkSerialNo" column="store_work_serial_no" jdbcType="VARCHAR"/>
+            <result property="addPrice" column="add_price" jdbcType="DECIMAL"/>
+            <result property="allPrice" column="all_price" jdbcType="DECIMAL"/>
+            <result property="bMargin" column="b_margin" jdbcType="DECIMAL"/>
+            <result property="cMargin" column="c_margin" jdbcType="DECIMAL"/>
+            <result property="bPrice" column="b_price" jdbcType="DECIMAL"/>
+            <result property="cPrice" column="c_price" jdbcType="DECIMAL"/>
+            <result property="aPrice" column="a_price" jdbcType="DECIMAL"/>
+            <result property="tPrice" column="t_price" jdbcType="DECIMAL"/>
+            <result property="pricingSource" column="pricing_source" jdbcType="INTEGER"/>
+            <result property="purchasePrice" column="purchase_price" jdbcType="DECIMAL"/>
+            <result property="fixPrice" column="fix_price" jdbcType="DECIMAL"/>
+            <result property="fixDay" column="fix_day" jdbcType="INTEGER"/>
+            <result property="consignmentPrice" column="consignment_price" jdbcType="DECIMAL"/>
+            <result property="goodsLevel" column="goods_level" jdbcType="VARCHAR"/>
+            <result property="salesPriority" column="sales_priority" jdbcType="INTEGER"/>
+            <result property="autoPrice" column="auto_price" jdbcType="INTEGER"/>
+            <result property="revision" column="revision" jdbcType="INTEGER"/>
+            <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+            <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+            <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+            <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+            <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,serial_no,pricing_node,
+        stock_id,origin_serial_no,store_work_serial_no,
+        add_price,all_price,b_margin,
+        c_margin,b_price,c_price,
+        a_price,t_price,pricing_source,
+        purchase_price,fix_price,consignment_price,fix_day,goods_level,sales_priority,auto_price,
+        revision,created_id,created_by,
+        created_time,updated_id,updated_by,
+        updated_time,deleted
+    </sql>
+</mapper>

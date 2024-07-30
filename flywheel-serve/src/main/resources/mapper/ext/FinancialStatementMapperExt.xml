@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.financial.mapper.FinancialStatementMapper">
+
+    <select id="getPage" resultType="com.seeease.flywheel.financial.result.FinancialStatementQueryAllResult">
+        select fs.*
+        from financial_statement fs
+        <if test="request.subjectId != null">
+            INNER JOIN financial_statement_company fsc on fs.subject_id = fsc.id AND find_in_set( #{request.subjectId}, fsc.subject_id )
+        </if>
+        <where>
+            fs.deleted = 0
+            <if test="request.beginTime != null and request.beginTime != '' and request.endTime != null and request.endTime != ''">
+                and fs.collection_time BETWEEN #{request.beginTime} AND #{request.endTime}
+            </if>
+            <if test="request.shopId != null">
+                and fs.shop_id = #{request.shopId}
+            </if>
+            <if test="request.status != null">
+                and fs.status= #{request.status}
+            </if>
+            <if test="request.serialNo != null and request.serialNo != ''">
+                and fs.serial_no= #{request.serialNo}
+            </if>
+            <if test="request.payer != null and request.payer != ''">
+                and fs.payer= #{request.payer}
+            </if>
+            <if test="request.docBatchIds != null and request.docBatchIds.size() >0">
+                <foreach collection="request.docBatchIds" item="id" open="and fs.id in (" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+        order by fs.id desc
+    </select>
+    <select id="detail" resultType="com.seeease.flywheel.financial.result.FinancialStatementDetailsResult">
+        select *
+        from financial_statement
+        where id = #{request.id}
+    </select>
+
+    <select id="miniPageQuery" resultType="com.seeease.flywheel.financial.result.FinancialStatementMiniPageQueryResult">
+        select
+        f.`id` as id,
+        f.`serial_no` as serialNo,
+        f.`collection_time` as collectionTime,
+        f.`shop_id` as shopId,
+        f.`subject_id` as subjectId,
+        p.`company_name` as subjectName,
+        f.`payer` as payer,
+        f.`funds_received` as fundsReceived,
+        f.`procedure_fee` as procedureFee,
+        f.`receivable_amount` as receivableAmount,
+        f.`wait_audit_price` as waitAuditPrice,
+        f.`status` as status
+        from financial_statement f
+        LEFT JOIN financial_statement_company p ON f.subject_id = p.id
+        <where>
+            f.deleted = 0
+            and f.`status` !=4
+            <if test="request.shopId != null">
+                and f.shop_id = #{request.shopId}
+            </if>
+            <if test="request.searchCriteria != null and request.searchCriteria != ''">
+                and (f.payer= #{request.searchCriteria}
+                OR f.receivable_amount = #{request.searchCriteria})
+            </if>
+            order by f.id desc
+        </where>
+    </select>
+</mapper>

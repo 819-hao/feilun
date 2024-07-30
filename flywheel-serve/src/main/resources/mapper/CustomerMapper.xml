@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.customer.mapper.CustomerMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.customer.entity.Customer">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="type" column="type" jdbcType="TINYINT"/>
+        <result property="customerName" column="customer_name" jdbcType="VARCHAR"/>
+        <result property="accountName" column="account_name" jdbcType="VARCHAR"/>
+        <result property="bank" column="bank" jdbcType="VARCHAR"/>
+        <result property="bankAccount" column="bank_account" jdbcType="VARCHAR"/>
+        <result property="cusLabel" column="cus_label" jdbcType="VARCHAR"/>
+        <result property="cusChannel" column="cus_channel" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="logo" column="logo" jdbcType="VARCHAR"/>
+        <result property="dockingPeople" column="docking_people" jdbcType="INTEGER"/>
+        <result property="storeNo" column="store_no" jdbcType="VARCHAR"/>
+        <result property="staffNo" column="staff_no" jdbcType="VARCHAR"/>
+        <result property="mainBusiness" column="main_business" jdbcType="VARCHAR"/>
+        <result property="mainPrice" column="main_price" jdbcType="VARCHAR"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="delFlag" column="del_flag" jdbcType="TINYINT"/>
+        <result property="prop" column="prop" jdbcType="VARCHAR"/>
+        <result property="identityCard" column="identity_card" jdbcType="VARCHAR"/>
+        <result property="identityCardImage" column="identity_card_image" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,type,customer_name,
+        account_name,bank,bank_account,
+        cus_label,cus_channel,remark,
+        logo,docking_people,store_no,
+        staff_no,main_business,main_price,
+        create_by,create_time,update_by,
+        update_time,del_flag,prop,
+        identity_card,identity_card_image
+    </sql>
+
+</mapper>

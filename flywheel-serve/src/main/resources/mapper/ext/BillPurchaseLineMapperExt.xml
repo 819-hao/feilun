@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.purchase.mapper.BillPurchaseLineMapper">
+
+    <select id="selectByPurchaseId" resultType="com.seeease.flywheel.serve.purchase.entity.BillPurchaseLineDetailsVO">
+        SELECT bpl.*,
+               b.`name` as brandName,
+               s.`name` as seriesName,
+               gw.model,
+               gw.price_pub,
+               gw.movement,
+               gw.watch_size
+        from bill_purchase_line bpl
+                 LEFT JOIN goods_watch gw on gw.id = bpl.goods_id
+                 LEFT JOIN brand b on gw.brand_id = b.id
+                 LEFT JOIN series s on gw.series_id = s.id
+
+        WHERE bpl.purchase_id = #{purchaseId}
+    </select>
+    <select id="getByPurchaseName" resultType="com.seeease.flywheel.purchase.result.PurchaseByNameResult">
+
+        SELECT
+        bpl.stock_id stockId,
+        u.NAME purchaseName
+        FROM
+        bill_purchase bp
+        LEFT JOIN bill_purchase_line bpl ON bp.id = bpl.purchase_id
+        LEFT JOIN USER u ON bp.purchase_id = u.id
+        where 1=1
+        <if test="request.stockIdList != null and request.stockIdList.size() >0">
+            <foreach collection="request.stockIdList" item="id" open="and bpl.stock_id in (" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+
+    </select>
+
+    <select id="listByStockIds"
+            resultType="com.seeease.flywheel.serve.purchase.entity.PurchaseLineDetailsVO">
+        SELECT
+        bpl.stock_id stockId,
+        bpl.purchase_price purchasePrice,
+        bpl.stock_sn stockSn,
+        bpl.id lineId,
+        bp.id id,
+        bp.created_by createdBy,
+        bp.demander_store_id demanderStoreId,
+        bp.customer_id customerId,
+        bp.store_id storeId,
+        bp.purchase_subject_id purchaseSubjectId,
+        bp.customer_contact_id customerContactId,
+        bp.purchase_source purchaseSource,
+        bp.purchase_mode purchaseMode,
+        bp.serial_no serialNo
+        FROM
+        bill_purchase_line bpl
+        inner JOIN bill_purchase bp ON bp.id = bpl.purchase_id
+        where bp.purchase_source = #{purchaseSource} and bp.deleted = 0
+        <if test="stockIds != null and stockIds.size() >0">
+            <foreach collection="stockIds" item="id" open="and bpl.stock_id in (" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+    </select>
+
+    <insert id="selectInsert" parameterType="com.seeease.flywheel.goods.request.SelectInsertPurchaseLineRequest"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="id"
+    >
+        INSERT INTO bill_purchase_line (id,purchase_id,
+                                        goods_id,
+                                        stock_id,
+                                        wno,
+                                        stock_sn,
+                                        old_stock_sn,
+                                        old_attachment,
+                                        finess,
+                                        sales_priority,
+                                        attachment_list,
+                                        purchase_price,
+                                        purchase_line_state,
+                                        remarks,
+                                        goods_level,
+                                        strap_material,
+                                        watch_section,
+                                        warranty_date,
+                                        is_card,
+                                        fix_price,
+                                        plan_fix_price,
+                                        edition,
+                                        revision,
+                                        created_id,
+                                        created_by,
+                                        created_time,
+                                        updated_id,
+                                        updated_by,
+                                        updated_time,
+                                        deleted,
+                                        origin_apply_purchase_id,
+                                        whether_settle)
+        SELECT null,#{request.purchaseId},
+               goods_id,
+               NULL,
+               #{request.wno},
+               stock_sn,
+               old_stock_sn,
+               old_attachment,
+               finess,
+               sales_priority,
+               attachment_list,
+               purchase_price,
+               1,
+               remarks,
+               goods_level,
+               strap_material,
+               watch_section,
+               warranty_date,
+               is_card,
+               fix_price,
+               plan_fix_price,
+               edition,
+               revision,
+               created_id,
+               created_by,
+               now(),
+               created_id,
+               created_by,
+               now(),
+               deleted,
+               origin_apply_purchase_id,
+               whether_settle
+        FROM bill_purchase_line
+        WHERE id = #{request.id}
+
+    </insert>
+</mapper>

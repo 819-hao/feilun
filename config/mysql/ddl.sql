@@ -1,0 +1,73 @@
+CREATE TABLE `mall_recycling_order` (
+        `id` int NOT NULL AUTO_INCREMENT COMMENT '回收回购表',
+        `serial` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '批次号',
+        `sale_serial_no` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '原销售单号',
+        `stock_id` int DEFAULT NULL COMMENT '原销售单号商品id',
+        `customer_id` int DEFAULT NULL COMMENT '供应商表id',
+        `customer_contact_id` int DEFAULT NULL COMMENT '联系人',
+        `employee_id` int DEFAULT NULL COMMENT '客户经理',
+        `brand_id` int DEFAULT NULL COMMENT '品牌id（要采购）',
+        `purchase_id` int DEFAULT NULL COMMENT '采购id',
+        `sale_id` int DEFAULT NULL COMMENT '销售id',
+        `detection_id` int DEFAULT NULL COMMENT '检测id 删除',
+        `year` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '年份 删除',
+        `valuation_price` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '估价价格一次任意文本',
+        `valuation_remark` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '第一次估价备注',
+        `valuation_price_id` int DEFAULT NULL COMMENT '第一次报价人',
+        `valuation_image` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '估价图片',
+        `valuation_time` datetime DEFAULT NULL COMMENT '估价时间',
+        `valuation_price_two` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '估价价格二次',
+        `valuation_price_two_remark` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '估价第二次备注',
+        `valuation_price_two_id` int DEFAULT NULL COMMENT '第二次报价人',
+        `valuation_image_two` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '上传图片',
+        `valuation_time_two` datetime DEFAULT NULL COMMENT '二次估价时间',
+        `agreement` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '回收协议',
+        `state` int DEFAULT NULL COMMENT '状态',
+        `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
+        `shop_image` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '商城图片',
+        `demand_id` int DEFAULT NULL COMMENT '需求门店id',
+        `assess_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '估价单主键',
+        `type` int DEFAULT NULL COMMENT '类型用来区分来源',
+        `recycle_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '区分大类回购还是回购',
+        `biz_order_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '三方关联单号',
+        `revision` int DEFAULT NULL COMMENT '乐观锁',
+        `created_id` int DEFAULT NULL COMMENT '创建人id',
+        `created_by` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '创建人',
+        `created_time` datetime DEFAULT NULL COMMENT '创建时间',
+        `deleted` int DEFAULT NULL COMMENT '删除标识',
+        `updated_id` int DEFAULT NULL COMMENT '修改人id',
+        `updated_by` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '修改人',
+        `updated_time` datetime DEFAULT NULL COMMENT '修改时间',
+        `express_number` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '物流单号',
+        `delivery_express_number` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '退货物流单号',
+        `balance` decimal(10,2) DEFAULT NULL COMMENT '差额',
+        `symbol` int DEFAULT NULL COMMENT '符号 -1 待打款 0 平账 1 待收款',
+        `goods_id` int DEFAULT NULL COMMENT '型号id',
+        `strap_material` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '表带类型',
+        `watch_section` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '表节',
+        `watch_size` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '表径',
+        `account_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '银行名称',
+        `bank_account` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '银行卡号',
+        `bank` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '开户银行地址',
+        `bank_customer_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '银行客户名称',
+        `front_identity_card` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '证件正面图片（个人采购）',
+        `reverse_identity_card` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '证件反面图片（个人采购）',
+        `recovery_pricing_record` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '回收聊天记录（个人采购）',
+        `agreement_transfer` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '转让协议',
+        `stock_sn` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '采购表身号',
+        `finess` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '成色',
+        `warranty_date` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '保卡日期',
+        `is_card` int DEFAULT NULL COMMENT '0 无 1 有 2空白保卡',
+        `attachment_list` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '附件列表',
+        PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='商城回收回购表';
+
+
+
+
+ALTER table bill_purchase add consignment_time varchar(255) DEFAULT null COMMENT '寄售时间(天为单位)' after deal_begin_time;
+ALTER table customer_contacts add payee varchar(255) DEFAULT null COMMENT '收款人名称' after cnmae_ccname_phone;
+
+
+ALTER table menu add deleted int(1) DEFAULT 0 COMMENT '删除标志' after update_by;
+ALTER table permission add deleted int(1) DEFAULT 0 COMMENT '删除标志' after update_by;

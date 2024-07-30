@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.goods.mapper.ScrapStockMapper">
+    <update id="updateStateByStockIds">
+        update scrap_stock set state = #{state} where
+        stock_id in (
+        <foreach collection="stockIds" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </update>
+
+    <select id="queryPage" resultType="com.seeease.flywheel.goods.result.ScrapStockPageResult">
+        select * from scrap_stock ss inner join
+        stock s on ss.stock_id = s.id
+        inner join goods_watch gw on s.goods_id = gw.id
+        INNER JOIN brand b ON b.id = gw.brand_id
+        INNER JOIN series ser ON ser.id = gw.series_id
+        <where>
+            ss.deleted = 0
+            <if test="request.stockSn != null  and request.stockSn != ''">
+                and s.sn like concat('%', #{request.stockSn}, '%')
+            </if>
+            <if test="request.scrapReason != null  and request.scrapReason != ''">
+                and ss.scrap_reason like concat('%', #{request.scrapReason}, '%')
+            </if>
+            <if test="request.wno != null  and request.wno != ''">
+                and ss.wno = #{request.wno}
+            </if>
+            <if test="request.model != null  and request.model != ''">
+                and gw.model = #{request.model}
+            </if>
+            <if test="request.brandName != null and request.brandName != ''">
+                AND b.`name` LIKE CONCAT(#{request.brandName},'%')
+            </if>
+            <if test="request.seriesName != null and request.seriesName != ''">
+                AND ser.`name` LIKE CONCAT(#{request.seriesName},'%')
+            </if>
+            <if test="request.stockSrc != null ">
+                and ss.stock_src = #{request.stockSrc}
+            </if>
+            <if test="request.state != null ">
+                and ss.state = #{request.state}
+            </if>
+            <if test="request.startCreatedTime != null and request.startCreatedTime != '' and
+             request.endCreatedTime != null and request.endCreatedTime != ''">
+                and ss.created_time between #{request.startCreatedTime} and #{request.endCreatedTime}
+            </if>
+        </where>
+        ORDER BY ss.id desc
+    </select>
+</mapper>

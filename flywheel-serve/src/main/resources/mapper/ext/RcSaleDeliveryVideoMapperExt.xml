@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.sale.mapper.RcSaleDeliveryVideoMapper">
+
+    <update id="bindSaleOrder">
+        UPDATE rc_sale_delivery_video
+        SET sale_id = #{saleId}
+        WHERE
+        sale_id IS NULL
+        AND created_time >= DATE_SUB( NOW(), INTERVAL 3 DAY )
+        <foreach collection="stockIdList" item="stockId" open="AND stock_id IN (" separator="," close=")">
+            #{stockId}
+        </foreach>
+    </update>
+</mapper>

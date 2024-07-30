@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.storework.mapper.LogStoreWorkOptMapper">
+    <select id="getPage" resultType="com.seeease.flywheel.storework.result.StoreWorkLogResult">
+        SELECT s.sn stockSn,
+        s.id stockId,
+        s.finess,
+        s.attachment,
+        lswo.origin_serial_no,
+        lswo.express_number,
+        DATE_FORMAT(lswo.task_arrive_time,'%Y-%m-%d %H:%i:%s') taskArriveTime,
+        DATE_FORMAT(lswo.created_time,'%Y-%m-%d %H:%i:%s') createdTime,
+        lswo.work_type,
+        lswo.work_source,
+        lswo.created_by,
+        lswo.opt_type,
+        lswo.exception_mark,
+        s.goods_id
+
+        FROM log_store_work_opt lswo
+        LEFT JOIN stock s ON lswo.stock_id = s.id
+        <where>
+
+            <if test="request.storeComprehensive==false">
+                lswo.belonging_store_id = #{request.belongingStoreId}
+            </if>
+
+            <if test="request.storeComprehensive==true">
+                lswo.belonging_store_id in
+                <foreach collection="request.ipShopIds" item="id" separator="," open="(" close=")">
+                    #{id}
+                </foreach>
+            </if>
+
+            <if test="request.startTime != null and request.startTime != '' and request.endTime != null and request.endTime != ''">
+                and DATE_FORMAT(lswo.created_time,'%Y-%m-%d %H:%i:%s') between #{request.startTime}
+                and #{request.endTime}
+            </if>
+
+            <if test="request.stockSn != null and request.stockSn != ''">
+                and s.sn like concat('%',#{request.stockSn,jdbcType=VARCHAR},'%')
+            </if>
+
+            <if test="request.expressNumber != null and request.expressNumber != ''">
+                and lswo.express_number like concat('%',#{request.expressNumber,jdbcType=VARCHAR},'%')
+            </if>
+
+            <if test="request.originSerialNo != null and request.originSerialNo != ''">
+                and lswo.origin_serial_no like concat('%',#{request.originSerialNo,jdbcType=VARCHAR},'%')
+            </if>
+
+            <if test="request.workSource != null">
+                and lswo.work_source = #{request.workSource}
+            </if>
+
+            <if test="request.createdBy != null and request.createdBy != ''">
+                and lswo.created_by like concat('%',#{request.createdBy,jdbcType=VARCHAR},'%')
+            </if>
+
+            <if test="request.optType !=null">
+                and lswo.opt_type = #{request.optType}
+            </if>
+
+            <choose>
+                <when test="request.isReceiptOrDelivery">
+                    and lswo.opt_type IN (10,20,30)
+                </when>
+                <otherwise>
+                    and lswo.opt_type IN (40,50)
+                </otherwise>
+            </choose>
+
+        </where>
+        order by lswo.id desc
+
+    </select>
+</mapper>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.web.infrastructure.mapper.DouYinOrderMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.web.entity.DouYinOrder">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="douYinShopId" column="dou_yin_shop_id" jdbcType="VARCHAR"/>
+        <result property="douYinShopName" column="dou_yin_shop_name" jdbcType="VARCHAR"/>
+        <result property="orderId" column="order_id" jdbcType="VARCHAR"/>
+        <result property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+        <result property="shopId" column="shop_id" jdbcType="INTEGER"/>
+        <result property="whetherUse" column="whether_use" jdbcType="INTEGER"/>
+        <result property="whetherQuery" column="whether_query" jdbcType="INTEGER"/>
+        <result property="orderStatus" column="order_status" jdbcType="INTEGER"/>
+        <result property="orderStatusDesc" column="order_status_desc" jdbcType="VARCHAR"/>
+        <result property="orderType" column="order_type" jdbcType="INTEGER"/>
+        <result property="orderTypeDesc" column="order_type_desc" jdbcType="VARCHAR"/>
+        <result property="orderAmount" column="order_amount" jdbcType="DECIMAL"/>
+        <result property="payAmount" column="pay_amount" jdbcType="DECIMAL"/>
+        <result property="payTime" column="pay_time" jdbcType="TIMESTAMP"/>
+        <result property="payType" column="pay_type" jdbcType="INTEGER"/>
+        <result property="channelPaymentNo" column="channel_payment_no" jdbcType="VARCHAR"/>
+        <result property="buyerWords" column="buyer_words" jdbcType="VARCHAR"/>
+        <result property="sellerWords" column="seller_words" jdbcType="VARCHAR"/>
+        <result property="openAddressId" column="open_address_id" jdbcType="VARCHAR"/>
+        <result property="province" column="province" jdbcType="VARCHAR"/>
+        <result property="city" column="city" jdbcType="VARCHAR"/>
+        <result property="town" column="town" jdbcType="VARCHAR"/>
+        <result property="street" column="street" jdbcType="VARCHAR"/>
+        <result property="encryptPostTel" column="encrypt_post_tel" jdbcType="VARCHAR"/>
+        <result property="encryptPostReceiver" column="encrypt_post_receiver" jdbcType="VARCHAR"/>
+        <result property="encryptAddrArea" column="encrypt_addr_area" jdbcType="VARCHAR"/>
+        <result property="encryptDetail" column="encrypt_detail" jdbcType="VARCHAR"/>
+        <result property="decryptPostTel" column="decrypt_post_tel" jdbcType="VARCHAR"/>
+        <result property="decryptPostReceiver" column="decrypt_post_receiver" jdbcType="VARCHAR"/>
+        <result property="decryptAddrDetail" column="decrypt_addr_detail" jdbcType="VARCHAR"/>
+        <result property="maskPostTel" column="mask_post_tel" jdbcType="VARCHAR"/>
+        <result property="maskPostReceiver" column="mask_post_receiver" jdbcType="VARCHAR"/>
+        <result property="maskDetail" column="mask_detail" jdbcType="VARCHAR"/>
+        <result property="cancelTime" column="cancel_time" jdbcType="TIMESTAMP"/>
+        <result property="cancelReason" column="cancel_reason" jdbcType="VARCHAR"/>
+        <result property="revision" column="revision" jdbcType="INTEGER"/>
+        <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+        <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+        <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+        <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+        <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+        <result property="whetherNotify" column="whether_notify" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,dou_yin_shop_id,dou_yin_shop_name,serial_no,
+        order_id,order_status,order_status_desc,whether_notify,
+        order_type,order_type_desc,order_amount,
+        pay_amount,pay_time,pay_type,shop_id,whether_use,
+        channel_payment_no,buyer_words,seller_words,
+        open_address_id,province,city,town,street ,
+        encrypt_post_tel,encrypt_post_receiver,encrypt_addr_area,
+        encrypt_detail,decrypt_post_tel,decrypt_post_receiver,
+        decrypt_addr_detail,mask_post_tel,mask_post_receiver,
+        mask_detail,cancel_time,cancel_reason,
+        revision,created_id,created_by,whether_query,
+        created_time,updated_id,updated_by,
+        updated_time,deleted
+    </sql>
+</mapper>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.web.infrastructure.mapper.XyRecycleOrderMapper">
+
+    <resultMap id="statsMap" type="com.seeease.flywheel.web.entity.XyRecycleOrderStatsVO">
+        <result property="quoteOrderState" column="quote_order_state" jdbcType="INTEGER"/>
+        <result property="countNumber" column="count_number" jdbcType="INTEGER"/>
+    </resultMap>
+
+
+    <select id="statsByOrderState" resultMap="statsMap">
+        SELECT quote_order_state,
+               COUNT(1) AS count_number
+        FROM xy_recycle_order
+        GROUP BY quote_order_state
+    </select>
+
+</mapper>

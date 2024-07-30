@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.financial.mapper.AuditLoggingDetailMapper">
+
+    <select id="getOneByRequest" resultType="com.seeease.flywheel.financial.result.AuditLoggingDetailResult">
+        select ald.*,
+        al.number,
+        al.applicant,
+        al.created_time applicantTime,
+        al.origin_serial_no originSerialNo,
+        al.total_price totalPrice
+        from audit_logging_detail ald
+        inner join audit_logging al on al.id = ald.audit_logging_id
+        <where>
+            <if test="request.id != null">
+                and ald.audit_logging_id = #{request.id}
+            </if>
+        </where>
+    </select>
+</mapper>

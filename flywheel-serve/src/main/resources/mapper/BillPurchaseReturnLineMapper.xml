@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.purchase.mapper.BillPurchaseReturnLineMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.purchase.entity.BillPurchaseReturnLine">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="purchaseReturnId" column="purchase_return_id" jdbcType="INTEGER"/>
+        <result property="originSerialNo" column="origin_serial_no" jdbcType="VARCHAR"/>
+        <result property="purchaseReturnType" column="purchase_return_type" jdbcType="INTEGER"/>
+        <result property="purchaseReturnPrice" column="purchase_return_price" jdbcType="DECIMAL"/>
+        <result property="purchasePrice" column="purchase_price" jdbcType="DECIMAL"/>
+        <result property="purchaseReturnLineState" column="purchase_return_line_state" jdbcType="INTEGER"/>
+        <result property="stockId" column="stock_id" jdbcType="INTEGER"/>
+        <result property="module" column="module" jdbcType="INTEGER"/>
+        <result property="state" column="state" jdbcType="INTEGER"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="purchaseSubjectId" column="purchase_subject_id" jdbcType="INTEGER"/>
+        <result property="locationId" column="location_id" jdbcType="INTEGER"/>
+        <result property="stockSrc" column="stock_src" jdbcType="INTEGER"/>
+        <result property="expressNumber" column="express_number" jdbcType="VARCHAR"/>
+        <result property="edition" column="edition" jdbcType="INTEGER"/>
+        <result property="revision" column="revision" jdbcType="INTEGER"/>
+        <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+        <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+        <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+        <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+        <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,purchase_return_id,origin_serial_no,purchase_return_type,purchase_price,
+        purchase_return_price,purchase_return_line_state,stock_id,
+        module,state,remark,
+        purchase_subject_id,location_id, stock_src, express_number,edition,revision,
+        created_id,created_by,created_time,
+        updated_id,updated_by,updated_time,
+        deleted
+    </sql>
+</mapper>

@@ -1,0 +1,29 @@
+#nacos 配置中心
+nacos:
+  config:
+    server-addr: nacos.local.com:8848
+    bootstrap:
+      enable: true
+      log-enable: true
+    data-ids: flywheel-serve-prod
+    #    namespace: 83ed21d7-50d1-4fb0-9bc7-d4740a9be483
+    type: yaml
+    group: DEFAULT_GROUP
+    auto-refresh: true
+
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${nacos.config.server-addr}
+#        namespace: ${nacos.config.namespace}
+
+#Dubbo Registry
+dubbo:
+  registry:
+    address:  nacos://${nacos.config.server-addr}
+#    parameters[namespace]: ${nacos.config.namespace}
+
+logging:
+  file:
+    path: /logs/fl/flywheel-serve

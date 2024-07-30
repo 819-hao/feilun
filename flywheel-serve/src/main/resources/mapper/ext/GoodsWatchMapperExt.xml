@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.goods.mapper.GoodsWatchMapper">
+
+    <resultMap id="GoodsInfoResultMap" type="com.seeease.flywheel.goods.entity.GoodsBaseInfo">
+        <result property="goodsId" column="goods_id" jdbcType="INTEGER"/>
+        <result property="image" column="image" jdbcType="VARCHAR"/>
+        <result property="brandName" column="brandName" jdbcType="VARCHAR"/>
+        <result property="seriesType" column="seriesType" jdbcType="INTEGER"/>
+        <result property="seriesName" column="seriesName" jdbcType="VARCHAR"/>
+        <result property="model" column="model" jdbcType="VARCHAR"/>
+        <result property="pricePub" column="price_pub" jdbcType="DECIMAL"/>
+        <result property="currentPrice" column="current_price" jdbcType="DECIMAL"/>
+        <result property="twoZeroFullPrice" column="two_zero_full_price" jdbcType="DECIMAL"/>
+        <result property="twoTwoFullPrice" column="two_two_full_price" jdbcType="DECIMAL"/>
+        <result property="stockQuantity" column="stockQuantity" jdbcType="INTEGER"/>
+        <result property="stockQuantityByLocation" column="stockQuantityByLocation" jdbcType="INTEGER"/>
+    </resultMap>
+    <update id="updateBrandBySeries">
+        update goods_watch
+        set brand_id = #{brandId}
+        where series_id = #{seriesId}
+    </update>
+
+    <select id="queryByGoodsIdList" resultType="com.seeease.flywheel.serve.goods.entity.WatchDataFusion">
+        SELECT
+        gw.id goodsId,
+        gw.image,
+        b.`name` brandName,
+        b.id brandId,
+        s.`name` seriesName,
+        s.id seriesId,
+        s.series_type seriesType,
+        gw.model model,
+        gw.model_code modelCode,
+        gw.price_pub pricePub,
+        gw.movement movement,
+        gw.current_price currentPrice,
+        gw.two_zero_full_price twoZeroFullPrice,
+        gw.two_two_full_price twoTwoFullPrice,
+        gw.watch_size watchSize
+        FROM
+        goods_watch gw
+        LEFT JOIN brand b ON b.id = gw.brand_id
+        LEFT JOIN series s ON s.id = gw.series_id
+        WHERE
+        gw.id IN
+        <foreach collection="goodsIdList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="queryByStockIdList" resultType="com.seeease.flywheel.serve.goods.entity.WatchDataFusion">
+        SELECT
+        sk.id stockId,
+        sk.demand_id demandId,
+        sk.attachment ,
+        sk.sn stockSn,
+        sk.consignment_price consignmentPrice,
+        sk.purchase_price purchasePrice,
+        sk.remark remark,
+        sk.strap ,
+        sk.wno wno,
+        sk.total_storage_age totalStorageAge,
+        sk.stock_src stockSrc,
+        sk.location_id locationId,
+        sk.right_of_management rightOfManagement,
+        sk.stock_status stockStatus,
+        sk.right_of_management rightOfManagement,
+        sk.new_settle_price newSettlePrice,
+        sk.stock_status stockStatus,
+        gw.id goodsId,
+        gw.image,
+        sk.belong_id belongId,
+        gw.brand_id brandId,
+        b.`name` brandName,
+        b.id brandId,
+        s.`name` seriesName,
+        s.series_type seriesType,
+        sk.wuyu_price ,
+        sk.wuyu_buy_back_price ,
+        sk.finess finess,
+        gw.model model,
+        gw.model_code modelCode,
+        gw.price_pub pricePub,
+        gw.movement movement,
+        gw.shape ,
+        gw.sex,
+        gw.depth,
+        gw.bracelet_color braceletColor,
+        gw.buckle_type buckleType,
+        gw.watchcase_material watchcaseMaterial,
+        gw.watch_size watchSize
+        FROM stock sk
+        LEFT JOIN goods_watch gw on gw.id = sk.goods_id
+        LEFT JOIN brand b ON b.id = gw.brand_id
+        LEFT JOIN series s ON s.id = gw.series_id
+        WHERE
+        sk.id IN
+        <foreach collection="stockIdList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="listGoods" parameterType="com.seeease.flywheel.goods.request.GoodsListRequest"
+            resultMap="GoodsInfoResultMap">
+        SELECT
+        gw.id AS goods_id,
+        gw.image,
+        gw.price_pub,
+        gw.model,
+        gw.current_price,
+        gw.two_zero_full_price,
+        gw.two_two_full_price,
+        b.`name` brandName,
+        ser.series_type seriesType,
+        ser.`name` seriesName
+        <if test="request.needStockNumber == true">
+            ,COUNT(s.id) AS stockQuantity
+        </if>
+        <if test="request.needStockNumberByLocation == true">
+            ,COUNT(s.id) AS stockQuantityByLocation
+        </if>
+        FROM
+        goods_watch gw
+        INNER JOIN brand b ON b.id = gw.brand_id
+        INNER JOIN series ser ON ser.id = gw.series_id
+        <if test="request.needStockNumber == true">
+            INNER JOIN stock s ON s.goods_id = gw.id
+            AND s.temp IS NULL
+            AND s.stock_status = 100 AND s.right_of_management = #{request.rightOfManagement}
+        </if>
+        <if test="request.needStockNumberByLocation == true">
+            INNER JOIN stock s ON s.goods_id = gw.id
+            AND s.temp IS NULL
+            AND s.stock_status = 100 AND s.location_id = #{request.locationId}
+        </if>
+        <where>
+            <if test="request.brandIdList != null">
+                <foreach collection="request.brandIdList" separator="," item="brandId" open="AND gw.`brand_id` in ("
+                         close=")">
+                    #{brandId}
+                </foreach>
+            </if>
+            <if test="request.brandName != null and request.brandName != ''">
+                AND b.`name` LIKE CONCAT(#{request.brandName},'%')
+            </if>
+            <if test="request.seriesName != null and request.seriesName != ''">
+                AND ser.`name` LIKE CONCAT(#{request.seriesName},'%')
+            </if>
+            <if test="request.seriesType != null">
+                AND ser.series_type = #{request.seriesType}
+            </if>
+            <if test="request.model != null and request.model != ''">
+                AND gw.`model` LIKE CONCAT(#{request.model},'%')
+            </if>
+            <if test="request.modelList != null and request.modelList.size() > 0">
+                <foreach collection="request.modelList" separator="," item="mod" open="AND gw.`model` in (" close=")">
+                    #{mod}
+                </foreach>
+            </if>
+        </where>
+        GROUP BY gw.id
+        ORDER BY gw.id DESC
+    </select>
+
+    <select id="listGoodsBaseInfo" resultType="com.seeease.flywheel.goods.entity.GoodsBaseInfo">
+        SELECT
+        gw.id AS goods_id,
+        gw.image,
+        gw.price_pub,
+        gw.model,
+        b.`name` brandName,
+        ser.series_type seriesType,
+        ser.`name` seriesName
+        FROM
+        goods_watch gw
+        INNER JOIN brand b ON b.id = gw.brand_id
+        INNER JOIN series ser ON ser.id = gw.series_id
+        <where>
+            <if test="brandNameList !=null and brandNameList.size() > 0">
+                <foreach collection="brandNameList" item="brandName" separator="," open="b.`name` in ( " close=")">
+                    #{brandName}
+                </foreach>
+            </if>
+            <if test="simplifyModelList !=null and simplifyModelList.size() > 0">
+                <foreach collection="simplifyModelList" item="model" separator="," open=" and gw.simplify_model in ("
+                         close=")">
+                    #{model}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="pageGoodsForHelperSearch" resultType="com.seeease.flywheel.helper.result.MarketTrendsSearchResult">
+        SELECT
+        gw.id ,
+        gw.image,
+        gw.price_pub,
+        gw.model,
+        b.`name` brandName,
+        ser.series_type seriesType,
+        ser.`name` seriesName
+        FROM
+        goods_watch gw
+        INNER JOIN brand b ON b.id = gw.brand_id
+        INNER JOIN series ser ON ser.id = gw.series_id
+        <where>
+            b.`name` not in ("配件","礼品")
+            <if test="q != null and q != ''">
+                AND (
+                ser.`name` LIKE CONCAT('%',#{q},'%') or
+                gw.`model` LIKE CONCAT('%',#{q},'%') or
+                b.`name` LIKE CONCAT('%',#{q},'%')
+                )
+            </if>
+            <if test="model != null and model != ''">
+                AND gw.`model` LIKE CONCAT('%',#{model},'%')
+            </if>
+        </where>
+        ORDER BY
+        IF
+        ( b.`name` = '欧米茄' AND ser.`name` = '碟飞', 0, 1 ),
+        IF
+        ( b.`name` = '欧米茄', 0, 1 ),
+        gw.id DESC
+    </select>
+    <select id="getAllList" resultType="com.seeease.flywheel.serve.goods.entity.GoodsWatch">
+        SELECT
+        id,
+        model
+        FROM
+        goods_watch
+        <where>
+            <if test="request.brandIdList != null and request.brandIdList.size() >0">
+                <foreach collection="request.brandIdList" item="id" open="and brand_id in (" separator=","
+                         close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </select>
+</mapper>

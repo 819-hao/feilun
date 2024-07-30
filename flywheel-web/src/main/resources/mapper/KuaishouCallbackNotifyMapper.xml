@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.web.infrastructure.mapper.KuaishouCallbackNotifyMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.web.entity.KuaishouCallbackNotify">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="kuaiShouSellerId" column="kuai_shou_seller_id" jdbcType="BIGINT"/>
+            <result property="kuaiShouOrderId" column="kuai_shou_order_id" jdbcType="VARCHAR"/>
+            <result property="msgId" column="msg_id" jdbcType="VARCHAR"/>
+            <result property="eventId" column="event_id" jdbcType="VARCHAR"/>
+            <result property="bizId" column="biz_id" jdbcType="BIGINT"/>
+            <result property="userId" column="user_id" jdbcType="BIGINT"/>
+            <result property="openId" column="open_id" jdbcType="VARCHAR"/>
+            <result property="appKey" column="app_key" jdbcType="VARCHAR"/>
+            <result property="event" column="event" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
+            <result property="createTime" column="create_time" jdbcType="BIGINT"/>
+            <result property="updateTime" column="update_time" jdbcType="BIGINT"/>
+            <result property="info" column="info" jdbcType="VARCHAR"/>
+            <result property="state" column="state" jdbcType="INTEGER"/>
+            <result property="errorReason" column="error_reason" jdbcType="VARCHAR"/>
+            <result property="revision" column="revision" jdbcType="INTEGER"/>
+            <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+            <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+            <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+            <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+            <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,kuai_shou_seller_id,kuai_shou_order_id,
+        msg_id,event_id,biz_id,
+        user_id,open_id,app_key,
+        event,status,create_time,
+        update_time,info,state,
+        error_reason,revision,created_id,
+        created_by,created_time,updated_id,
+        updated_by,updated_time,deleted
+    </sql>
+</mapper>

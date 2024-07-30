@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.goods.mapper.GoodsMetaInfoSyncMapper">
+
+    <resultMap id="GoodsMetaInfoDtoResultMap" type="com.seeease.flywheel.serve.goods.entity.GoodsMetaInfoDto">
+        <result property="stockId" column="stockId" jdbcType="INTEGER"/>
+        <result property="goodsId" column="goods_id" jdbcType="INTEGER"/>
+        <result property="brandName" column="brandName" jdbcType="VARCHAR"/>
+        <result property="seriesName" column="seriesName" jdbcType="VARCHAR"/>
+        <result property="seriesType" column="seriesType" jdbcType="INTEGER"/>
+        <result property="modelImage" column="modelImage" jdbcType="VARCHAR"/>
+        <result property="model" column="model" jdbcType="VARCHAR"/>
+        <result property="pricePub" column="price_pub" jdbcType="DECIMAL"/>
+        <result property="movement" column="movement" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="VARCHAR"/>
+        <result property="nickName" column="nick_name" jdbcType="VARCHAR"/>
+        <result property="limited" column="limited" jdbcType="INTEGER"/>
+        <result property="pinNumber" column="pin_number" jdbcType="TINYINT"/>
+        <result property="movementModel" column="movement_model" jdbcType="VARCHAR"/>
+        <result property="manufacturer" column="manufacturer" jdbcType="VARCHAR"/>
+        <result property="technologyCertification" column="technology_certification" jdbcType="VARCHAR"/>
+        <result property="balanceWheel" column="balance_wheel" jdbcType="VARCHAR"/>
+        <result property="gemsNum" column="gems_num" jdbcType="VARCHAR"/>
+        <result property="vibrationFrequency" column="vibration_frequency" jdbcType="VARCHAR"/>
+        <result property="mark" column="mark" jdbcType="VARCHAR"/>
+        <result property="watchSize" column="watch_size" jdbcType="VARCHAR"/>
+        <result property="backThrough" column="back_through" jdbcType="VARCHAR"/>
+        <result property="weight" column="weight" jdbcType="VARCHAR"/>
+        <result property="occasion" column="occasion" jdbcType="VARCHAR"/>
+        <result property="shape" column="shape" jdbcType="VARCHAR"/>
+        <result property="color" column="color" jdbcType="VARCHAR"/>
+        <result property="braceletColor" column="bracelet_color" jdbcType="VARCHAR"/>
+        <result property="week" column="week" jdbcType="VARCHAR"/>
+        <result property="depth" column="depth" jdbcType="VARCHAR"/>
+        <result property="waterproof" column="waterproof" jdbcType="VARCHAR"/>
+        <result property="material" column="material" jdbcType="VARCHAR"/>
+        <result property="claspMaterial" column="clasp_material" jdbcType="VARCHAR"/>
+        <result property="watchcaseMaterial" column="watchcase_material" jdbcType="VARCHAR"/>
+        <result property="strapMaterial" column="strap_material" jdbcType="VARCHAR"/>
+        <result property="headMaterial" column="head_material" jdbcType="VARCHAR"/>
+        <result property="crystalMaterial" column="crystal_material" jdbcType="VARCHAR"/>
+        <result property="timescaleType" column="timescale_type" jdbcType="VARCHAR"/>
+        <result property="watchEarSpacing" column="watch_ear_spacing" jdbcType="VARCHAR"/>
+        <result property="buckleType" column="buckle_type" jdbcType="VARCHAR"/>
+        <result property="gemsMosaic" column="gems_mosaic" jdbcType="VARCHAR"/>
+        <result property="powerReserve" column="power_reserve" jdbcType="VARCHAR"/>
+        <result property="capacity" column="capacity" jdbcType="VARCHAR"/>
+        <result property="trait" column="trait" jdbcType="VARCHAR"/>
+        <result property="simplifyModel" column="simplify_model" jdbcType="VARCHAR"/>
+        <result property="stockStatus" column="stock_status" jdbcType="INTEGER"/>
+        <result property="finess" column="finess" jdbcType="VARCHAR"/>
+        <result property="tobPrice" column="tob_price" jdbcType="DECIMAL"/>
+        <result property="tocPrice" column="toc_price" jdbcType="DECIMAL"/>
+        <result property="tagPrice" column="tag_price" jdbcType="DECIMAL"/>
+        <result property="attachment" column="attachment" jdbcType="VARCHAR"/>
+        <result property="stockSn" column="stockSn" jdbcType="VARCHAR"/>
+        <result property="locationId" column="location_id" jdbcType="BIGINT"/>
+        <result property="locationName" column="location_name" jdbcType="VARCHAR"/>
+        <result property="rightOfManagement" column="right_of_management" jdbcType="BIGINT"/>
+        <result property="lockDemand" column="lock_demand" jdbcType="INTEGER"/>
+        <result property="defectOrNot" column="defect_or_not" jdbcType="INTEGER"/>
+        <result property="defectDescription" column="defect_description" jdbcType="VARCHAR"/>
+        <result property="brandNew" column="brandNew" jdbcType="INTEGER"/>
+        <result property="salesPriority" column="salesPriority" jdbcType="VARCHAR"/>
+        <result property="goodsLevel" column="goodsLevel" jdbcType="VARCHAR"/>
+        <result property="wno" column="wno" jdbcType="VARCHAR"/>
+        <result property="bagStyle" column="bag_style" jdbcType="VARCHAR"/>
+        <result property="bagMaterial" column="bag_material" jdbcType="VARCHAR"/>
+        <result property="bagSize" column="bag_size" jdbcType="VARCHAR"/>
+        <result property="bagColor" column="bag_color" jdbcType="VARCHAR"/>
+        <result property="bagWeight" column="bag_weight" jdbcType="VARCHAR"/>
+        <result property="bagOcMode" column="bag_OC_mode" jdbcType="VARCHAR"/>
+        <result property="bagStructure" column="bag_structure" jdbcType="VARCHAR"/>
+        <result property="bagOrigin" column="bag_origin" jdbcType="VARCHAR"/>
+        <result property="jewelsStyle" column="jewels_style" jdbcType="VARCHAR"/>
+        <result property="jewelsMaterial" column="jewels_material" jdbcType="VARCHAR"/>
+        <result property="jewelsSize" column="jewels_size" jdbcType="VARCHAR"/>
+        <result property="jewelsWeight" column="jewels_weight" jdbcType="VARCHAR"/>
+        <result property="jewelsSetMaterial" column="jewels_set_material" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+    <sql id="fieldSql">
+        SELECT s.id                                                  AS stockId,
+               s.sn                                                  AS stockSn,
+               s.wno,
+               s.goods_id,
+               CASE
+                   WHEN s.stock_status = 666 THEN 1
+                   WHEN s.stock_status = 100 THEN 1
+                   ELSE - 1
+                   END                                               AS stock_status,
+               IF(ps.watch_status = 1 and s.finess = 'S级/99新', 1, 2) AS brandNew,
+               s.finess,
+               s.tob_price,
+               s.toc_price,
+               s.tag_price,
+               s.attachment,
+               s.location_id,
+               s.location_name,
+               s.right_of_management,
+               s.lock_demand,
+               s.defect_or_not,
+               s.defect_description,
+               s.sales_priority                                      AS salesPriority,
+               s.`level`                                             AS goodsLevel,
+               gw.*,
+               gw.image                                              AS modelImage,
+               b.`name`                                              AS brandName,
+               se.`name`                                             AS seriesName,
+               se.series_type                                        AS seriesType
+    </sql>
+
+    <sql id="conditionSql">
+        FROM stock s
+	             INNER JOIN goods_meta_info gmi on gmi.stock_id = s.id
+                 INNER  JOIN purchase_subject ps on ps.id = s.source_subject_id
+                 LEFT JOIN goods_watch gw ON gw.id = s.goods_id
+                 LEFT JOIN brand b ON b.id = gw.brand_id
+                 LEFT JOIN series se ON se.id = gw.series_id
+        WHERE s.temp is null
+          AND s.id >
+        #{currentOffset}
+    </sql>
+
+
+    <select id="maxGoodsMetaInfo" resultType="java.lang.Integer">
+        SELECT max(s.id)
+        <include refid="conditionSql"/>
+    </select>
+
+    <select id="selectGoodsMetaInfo" resultMap="GoodsMetaInfoDtoResultMap">
+        <include refid="fieldSql"/>
+        <include refid="conditionSql"/>
+        ORDER BY s.id
+        LIMIT #{limit}
+    </select>
+
+
+    <select id="selectGoodsMetaInfoByStockIdList" resultMap="GoodsMetaInfoDtoResultMap">
+        <include refid="fieldSql"/>
+        FROM stock s
+        INNER JOIN goods_meta_info gmi on gmi.stock_id = s.id
+        INNER JOIN purchase_subject ps on ps.id = s.source_subject_id
+        LEFT JOIN goods_watch gw ON gw.id = s.goods_id
+        LEFT JOIN brand b ON b.id = gw.brand_id
+        LEFT JOIN series se ON se.id = gw.series_id
+        WHERE s.temp is null
+        and s.id in (
+        <foreach collection="stockIdList" item="stockId" separator=",">
+            #{stockId}
+        </foreach>
+        )
+        ORDER BY s.id
+    </select>
+
+    <update id="updateLatestPullData" parameterType="com.seeease.flywheel.serve.goods.entity.GoodsMetaInfoSync">
+        UPDATE goods_meta_info
+        SET latest_pull_time  = NOW(),
+            toc_price         = #{tocPrice},
+            stock_state       = #{stockState},
+            latest_pull_data  = #{latestPullData},
+            brand_new         = #{brandNew},
+            goods_id          = #{goodsId},
+            latest_pull_state = 2
+        WHERE stock_id = #{stockId}
+    </update>
+
+    <select id="findPropertyChangeGoods" resultMap="BaseResultMap">
+        SELECT gmi.*
+        FROM goods_meta_info gmi
+                 INNER JOIN goods_watch gw ON gw.id = gmi.goods_id
+        WHERE gmi.property_change = 1
+          AND gw.brand_id NOT IN (1112, 1113) LIMIT 100
+    </select>
+
+    <update id="updatePropertyChange">
+        UPDATE goods_meta_info
+        SET property_change   = 0,
+            latest_pull_state = 1,
+            notice_time       = #{noticeTime}
+        WHERE stock_id = #{stockId}
+    </update>
+
+    <select id="checkCPrice" parameterType="java.lang.Integer"
+            resultType="com.seeease.flywheel.serve.goods.entity.GoodsStockCPrice">
+        SELECT s.`toc_price`,
+        s.id stockId,
+        s.sn stockSn,
+        s.tag_price tagPrice,
+        b.`name` AS brandName,
+        se.`name` AS seriesName,
+        gw.model AS model
+        FROM stock s
+        LEFT JOIN purchase_subject ps ON ps.id = s.source_subject_id
+        LEFT JOIN goods_watch gw ON gw.id = s.goods_id
+        LEFT JOIN brand b ON b.id = gw.brand_id
+        LEFT JOIN series se ON se.id = gw.series_id
+        <where>
+            s.temp is null
+            AND s.finess = 'S级/99新'
+            AND s.goods_id = #{goodsId}
+            AND s.stock_status NOT IN (9, 888)
+            AND s.tob_price > 0
+            AND s.toc_price > 0
+            AND s.tag_price > 0
+            <if test="extra">
+                AND ps.watch_status = 1
+            </if>
+
+        </where>
+    </select>
+
+    <select id="checkNewStock" parameterType="java.lang.Integer"
+            resultType="com.seeease.flywheel.serve.goods.entity.GoodsStockCPrice">
+        SELECT s.`toc_price`,
+               s.id        stockId,
+               s.sn        stockSn,
+               s.tag_price tagPrice,
+               s.goods_id
+        FROM stock s
+                 LEFT JOIN purchase_subject ps ON ps.id = s.source_subject_id
+        WHERE ps.watch_status = 1
+          AND s.temp is null
+          AND s.finess = 'S级/99新'
+          AND s.id = #{stockId}
+    </select>
+
+</mapper>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0flcczt" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.5.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+  <bpmn:process id="purchaseConfirmFlow" name="采购需求确认流程" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="qtState" label="质检结果" type="long" />
+          <camunda:formField id="owner" label="确认人" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1orl8rf</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="Gateway_0gbb17q">
+      <bpmn:incoming>Flow_1orl8rf</bpmn:incoming>
+      <bpmn:outgoing>Flow_1oo3diy</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1wdpugu</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1orl8rf" sourceRef="StartEvent_1" targetRef="Gateway_0gbb17q" />
+    <bpmn:sequenceFlow id="Flow_1oo3diy" sourceRef="Gateway_0gbb17q" targetRef="repairOrNot">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${qtState==7}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1wdpugu" sourceRef="Gateway_0gbb17q" targetRef="stayOrNot">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${qtState==6}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="Event_0j6hpnz">
+      <bpmn:incoming>Flow_0id003l</bpmn:incoming>
+      <bpmn:incoming>Flow_047ngsm</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0id003l" sourceRef="stayOrNot" targetRef="Event_0j6hpnz" />
+    <bpmn:sequenceFlow id="Flow_047ngsm" sourceRef="repairOrNot" targetRef="Event_0j6hpnz" />
+    <bpmn:userTask id="stayOrNot" name="留不留" camunda:assignee="${owner}">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="deliverTo" label="转交结果" type="long" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1wdpugu</bpmn:incoming>
+      <bpmn:outgoing>Flow_0id003l</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="repairOrNot" name="修不修" camunda:assignee="${owner}">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="deliverTo" label="转交结果" type="long" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1oo3diy</bpmn:incoming>
+      <bpmn:outgoing>Flow_047ngsm</bpmn:outgoing>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="purchaseConfirmFlow">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="184" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0gbb17q_di" bpmnElement="Gateway_0gbb17q" isMarkerVisible="true">
+        <dc:Bounds x="265" y="92" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0j6hpnz_di" bpmnElement="Event_0j6hpnz">
+        <dc:Bounds x="552" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1p23hx5_di" bpmnElement="stayOrNot">
+        <dc:Bounds x="380" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1lgv6f1_di" bpmnElement="repairOrNot">
+        <dc:Bounds x="380" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1orl8rf_di" bpmnElement="Flow_1orl8rf">
+        <di:waypoint x="220" y="117" />
+        <di:waypoint x="265" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1oo3diy_di" bpmnElement="Flow_1oo3diy">
+        <di:waypoint x="290" y="142" />
+        <di:waypoint x="290" y="220" />
+        <di:waypoint x="380" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1wdpugu_di" bpmnElement="Flow_1wdpugu">
+        <di:waypoint x="315" y="117" />
+        <di:waypoint x="380" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0id003l_di" bpmnElement="Flow_0id003l">
+        <di:waypoint x="480" y="117" />
+        <di:waypoint x="552" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_047ngsm_di" bpmnElement="Flow_047ngsm">
+        <di:waypoint x="480" y="220" />
+        <di:waypoint x="516" y="220" />
+        <di:waypoint x="516" y="117" />
+        <di:waypoint x="552" y="117" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

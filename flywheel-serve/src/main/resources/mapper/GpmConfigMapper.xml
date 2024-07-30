@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.maindata.mapper.GpmConfigMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.maindata.entity.GpmConfig">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="toTarget" column="to_target" jdbcType="VARCHAR"/>
+            <result property="startDateTime" column="start_date_time" jdbcType="TIMESTAMP"/>
+            <result property="endDateTime" column="end_date_time" jdbcType="TIMESTAMP"/>
+            <result property="gpmTarget" column="gpm_target" jdbcType="DECIMAL"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="deleted" column="deleted" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,to_target,start_date_time,
+        end_date_time,gpm_target,create_by,
+        create_time,update_time,deleted
+    </sql>
+    <select id="selectGpmConfigByCreateTime" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+         from gpm_config
+        where deleted = 0 and to_target = #{toTarget} and start_date_time <![CDATA[<=]]> #{batchCreateTime} and #{batchCreateTime} <![CDATA[<=]]> end_date_time
+    </select>
+</mapper>

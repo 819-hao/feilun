@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.web.infrastructure.mapper.WorkflowOperationRecordMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.web.entity.WorkflowOperationRecord">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="taskId" column="task_id" jdbcType="VARCHAR"/>
+            <result property="bizCode" column="biz_code" jdbcType="VARCHAR"/>
+            <result property="useCase" column="use_case" jdbcType="VARCHAR"/>
+            <result property="businessKey" column="business_key" jdbcType="VARCHAR"/>
+            <result property="parentBusinessKey" column="parent_business_key" jdbcType="VARCHAR"/>
+            <result property="bizState" column="biz_state" jdbcType="INTEGER"/>
+            <result property="workState" column="work_state" jdbcType="INTEGER"/>
+            <result property="variables" column="variables" jdbcType="VARCHAR" typeHandler="com.seeease.seeeaseframework.mybatis.type.JsonTypeHandler"/>
+            <result property="revision" column="revision" jdbcType="INTEGER"/>
+            <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+            <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+            <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+            <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+            <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,task_id,biz_code,
+        use_case,biz_state,work_state,
+        variables,revision,created_id,
+        created_by,created_time,updated_id,
+        updated_by,updated_time,deleted
+    </sql>
+
+    <update id="updateStateByTaskId">
+        update workflow_operation_record set work_state =#{workState} where task_id = #{taskId}
+    </update>
+</mapper>

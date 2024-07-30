@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.maindata.mapper.FirmShopMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.maindata.entity.FirmShop">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="firmName" column="firm_name" jdbcType="VARCHAR"/>
+            <result property="address" column="address" jdbcType="VARCHAR"/>
+            <result property="phone" column="phone" jdbcType="VARCHAR"/>
+            <result property="tiNo" column="ti_no" jdbcType="VARCHAR"/>
+            <result property="bod" column="bod" jdbcType="VARCHAR"/>
+            <result property="bankAcct" column="bank_acct" jdbcType="VARCHAR"/>
+            <result property="regTime" column="reg_time" jdbcType="TIMESTAMP"/>
+            <result property="csAcct" column="cs_acct" jdbcType="VARCHAR"/>
+            <result property="shopInfo" column="shop_info" jdbcType="VARCHAR"/>
+            <result property="pm" column="pm" jdbcType="VARCHAR"/>
+            <result property="tkMainId" column="tk_main_id" jdbcType="VARCHAR"/>
+            <result property="tkSortId" column="tk_sort_id" jdbcType="VARCHAR"/>
+            <result property="tkUid" column="tk_uid" jdbcType="VARCHAR"/>
+            <result property="openTime" column="open_time" jdbcType="TIMESTAMP"/>
+            <result property="state" column="state" jdbcType="VARCHAR"/>
+            <result property="dept" column="dept" jdbcType="VARCHAR"/>
+            <result property="deptId" column="dept_id" jdbcType="INTEGER"/>
+            <result property="shopPhone" column="shop_phone" jdbcType="VARCHAR"/>
+            <result property="shopAddress" column="shop_address" jdbcType="VARCHAR"/>
+            <result property="bizLicense" column="biz_license" jdbcType="VARCHAR"/>
+            <result property="hfMemberId" column="hf_member_id" jdbcType="VARCHAR"/>
+            <result property="lpi" column="lpi" jdbcType="VARCHAR"  typeHandler="com.seeease.seeeaseframework.mybatis.type.JsonTypeHandler"/>
+            <result property="revision" column="revision" jdbcType="INTEGER"/>
+            <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+            <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+            <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+            <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+            <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,firm_name,address,
+        phone,ti_no,bod,
+        bank_acct,reg_time,cs_acct,
+        shop_info,pm,tk_main_id,
+        tk_sort_id,tk_uid,open_time,
+        state,dept,dept_id,
+        shop_phone,shop_address,biz_license,hf_member_id,
+        lpi,revision,created_id,
+        created_by,created_time,updated_id,
+        updated_by,updated_time,deleted
+    </sql>
+</mapper>

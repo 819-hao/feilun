@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.financial.mapper.FinancialInvoiceMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.financial.entity.FinancialInvoice">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+        <result property="originalInvoiceSerialNo" column="original_invoice_serial_no" jdbcType="VARCHAR"/>
+        <result property="invoiceAmount" column="invoice_amount" jdbcType="DECIMAL"/>
+        <result property="invoiceNumber" column="invoice_number" jdbcType="VARCHAR"/>
+        <result property="invoiceTime" column="invoice_time" jdbcType="TIMESTAMP"/>
+        <result property="invoiceUser" column="invoice_user" jdbcType="VARCHAR"/>
+        <result property="invoiceTitle" column="invoice_title" jdbcType="VARCHAR"/>
+        <result property="unitTaxNumber" column="unit_tax_number" jdbcType="VARCHAR"/>
+        <result property="customerEmail" column="customer_email" jdbcType="VARCHAR"/>
+        <result property="customerName" column="customer_name" jdbcType="VARCHAR"/>
+        <result property="batchPictureUrl" column="batch_picture_url" jdbcType="VARCHAR"/>
+        <result property="result" column="result" jdbcType="VARCHAR"/>
+        <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+        <result property="totalNumber" column="total_number" jdbcType="INTEGER"/>
+        <result property="customerId" column="customer_id" jdbcType="INTEGER"/>
+        <result property="paymentMethod" column="payment_method" jdbcType="INTEGER"/>
+        <result property="invoiceSubject" column="invoice_subject" jdbcType="INTEGER"/>
+        <result property="customerContactsId" column="customer_contacts_id" jdbcType="INTEGER"/>
+        <result property="orderType" column="order_type" jdbcType="INTEGER"/>
+        <result property="invoiceType" column="invoice_type" jdbcType="INTEGER"/>
+        <result property="invoiceOrigin" column="invoice_origin" jdbcType="INTEGER"/>
+        <result property="state" column="state" jdbcType="INTEGER"/>
+        <result property="shopId" column="shop_id" jdbcType="INTEGER"/>
+        <result property="revision" column="revision" jdbcType="INTEGER"/>
+        <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+        <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+        <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+        <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+        <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,serial_no,invoice_amount,unit_tax_number,result,customer_name,
+        invoice_number,invoice_time,invoice_user,invoice_title,
+        total_number,invoice_subject,customer_contacts_id,
+        order_type,invoice_type,invoice_origin,customer_id,
+        state,shop_id,revision,customer_email,remarks,original_invoice_serial_no,
+        created_id,created_by,created_time,batch_picture_url,
+        updated_id,updated_by,updated_time,payment_method,
+        deleted
+    </sql>
+</mapper>

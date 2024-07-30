@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.fix.mapper.BillFixMapper2">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.fix.entity.BillFix2">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="stockId" column="stock_id" jdbcType="INTEGER"/>
+            <result property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="storeWorkSerialNo" column="store_work_serial_no" jdbcType="VARCHAR"/>
+            <result property="originSerialNo" column="origin_serial_no" jdbcType="VARCHAR"/>
+            <result property="fixState" column="fix_state" jdbcType="INTEGER"/>
+            <result property="customerId" column="customer_id" jdbcType="INTEGER"/>
+            <result property="customerContactId" column="customer_contact_id" jdbcType="INTEGER"/>
+            <result property="fixMoney" column="fix_money" jdbcType="DECIMAL"/>
+            <result property="fixDay" column="fix_day" jdbcType="INTEGER"/>
+            <result property="fixTimes" column="fix_times" jdbcType="INTEGER"/>
+            <result property="withAttachment" column="with_attachment" jdbcType="VARCHAR"/>
+            <result property="imgList" column="img_list" jdbcType="VARCHAR"/>
+            <result property="content" column="content" jdbcType="VARCHAR"  typeHandler="com.seeease.flywheel.serve.fix.convert.FixProjectMapperTypeHandler"/>
+            <result property="earnestMoney" column="earnest_money" jdbcType="DECIMAL"/>
+            <result property="sendOutReason" column="send_out_reason" jdbcType="VARCHAR"/>
+            <result property="sendOutCompany" column="send_out_company" jdbcType="VARCHAR"/>
+            <result property="sendOutContact" column="send_out_contact" jdbcType="VARCHAR"/>
+            <result property="fixType" column="fix_type" jdbcType="INTEGER"/>
+            <result property="testResult" column="test_result" jdbcType="TINYINT"/>
+            <result property="fixSource" column="fix_source" jdbcType="TINYINT"/>
+            <result property="repairFlag" column="repair_flag" jdbcType="TINYINT"/>
+            <result property="partsMoney" column="parts_money" jdbcType="DECIMAL"/>
+            <result property="fixAdvise" column="fix_advise" jdbcType="VARCHAR"/>
+            <result property="defectOrNot" column="defect_or_not" jdbcType="INTEGER"/>
+            <result property="defectDescription" column="defect_description" jdbcType="VARCHAR"/>
+            <result property="specialExpediting" column="special_expediting" jdbcType="INTEGER"/>
+            <result property="flowGrade" column="flow_grade" jdbcType="INTEGER"/>
+            <result property="maintenanceMasterId" column="maintenance_master_id" jdbcType="INTEGER"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="timeoutMsg" column="timeout_msg" jdbcType="VARCHAR"/>
+            <result property="finishTime" column="finish_time" jdbcType="VARCHAR"/>
+            <result property="taskArriveTime" column="task_arrive_time" jdbcType="TIMESTAMP"/>
+            <result property="repairTime" column="repair_time" jdbcType="TIMESTAMP"/>
+            <result property="revision" column="revision" jdbcType="INTEGER"/>
+            <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+            <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+            <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+            <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+            <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,stock_id,serial_no,
+        store_work_serial_no,origin_serial_no,fix_state,
+        customer_id,customer_contact_id,fix_money,
+        fix_day,fix_times,with_attachment,
+        img_list,content,earnest_money,repair_time,
+        send_out_reason,send_out_company,send_out_contact,
+        fix_type,test_result,fix_source,
+        repair_flag,parts_money,fix_advise,
+        defect_or_not,defect_description,special_expediting,
+        flow_grade,maintenance_master_id,remark,finish_time,timeout_msg,
+        task_arrive_time,revision,created_id,
+        created_by,created_time,updated_id,
+        updated_by,updated_time,deleted
+    </sql>
+</mapper>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.financial.mapper.ApplyFinancialPaymentMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.financial.entity.ApplyFinancialPayment">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="typePayment" column="type_payment" jdbcType="INTEGER"/>
+        <result property="customerContactsId" column="customer_contacts_id" jdbcType="INTEGER"/>
+        <result property="bankId" column="bank_id" jdbcType="INTEGER"/>
+        <result property="pricePayment" column="price_payment" jdbcType="DECIMAL"/>
+        <result property="subjectPayment" column="subject_payment" jdbcType="INTEGER"/>
+        <result property="agreementTransfer" column="agreement_transfer" jdbcType="VARCHAR"/>
+        <result property="recoveryPricingRecord" column="recovery_pricing_record" jdbcType="VARCHAR"/>
+        <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+        <result property="state" column="state" jdbcType="INTEGER"/>
+        <result property="parentId" column="parent_id" jdbcType="INTEGER"/>
+        <result property="whetherUse" column="whether_use" jdbcType="INTEGER"/>
+        <result property="whetherRepeat" column="whether_repeat" jdbcType="INTEGER"/>
+        <result property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+        <result property="originSerialNo" column="origin_serial_no" jdbcType="VARCHAR"/>
+        <result property="revision" column="revision" jdbcType="INTEGER"/>
+        <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+        <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+        <result property="shopId" column="shop_id" jdbcType="INTEGER"/>
+        <result property="demanderStoreId" column="demander_store_id" jdbcType="INTEGER"/>
+        <result property="salesMethod" column="sales_method" jdbcType="INTEGER"/>
+        <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+        <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+        <result property="operateTime" column="operate_time" jdbcType="TIMESTAMP"/>
+        <result property="applicantTime" column="applicant_time" jdbcType="TIMESTAMP"/>
+        <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+        <result property="manualCreation" column="manual_creation" jdbcType="INTEGER"/>
+        <result property="brandNew" column="brand_new" jdbcType="INTEGER"/>
+        <result property="operator" column="operator" jdbcType="VARCHAR"/>
+        <result property="customerName" column="customer_name" jdbcType="VARCHAR"/>
+        <result property="customerPhone" column="customer_phone" jdbcType="VARCHAR"/>
+        <result property="bankName" column="bank_name" jdbcType="VARCHAR"/>
+        <result property="bankAccount" column="bank_account" jdbcType="VARCHAR"/>
+        <result property="bankCard" column="bank_card" jdbcType="VARCHAR"/>
+        <result property="repurchaseCommitment" column="repurchase_commitment" jdbcType="VARCHAR"/>
+        <result property="batchPictureUrl" column="batch_picture_url" jdbcType="VARCHAR"
+                typeHandler="com.seeease.seeeaseframework.mybatis.type.JsonTypeHandler"/>
+        <result property="frontIdentityCard" column="front_identity_card" jdbcType="VARCHAR"/>
+        <result property="reverseIdentityCard" column="reverse_identity_card" jdbcType="VARCHAR"/>
+        <result property="merchandiseNews" column="merchandise_news" jdbcType="VARCHAR"/>
+        <result property="bankCustomerName" column="bank_customer_name" jdbcType="VARCHAR"/>
+        <result property="refundType" column="refund_type" jdbcType="INTEGER"/>
+        <result property="payment" column="payment" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,demander_store_id,sales_method,brand_new,manual_creation
+        ,repurchase_commitment,shop_id,batch_picture_url
+        ,type_payment,customer_contacts_id,whether_repeat,
+        bank_id,price_payment,subject_payment,
+        agreement_transfer,recovery_pricing_record,remarks,
+        state,parent_id,serial_no,whether_use,
+        revision,created_id,created_by,operator,operate_time,
+        created_time,updated_id,updated_by,applicant_time,
+        updated_time,deleted,customer_name,
+        customer_phone,bank_name,bank_account,
+        bank_card,front_identity_card,reverse_identity_card,
+        merchandise_news,bank_customer_name,refund_type,origin_serial_no,payment
+    </sql>
+</mapper>

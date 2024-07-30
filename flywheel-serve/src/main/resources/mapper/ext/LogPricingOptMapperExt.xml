@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.pricing.mapper.LogPricingOptMapper">
+
+    <select id="list" resultType="com.seeease.flywheel.pricing.result.PricingLogListResult">
+
+        select
+        lpo.id,
+        s.sn stocksn,
+        s.finess,
+        s.id stockId,
+        s.goods_id goodsId,
+        s.attachment,
+        lpo.serial_no,
+        lpo.origin_serial_no,
+        lpo.store_work_serial_no,
+        lpo.pricing_source,
+        lpo.pricing_node,
+        lpo.created_by,
+        lpo.add_price,
+        lpo.all_price,
+        lpo.b_margin tobMargin,
+        lpo.c_margin tocMargin,
+        lpo.b_price tobPrice,
+        lpo.c_price tocPrice,
+        lpo.a_price toaPrice,
+        lpo.t_price tagPrice,
+        lpo.pricing_source,
+        lpo.purchase_price,
+        lpo.fix_price,
+        lpo.goods_level,
+        lpo.sales_priority,
+        lpo.fix_day,
+        lpo.consignment_price
+
+        from log_pricing_opt lpo left join stock s on lpo.stock_id = s.id
+
+        <where>
+            lpo.deleted = 0 and s.deleted = 0
+            <if test="request.pricingNode != null">
+                and lpo.pricing_node = #{request.pricingNode}
+            </if>
+
+            <if test="request.pricingSource != null">
+                and lpo.pricing_source = #{request.pricingSource}
+            </if>
+
+            <if test="request.serialNo != null and request.serialNo != ''">
+                and lpo.serial_no = #{request.serialNo}
+            </if>
+            <if test="request.originSerialNo != null and request.originSerialNo != ''">
+                and lpo.origin_serial_no = #{request.originSerialNo}
+            </if>
+            <if test="request.storeWorkSerialNo != null and request.storeWorkSerialNo != ''">
+                and lpo.store_work_serial_no = #{request.storeWorkSerialNo}
+            </if>
+            <if test="request.stockSn != null and request.stockSn != ''">
+                and s.sn like concat('%',#{request.stockSn,jdbcType=VARCHAR},'%')
+            </if>
+
+            <if test="request.createdBy != null and request.createdBy != ''">
+                and lpo.created_by like concat('%',#{request.createdBy,jdbcType=VARCHAR},'%')
+            </if>
+        </where>
+
+        order by lpo.id desc
+
+    </select>
+
+</mapper>

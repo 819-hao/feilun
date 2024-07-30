@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.pricing.mapper.BillPricingMapper">
+
+    <select id="list" resultType="com.seeease.flywheel.pricing.result.PricingListResult">
+
+        select
+        bp.id,
+        s.sn stockSn,
+        s.finess,
+        s.id stockId,
+        s.goods_id goodsId,
+        s.attachment,
+        bp.serial_no,
+        bp.origin_serial_no,
+        bp.store_work_serial_no,
+        bp.pricing_source,
+        bp.pricing_state,
+        bp.created_by,
+        bp.add_price,
+        bp.all_price,
+        bp.b_margin tobMargin,
+        bp.c_margin tocMargin,
+        bp.b_price tobPrice,
+        bp.c_price tocPrice,
+        bp.a_price toaPrice,
+        bp.t_price tagPrice,
+        bp.pricing_source,
+        bp.purchase_price,
+        bp.fix_price,
+        bp.goods_level,
+        bp.sales_priority,
+        bp.fix_day,
+        bp.consignment_price,
+        bp.again
+
+        from bill_pricing bp left join stock s on bp.stock_id = s.id
+
+        <where>
+            bp.deleted = 0 and s.deleted = 0
+            <if test="request.pricingState != null">
+                and bp.pricing_state = #{request.pricingState}
+            </if>
+
+            <if test="request.pricingSource != null">
+                and bp.pricing_source = #{request.pricingSource}
+            </if>
+
+            <if test="request.serialNo != null and request.serialNo != ''">
+                and bp.serial_no = #{request.serialNo}
+            </if>
+            <if test="request.originSerialNo != null and request.originSerialNo != ''">
+                and bp.origin_serial_no = #{request.originSerialNo}
+            </if>
+            <if test="request.storeWorkSerialNo != null and request.storeWorkSerialNo != ''">
+                and bp.store_work_serial_no = #{request.storeWorkSerialNo}
+            </if>
+            <if test="request.stockSn != null and request.stockSn != ''">
+                and s.sn like concat('%',#{request.stockSn,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="request.stockSnList != null">
+                <foreach collection="request.stockSnList" item="sn" separator="," open="and s.sn in (" close=")">
+                    #{sn}
+                </foreach>
+            </if>
+            <if test="request.createdBy != null and request.createdBy != ''">
+                and bp.created_by like concat('%',#{request.createdBy,jdbcType=VARCHAR},'%')
+            </if>
+
+            <if test="request.goodsIdList !=null">
+                and s.goods_id in
+                <foreach collection="request.goodsIdList" item="id" open="(" separator=","
+                         close=")">
+                    #{id}
+                </foreach>
+            </if>
+
+        </where>
+
+        order by bp.id desc
+
+    </select>
+
+    <update id="batchUpdateSalesPriority"
+            parameterType="com.seeease.flywheel.serve.pricing.entity.SalesPriorityModifyDTO">
+        UPDATE bill_pricing bp
+        INNER JOIN stock s ON s.id = bp.stock_id
+        <set>
+            bp.updated_id = #{updatedId},
+            bp.updated_by = #{updatedBy},
+            bp.updated_time = NOW(),
+            s.updated_id = #{updatedId},
+            s.updated_by = #{updatedBy},
+            s.updated_time = NOW(),
+            <if test="goodsLevel != null">
+                bp.goods_level = #{goodsLevel},
+                s.`level` = #{goodsLevel},
+            </if>
+            <if test="salesPriority != null">
+                bp.sales_priority = #{salesPriority},
+                s.sales_priority=#{salesPriority},
+            </if>
+        </set>
+        WHERE s.goods_id = #{goodsId} AND s.stock_status IN
+        <foreach collection="stockStatusList" item="stockStatus" open="(" separator="," close=")">
+            #{stockStatus}
+        </foreach>
+    </update>
+    <update id="updateByStockId">
+        update bill_pricing set all_price = #{finalPurchase} , purchase_price = #{finalPurchase} where stock_id = #{stockId}
+    </update>
+</mapper>

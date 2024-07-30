@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.goods.mapper.PhotoGalleryMapper">
+
+    <select id="queryPhotoGalleryImgUrl" resultType="java.lang.String">
+        select GROUP_CONCAT(img_url) from photo_gallery
+        <where>
+            <if test="goodsId != null">
+                and stock_model = #{goodsId}
+            </if>
+            <if test="stockId != null">
+                and stock_sn = #{stockId} and child_id = 8
+            </if>
+        </where>
+    </select>
+    <select id="queryPhotoGalleryImgUrlByGoodsId" resultType="java.lang.String">
+        select img_url
+        from photo_gallery
+        where status = 0
+          and child_id = #{type}
+          and stock_model = #{goodsId} limit 1
+    </select>
+    <select id="queryPhotoGalleryImgUrlByStockId" resultType="java.lang.String">
+        select img_url
+        from photo_gallery
+        where status = 0
+          and child_id = #{type}
+          and stock_sn = #{stockId} limit 1
+    </select>
+</mapper>

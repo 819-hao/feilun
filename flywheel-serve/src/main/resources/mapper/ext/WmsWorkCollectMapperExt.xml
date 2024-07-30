@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.storework.mapper.WmsWorkCollectMapper">
+
+    <!-- 查询字段 -->
+    <sql id="sql_query_fields">
+        SELECT bswp.*,
+               bso.biz_order_code,
+               bso.inspection_type      AS inspectionType,
+               bso.shop_id              AS saleStoreId,
+               bso.remarks              AS saleRemarks,
+               bswp.belonging_store_id  AS deliveryStoreId,
+               wwc.work_state           AS collectWorkState,
+               wwc.print_express_state  AS printExpressState,
+               IF(wwi.id IS NULL, 0, 1) AS workIntercept,
+               bso.sale_channel         AS saleOrderChannel
+    </sql>
+    <sql id="sql_eo">
+        ,IFNULL(eo.express_state, 0) AS expressState
+    </sql>
+    <sql id="sql_sale">
+        ,bso.first_salesman      AS saleBy,
+        bso.created_time         AS saleTime,
+        bsol.spot_check_code     AS spotCheckCode,
+        bsol.clinch_price        AS salePrice
+    </sql>
+    <!-- 筛选项 -->
+    <sql id="sql_filter_conditions">
+        <if test="request.saleStoreId !=null">
+            AND bso.shop_id = #{request.saleStoreId}
+        </if>
+        <if test="request.deliveryStoreId !=null">
+            AND bswp.belonging_store_id = #{request.deliveryStoreId}
+        </if>
+        <if test="request.stockIdList !=null and request.stockIdList.size() > 0">
+            AND bswp.stock_id IN
+            <foreach collection="request.stockIdList" item="stockId" open="(" separator="," close=")">
+                #{stockId}
+            </foreach>
+        </if>
+        <if test="request.goodsIdList !=null and request.goodsIdList.size() > 0">
+            AND bswp.goods_id IN
+            <foreach collection="request.goodsIdList" item="goodsId" open="(" separator="," close=")">
+                #{goodsId}
+            </foreach>
+        </if>
+        <if test="request.originSerialNo !=null and request.originSerialNo !=''">
+            AND bswp.origin_serial_no LIKE CONCAT('%', #{request.originSerialNo},'%')
+        </if>
+        <if test="request.bizOrderCode !=null and request.bizOrderCode !=''">
+            AND bso.biz_order_code LIKE CONCAT('%', #{request.bizOrderCode},'%')
+        </if>
+        <if test="request.deliveryExpressNumber !=null and request.deliveryExpressNumber !=''">
+            AND bswp.delivery_express_number LIKE CONCAT('%', #{request.deliveryExpressNumber},'%')
+        </if>
+        <if test="request.workIntercept !=null and request.workIntercept == 1">
+            AND wwi.id IS NOT NULL
+        </if>
+        <if test="request.workIntercept !=null and request.workIntercept == 0">
+            AND wwi.id IS NULL
+        </if>
+        <if test="request.beginCreateTime != null and request.beginCreateTime != '' and request.endCreateTime != null and request.endCreateTime != ''">
+            and bswp.created_time between #{request.beginCreateTime} and #{request.endCreateTime}
+        </if>
+        <if test="request.inspectionType !=null">
+            AND bso.inspection_type = #{request.inspectionType}
+        </if>
+    </sql>
+
+    <select id="waitWorkList" parameterType="com.seeease.flywheel.storework.request.WmsWorkListRequest"
+            resultType="com.seeease.flywheel.serve.storework.entity.BillStoreWorkPreExt">
+        <include refid="sql_query_fields"/>
+        FROM bill_store_work_pre bswp
+        INNER JOIN bill_sale_order bso on bso.serial_no = bswp.origin_serial_no
+        LEFT JOIN wms_work_collect wwc ON wwc.origin_serial_no = bswp.origin_serial_no
+        LEFT JOIN wms_work_intercept wwi ON wwi.origin_serial_no = bswp.origin_serial_no AND wwi.intercept_state = 1
+        WHERE bswp.work_state = 7
+        AND wwc.id IS NULL
+        AND wwi.id IS NULL
+        <foreach collection="request.belongingStoreIdList" item="belongingStoreId"
+                 open="AND bswp.belonging_store_id IN (" separator="," close=")">
+            #{belongingStoreId}
+        </foreach>
+        <include refid="sql_filter_conditions"/>
+        ORDER BY bswp.id
+    </select>
+
+    <select id="listWorkCollect" parameterType="com.seeease.flywheel.storework.request.WmsWorkListRequest"
+            resultType="com.seeease.flywheel.serve.storework.entity.BillStoreWorkPreExt">
+        <include refid="sql_query_fields"/>
+        <include refid="sql_eo"/>
+        <include refid="sql_sale"/>
+        FROM wms_work_collect wwc
+        INNER JOIN bill_store_work_pre bswp ON bswp.origin_serial_no = wwc.origin_serial_no
+        LEFT JOIN bill_sale_order bso ON bso.serial_no = wwc.origin_serial_no
+        LEFT JOIN bill_sale_order_line bsol ON bso.id = bsol.sale_id and concat(bso.`serial_no`,'-',bsol.`id` ) =
+        bswp.`mate_mark`
+        LEFT JOIN wms_work_intercept wwi ON wwi.origin_serial_no = wwc.origin_serial_no AND wwi.intercept_state = 1
+        LEFT JOIN express_order eo ON eo.express_no = bswp.delivery_express_number AND eo.son_serial_no =
+        bswp.origin_serial_no
+        WHERE wwc.belonging_store_id = #{request.shopId}
+        <foreach collection="request.workStateList" item="workState" open="AND wwc.work_state IN (" separator=","
+                 close=")">
+            #{workState}
+        </foreach>
+        <include refid="sql_filter_conditions"/>
+        ORDER BY wwc.id DESC
+    </select>
+
+
+    <select id="pageWorkCollect" parameterType="com.seeease.flywheel.storework.request.WmsWorkListRequest"
+            resultType="com.seeease.flywheel.serve.storework.entity.BillStoreWorkPreExt">
+        <include refid="sql_query_fields"/>
+        <include refid="sql_eo"/>
+        FROM wms_work_collect wwc
+        INNER JOIN bill_store_work_pre bswp ON bswp.origin_serial_no = wwc.origin_serial_no
+        LEFT JOIN bill_sale_order bso ON bso.serial_no = wwc.origin_serial_no
+        LEFT JOIN wms_work_intercept wwi ON wwi.origin_serial_no = wwc.origin_serial_no AND wwi.intercept_state = 1
+        LEFT JOIN express_order eo ON eo.express_no = bswp.delivery_express_number AND eo.son_serial_no =
+        bswp.origin_serial_no
+        WHERE wwc.belonging_store_id = #{request.shopId}
+        <foreach collection="request.workStateList" item="workState" open="AND wwc.work_state IN (" separator=","
+                 close=")">
+            #{workState}
+        </foreach>
+        <include refid="sql_filter_conditions"/>
+        ORDER BY wwc.id DESC
+    </select>
+
+
+    <select id="countByGroupModelAndSn" parameterType="com.seeease.flywheel.storework.request.WmsWorkListRequest"
+            resultType="com.seeease.flywheel.storework.result.WmsWorkCollectCountResult">
+        SELECT b.`name` AS brandName,
+        ser.`name` AS seriesName,
+        gw.model,
+        gw.image,
+        s.sn AS stockSn,
+        smsi.shelves_simplified_code AS shelvesSimplifiedCode,
+        COUNT(1) AS number
+        FROM wms_work_collect wwc
+        INNER JOIN bill_store_work_pre bswp ON bswp.origin_serial_no = wwc.origin_serial_no
+        INNER JOIN goods_watch gw ON gw.id = bswp.goods_id
+        LEFT JOIN stock_manage_shelves_info smsi ON smsi.goods_id = bswp.goods_id
+        LEFT JOIN bill_sale_order bso ON bso.serial_no = wwc.origin_serial_no
+        LEFT JOIN brand b ON b.id = gw.brand_id
+        LEFT JOIN series ser ON ser.id = gw.series_id
+        LEFT JOIN stock s ON s.id = bswp.stock_id
+        WHERE wwc.belonging_store_id = #{request.shopId}
+        AND wwc.work_state = 1
+        <include refid="sql_filter_conditions"/>
+        GROUP BY gw.id,s.id
+    </select>
+
+
+    <resultMap id="WorkCountResultMap" type="com.seeease.flywheel.serve.storework.entity.WmsWorkCapacityDTO">
+        <id property="belongingStoreId" column="belonging_store_id" jdbcType="INTEGER"/>
+        <result property="goodsId" column="goods_id" jdbcType="INTEGER"/>
+        <result property="inWorkQuantity" column="inWorkQuantity" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="inWorkStockCount" resultMap="WorkCountResultMap">
+        SELECT wp.belonging_store_id,
+               wp.goods_id,
+               COUNT(DISTINCT wp.id) AS inWorkQuantity
+        FROM bill_store_work_pre wp
+                 INNER JOIN wms_work_collect wwc ON wwc.origin_serial_no = wp.origin_serial_no
+        WHERE wwc.work_state in (1,2)
+          AND wp.belonging_store_id = #{belongingStoreId}
+          AND wp.stock_id IS NULL
+        GROUP BY wp.goods_id
+    </select>
+</mapper>

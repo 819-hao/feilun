@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.web.infrastructure.mapper.DouYinScInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.web.entity.DouYinScInfo">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="scId" column="sc_id" jdbcType="VARCHAR"/>
+            <result property="scName" column="sc_name" jdbcType="VARCHAR"/>
+            <result property="scPhone" column="sc_phone" jdbcType="VARCHAR"/>
+            <result property="scAddress" column="sc_address" jdbcType="VARCHAR"/>
+            <result property="scStreet" column="sc_street" jdbcType="VARCHAR"/>
+            <result property="scDistrict" column="sc_district" jdbcType="VARCHAR"/>
+            <result property="scProvince" column="sc_province" jdbcType="VARCHAR"/>
+            <result property="scCity" column="sc_city" jdbcType="VARCHAR"/>
+            <result property="revision" column="revision" jdbcType="INTEGER"/>
+            <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+            <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+            <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+            <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+            <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,sc_id,sc_name,
+        sc_phone,sc_address,sc_street,
+        sc_district,sc_province,sc_city,
+        revision,created_id,created_by,
+        created_time,updated_id,updated_by,
+        updated_time,deleted
+    </sql>
+</mapper>

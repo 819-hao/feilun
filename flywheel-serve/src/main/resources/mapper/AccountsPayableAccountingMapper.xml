@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.financial.mapper.AccountsPayableAccountingMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.financial.entity.AccountsPayableAccounting">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+        <result property="originSerialNo" column="origin_serial_no" jdbcType="VARCHAR"/>
+        <result property="afpId" column="afp_id" jdbcType="INTEGER"/>
+        <result property="afpSerialNo" column="afp_serial_no" jdbcType="VARCHAR"/>
+        <result property="arcSerialNo" column="arc_serial_no" jdbcType="VARCHAR"/>
+        <result property="auditDescription" column="audit_description" jdbcType="VARCHAR"/>
+        <result property="auditor" column="auditor" jdbcType="VARCHAR"/>
+        <result property="auditTime" column="audit_time" jdbcType="TIMESTAMP"/>
+        <result property="stockSn" column="stock_sn" jdbcType="VARCHAR"/>
+        <result property="brandName" column="brand_name" jdbcType="VARCHAR"/>
+        <result property="seriesName" column="series_name" jdbcType="VARCHAR"/>
+        <result property="model" column="model" jdbcType="VARCHAR"/>
+        <result property="applicant" column="applicant" jdbcType="VARCHAR"/>
+        <result property="stockId" column="stock_id" jdbcType="INTEGER"/>
+        <result property="belongId" column="belong_id" jdbcType="INTEGER"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+        <result property="purchaseId" column="purchase_id" jdbcType="INTEGER"/>
+        <result property="demanderStoreId" column="demander_store_id" jdbcType="INTEGER"/>
+        <result property="originType" column="origin_type" jdbcType="INTEGER"/>
+        <result property="classification" column="classification" jdbcType="INTEGER"/>
+        <result property="salesMethod" column="sales_method" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="shopId" column="shop_id" jdbcType="INTEGER"/>
+        <result property="waitAuditPrice" column="wait_audit_price" jdbcType="DECIMAL"/>
+        <result property="totalPrice" column="total_price" jdbcType="DECIMAL"/>
+        <result property="customerId" column="customer_id" jdbcType="INTEGER"/>
+        <result property="customerContactId" column="customer_contact_id" jdbcType="INTEGER"/>
+        <result property="customerType" column="customer_type" jdbcType="INTEGER"/>
+        <result property="whetherUse" column="whether_use" jdbcType="INTEGER"/>
+        <result property="revision" column="revision" jdbcType="INTEGER"/>
+        <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+        <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+        <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+        <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+        <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,serial_no,origin_serial_no,purchase_id,demander_store_id,
+        afp_id,afp_serial_no,audit_description,auditor,audit_time,
+        stock_sn,brand_name,series_name,arc_serial_no,
+        model,stock_id,belong_id,shop_id,origin_type,
+        type,classification,sales_method,wait_audit_price,
+        status,total_price,customer_id,
+        customer_contact_id,customer_type,revision,
+        created_id,created_by,created_time,
+        deleted,updated_id,updated_by,
+        updated_time,applicant,whether_use
+    </sql>
+</mapper>

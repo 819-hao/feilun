@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.qt.mapper.LogQualityTestingOptMapper">
+
+    <select id="getPage" resultType="com.seeease.flywheel.qt.result.QualityTestingLogResult">
+
+        SELECT
+        lqto.id,
+        lqto.serial_no,
+        lqto.store_work_serial_no,
+        lqto.origin_serial_no,
+        lqto.qt_state,
+        lqto.qt_conclusion,
+        lqto.qt_source,
+        IF
+        ( lqto.fix_id IS NULL, 0, 1 ) fixOnQt,
+        s.finess,
+        s.sn stockSn,
+        s.attachment,
+        s.`week`,
+        s.strap_material,
+        s.watch_section,
+        s.goods_id,
+        s.id stockId,
+        lqto.created_by,
+        DATE_FORMAT(lqto.created_time,'%Y-%m-%d %H:%i:%s') createdTime,
+        DATE_FORMAT(lqto.task_arrive_time,'%Y-%m-%d %H:%i:%s') taskArriveTime,
+        lqto.stock_id,
+        lqto.is_new_strap,
+        lqto.content,
+        lqto.fix_day,
+        lqto.fix_money,
+        lqto.return_reason_id,
+        lqto.return_reason,
+        lqto.return_imgs,
+        lqto.exception_reason,
+
+        CASE WHEN lqto.qt_conclusion = 2 THEN lqto.fix_advise
+        WHEN lqto.qt_conclusion = 3 THEN lqto.return_reason
+        WHEN lqto.qt_conclusion = 4 THEN lqto.exception_reason ELSE '' END remarks
+        FROM
+        log_quality_testing_opt lqto
+        LEFT JOIN stock s ON s.id = lqto.stock_id
+        <where>
+            <if test="request.startTime != null and request.startTime != '' and request.endTime != null and request.endTime != ''">
+                and DATE_FORMAT(lqto.created_time,'%Y-%m-%d %H:%i:%s' ) between #{request.startTime}
+                and #{request.endTime}
+            </if>
+
+            <if test="request.stockSn != null and request.stockSn != ''">
+                and s.sn like concat('%',#{request.stockSn,jdbcType=VARCHAR},'%')
+            </if>
+
+            <if test="request.originSerialNo != null and request.originSerialNo != ''">
+                and lqto.origin_serial_no like concat('%',#{request.originSerialNo,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="request.qtState != null">
+                and lqto.qt_state = #{request.qtState}
+            </if>
+            <if test="request.qtSource != null">
+                and lqto.qt_source = #{request.qtSource}
+            </if>
+
+            <if test="request.fixOnQt != null and request.fixOnQt == 0">
+                and lqto.fix_id is null
+            </if>
+
+            <if test="request.fixOnQt != null and request.fixOnQt == 1">
+                and lqto.fix_id is not null
+            </if>
+
+        </where>
+        order by lqto.id desc
+    </select>
+</mapper>

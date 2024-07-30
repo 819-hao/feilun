@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.maindata.mapper.StoreManagementMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.maindata.entity.StoreManagement">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="tagId" column="tag_id" jdbcType="INTEGER"/>
+            <result property="type" column="type" jdbcType="VARCHAR"/>
+            <result property="quota" column="quota" jdbcType="DECIMAL"/>
+            <result property="area" column="area" jdbcType="VARCHAR"/>
+            <result property="principalId" column="principal_id" jdbcType="INTEGER"/>
+            <result property="phone" column="phone" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="address" column="address" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="delFlag" column="del_flag" jdbcType="TINYINT"/>
+            <result property="residualQuota" column="residual_quota" jdbcType="DECIMAL"/>
+            <result property="position" column="position" jdbcType="VARCHAR"/>
+            <result property="doStatus" column="do_status" jdbcType="INTEGER"/>
+            <result property="mallStoreName" column="mall_store_name" jdbcType="VARCHAR"/>
+            <result property="customerContactId" column="customer_contact_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,tag_id,type,
+        quota,area,principal_id,
+        phone,create_time,create_by,
+        address,update_time,update_by,
+        del_flag,residual_quota,position,
+        do_status,mall_store_name,customer_contact_id
+    </sql>
+</mapper>

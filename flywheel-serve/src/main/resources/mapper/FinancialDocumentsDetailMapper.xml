@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.financial.mapper.FinancialDocumentsDetailMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.financial.entity.FinancialDocumentsDetail">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="financialDocumentsId" column="financial_documents_id" jdbcType="INTEGER"/>
+        <result property="brandName" column="brand_name" jdbcType="VARCHAR"/>
+        <result property="seriesName" column="series_name" jdbcType="VARCHAR"/>
+        <result property="modelName" column="model_name" jdbcType="VARCHAR"/>
+        <result property="tocPrice" column="toc_price" jdbcType="DECIMAL"/>
+        <result property="tobPrice" column="tob_price" jdbcType="DECIMAL"/>
+        <result property="stockSn" column="stock_sn" jdbcType="VARCHAR"/>
+        <result property="wno" column="wno" jdbcType="VARCHAR"/>
+        <result property="consignSalePrice" column="consign_sale_price" jdbcType="DECIMAL"/>
+        <result property="purchasePrice" column="purchase_price" jdbcType="DECIMAL"/>
+        <result property="clinchPrice" column="clinch_price" jdbcType="DECIMAL"/>
+        <result property="fixPrice" column="fix_price" jdbcType="DECIMAL"/>
+        <result property="returnPrice" column="return_price" jdbcType="DECIMAL"/>
+        <result property="pricePub" column="price_pub" jdbcType="DECIMAL"/>
+        <result property="tagPrice" column="tag_price" jdbcType="DECIMAL"/>
+        <result property="marginPrice" column="margin_price" jdbcType="DECIMAL"/>
+        <result property="promotionConsignmentPrice" column="promotion_consignment_price" jdbcType="DECIMAL"/>
+        <result property="ratio" column="ratio" jdbcType="DECIMAL"/>
+        <result property="financialPerformance" column="financial_performance" jdbcType="DECIMAL"/>
+        <result property="brandMarketingExpenses" column="brand_marketing_expenses" jdbcType="DECIMAL"/>
+        <result property="belongId" column="belong_id" jdbcType="INTEGER"/>
+        <result property="locationId" column="location_id" jdbcType="INTEGER"/>
+        <result property="outletStore" column="outlet_store" jdbcType="INTEGER"/>
+        <result property="goodsPosition" column="goods_position" jdbcType="INTEGER"/>
+        <result property="storePurchasePrice" column="store_purchase_price" jdbcType="DECIMAL"/>
+        <result property="salesPosition" column="sales_position" jdbcType="INTEGER"/>
+        <result property="goodsBelong" column="goods_belong" jdbcType="INTEGER"/>
+        <result property="stockSrc" column="stock_src" jdbcType="INTEGER"/>
+        <result property="jsClinchPrice" column="js_clinch_price" jdbcType="DECIMAL"/>
+        <result property="divideInto" column="divide_into" jdbcType="INTEGER"/>
+        <result property="sourceSubjectId" column="source_subject_id" jdbcType="INTEGER"/>
+        <result property="saleTime" column="sale_time" jdbcType="TIMESTAMP"/>
+        <result property="serviceFee" column="service_fee" jdbcType="DECIMAL"/>
+        <result property="oldToNew" column="old_to_new" jdbcType="INTEGER"/>
+        <result property="buyBackServiceFee" column="buy_back_service_fee" jdbcType="DECIMAL"/>
+        <result property="buyBackPrice" column="buy_back_price" jdbcType="DECIMAL"/>
+        <result property="demandId" column="demand_id" jdbcType="INTEGER"/>
+        <result property="stockId" column="stock_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,financial_documents_id,brand_name,
+        series_name,model_name,toc_price,
+        tob_price,stock_sn,wno,promotion_consignment_price,
+        consign_sale_price,purchase_price,clinch_price,
+        fix_price,return_price,price_pub,
+        tag_price,margin_price,ratio,
+        belong_id,location_id,
+        outlet_store,goods_position,store_purchase_price,
+        sales_position,goods_belong,stock_src,
+        js_clinch_price,divide_into,source_subject_id,
+        sale_time,service_fee,old_to_new,
+        buy_back_service_fee,buy_back_price,demand_id,
+        stock_id,financial_performance,brand_marketing_expenses
+    </sql>
+</mapper>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.serve.allocate.mapper.BillAllocateMapper">
+
+    <resultMap id="BaseResultMap" type="com.seeease.flywheel.serve.allocate.entity.BillAllocate">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="belongingStoreId" column="belonging_store_id" jdbcType="INTEGER"/>
+            <result property="serialNo" column="serial_no" jdbcType="VARCHAR"/>
+            <result property="allocateType" column="allocate_type" jdbcType="INTEGER"/>
+            <result property="allocateState" column="allocate_state" jdbcType="INTEGER"/>
+            <result property="allocateSource" column="allocate_source" jdbcType="INTEGER"/>
+            <result property="fromId" column="from_id" jdbcType="INTEGER"/>
+            <result property="toId" column="to_id" jdbcType="INTEGER"/>
+            <result property="fromStoreId" column="from_store_id" jdbcType="INTEGER"/>
+            <result property="toStoreId" column="to_store_id" jdbcType="INTEGER"/>
+            <result property="totalCostPrice" column="total_cost_price" jdbcType="DECIMAL"/>
+            <result property="totalConsignmentPrice" column="total_consignment_price" jdbcType="DECIMAL"/>
+            <result property="totalNumber" column="total_number" jdbcType="INTEGER"/>
+            <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+            <result property="revision" column="revision" jdbcType="INTEGER"/>
+            <result property="createdId" column="created_id" jdbcType="INTEGER"/>
+            <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updatedId" column="updated_id" jdbcType="INTEGER"/>
+            <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+            <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+            <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,belonging_store_id,serial_no,allocate_type,
+        allocate_state,allocate_source,from_id,
+        to_id,from_store_id,to_store_id,
+        total_cost_price,total_consignment_price,total_number,
+        remarks,revision,created_id,
+        created_by,created_time,updated_id,
+        updated_by,updated_time,deleted
+    </sql>
+</mapper>

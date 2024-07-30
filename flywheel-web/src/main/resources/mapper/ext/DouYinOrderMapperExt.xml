@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seeease.flywheel.web.infrastructure.mapper.DouYinOrderMapper">
+    <select id="listByRequest" resultType="com.seeease.flywheel.sale.result.DouYinOrderListResult">
+        SELECT
+        dyo.id,
+        dyo.order_id bizOrderCode,
+        dyo.serial_no serialNo,
+        dyo.order_status orderStatus,
+        dyo.order_status_desc orderStatusDesc,
+        dyo.shop_id shopId,
+        dyo.whether_use whetherUse,
+        IF(dyo.decrypt_post_receiver is null,dyo.mask_post_receiver,dyo.decrypt_post_receiver) decryptPostReceiver,
+        dyo.order_amount orderAmount,
+        dyo.created_by createdBy,
+        dyo.usage_time usageTime,
+        dyo.created_time createdTime,
+        dyo.buyer_words buyerWords
+        FROM
+        douyin_order dyo
+        <if test="request.goodsModel != null and request.goodsModel!=''">
+            INNER JOIN douyin_order_line dyol on dyol.order_id = dyo.id and dyol.goods_model = #{request.goodsModel}
+        </if>
+        <where>
+            dyo.deleted = 0
+            <if test="request.usageStartTime != null and request.usageStartTime != ''
+                        and request.usageEndTime != null and request.usageEndTime != ''">
+                AND dyo.usage_time BETWEEN #{request.usageStartTime} AND #{request.usageEndTime}
+            </if>
+            <if test="request.createdStartTime != null and request.createdStartTime != ''
+                        and request.createdEndTime != null and request.createdEndTime != ''">
+                AND dyo.created_time BETWEEN #{request.createdStartTime} AND #{request.createdEndTime}
+            </if>
+            <if test="request.serialNo !=null and request.serialNo !=''">
+                and dyo.serial_no like CONCAT(#{request.serialNo},'%')
+            </if>
+            <if test="request.bizOrderCode !=null and request.bizOrderCode !=''">
+                and dyo.order_id like CONCAT('%',#{request.bizOrderCode},'%')
+            </if>
+            <if test="request.whetherUse !=null">
+                and dyo.whether_use =#{request.whetherUse}
+            </if>
+            <if test="request.shopId !=null">
+                and dyo.shop_id =#{request.shopId}
+            </if>
+            <if test="request.createdBy !=null and request.createdBy !=''">
+                and dyo.created_by like CONCAT(#{request.createdBy},'%')
+            </if>
+            <if test="request.decryptPostReceiver !=null and request.decryptPostReceiver !=''">
+                and dyo.decrypt_post_receiver like CONCAT(#{request.decryptPostReceiver},'%')
+            </if>
+        </where>
+        order by dyo.id desc
+    </select>
+    <select id="selectSeriesNameByModel" resultType="java.lang.String">
+        SELECT s.NAME seriesName
+        FROM goods_watch gw
+                 INNER JOIN series s ON gw.series_id = s.id
+        WHERE gw.simplify_model = #{model} limit 1
+    </select>
+    <select id="selectBrandNameByModel" resultType="java.lang.String">
+        SELECT b.NAME brandName
+        FROM goods_watch gw
+                 INNER JOIN brand b ON b.id = gw.brand_id
+        WHERE gw.simplify_model = #{model} limit 1
+    </select>
+    <select id="selectSeriesNameByModelCode" resultType="java.lang.String">
+        SELECT s.NAME seriesName
+        FROM goods_watch gw
+                 INNER JOIN series s ON gw.series_id = s.id
+        WHERE gw.model_code = #{modelCode} limit 1
+    </select>
+    <select id="selectBrandNameByModelCode" resultType="java.lang.String">
+        SELECT b.NAME brandName
+        FROM goods_watch gw
+                 INNER JOIN brand b ON b.id = gw.brand_id
+        WHERE gw.model_code = #{modelCode} limit 1
+    </select>
+    <select id="selectExpressNumberBySerialNo" resultType="java.lang.String">
+        SELECT bsol.express_number
+        FROM bill_sale_order_line bsol
+                 INNER JOIN bill_sale_order bso ON bso.id = bsol.sale_id
+        WHERE bso.serial_no = #{serialNo} LIMIT 1
+    </select>
+</mapper>
